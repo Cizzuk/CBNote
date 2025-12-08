@@ -208,7 +208,7 @@ class MainViewModel: ObservableObject {
         openApp(with: action)
         
         // Launch a dummy camera to avoid being killed by the system.
-        if action != .launchCamera {
+        if action != .launchCamera && UIApplication.shared.applicationState != .active {
             showDummyCamera = true
             
             // Kill the dummy camera after 1s.
