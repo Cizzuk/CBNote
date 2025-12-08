@@ -68,7 +68,7 @@ struct MainView: View {
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         Button(action: { viewModel.showCamera = true }) {
-                            Label("Camera", systemImage: "camera")
+                            Label("Camera", systemImage: viewModel.showCamera ? "camera.fill" : "camera")
                         }
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
