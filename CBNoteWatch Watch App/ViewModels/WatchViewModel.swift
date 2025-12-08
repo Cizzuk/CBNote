@@ -23,14 +23,6 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
         var url: URL {
             URL(fileURLWithPath: name)
         }
-        
-        var isText: Bool {
-            FileTypes.isEditableText(url)
-        }
-        
-        var isImage: Bool {
-            FileTypes.isPreviewableImage(url)
-        }
     }
     
     override init() {
