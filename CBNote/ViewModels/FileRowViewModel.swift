@@ -17,7 +17,7 @@ class FileRowViewModel: ObservableObject {
     }
     
     func loadContent() {
-        if FileTypes.isText(url) {
+        if FileTypes.isEditableText(url) {
             if let content = try? String(contentsOf: url, encoding: .utf8) {
                 text = content
             }

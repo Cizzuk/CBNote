@@ -9,7 +9,7 @@ import Foundation
 import UniformTypeIdentifiers
 
 struct FileTypes {
-    static func isText(_ url: URL) -> Bool {
+    static func isEditableText(_ url: URL) -> Bool {
         let editableText = ["rtf", "xml", "html", "htm", "tex", "json", "yaml", "yml", "toml"]
         let isEditableText: Bool = editableText.contains(url.pathExtension.lowercased())
         
@@ -20,9 +20,13 @@ struct FileTypes {
         }
     }
     
-    static func isImage(_ url: URL) -> Bool {
+    static func isPreviewableImage(_ url: URL) -> Bool {
         let previewableImage = ["png", "jpg", "jpeg", "heic"]
         return previewableImage.contains(url.pathExtension.lowercased())
+    }
+    
+    static func isCopiableToClipboard(_ url: URL) -> Bool {
+        return isEditableText(url) || isPreviewableImage(url)
     }
     
     static func name(for url: URL) -> String {

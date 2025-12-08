@@ -29,7 +29,7 @@ struct MainView: View {
                     ForEach(viewModel.files, id: \.self) { url in
                         FileRow(url: url, onPreview: { previewURL = url })
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                if FileTypes.isImage(url) || FileTypes.isText(url) {
+                                if FileTypes.isCopiableToClipboard(url) {
                                     Button {
                                         viewModel.copyFile(at: url)
                                     } label: {
@@ -47,10 +47,12 @@ struct MainView: View {
                                 .tint(.yellow)
                             }
                             .contextMenu {
-                                Button {
-                                    viewModel.copyFile(at: url)
-                                } label: {
-                                    Label("Copy", systemImage: "document.on.document")
+                                if FileTypes.isCopiableToClipboard(url) {
+                                    Button {
+                                        viewModel.copyFile(at: url)
+                                    } label: {
+                                        Label("Copy", systemImage: "document.on.document")
+                                    }
                                 }
                                 ShareLink(item: url) {
                                     Label("Share", systemImage: "square.and.arrow.up")

@@ -21,26 +21,18 @@ struct FileRow: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            if FileTypes.isText(url) {
+            if FileTypes.isEditableText(url) {
                 TextField("New Note", text: $viewModel.text, axis: .vertical)
                     .onChange(of: viewModel.text) {
                         viewModel.saveText()
                     }
-            } else if FileTypes.isImage(url) {
+            } else if FileTypes.isPreviewableImage(url) {
                 Button(action: onPreview) {
                     ImageView(url: url)
                 }
-            } else if FileTypes.isVideo(url) {
-                Button(action: onPreview) {
-                    AnyFileItem(text: "Video File", systemImage: "video")
-                }
-            } else if FileTypes.isAudio(url) {
-                Button(action: onPreview) {
-                    AnyFileItem(text: "Audio File", systemImage: "waveform")
-                }
             } else {
                 Button(action: onPreview) {
-                    AnyFileItem(text: "Unknown File Type", systemImage: "doc")
+                    AnyFileItem(text: FileTypes.name(for: url), systemImage: FileTypes.systemImage(for: url))
                 }
             }
             
@@ -59,16 +51,19 @@ struct FileRow: View {
     }
     
     struct AnyFileItem: View {
-        var text: LocalizedStringResource
+        var text: String
         var systemImage: String
         
         var body: some View {
-            Image(systemName: systemImage)
-                .accessibilityLabel(text)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .center)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(16)
+            HStack {
+                Image(systemName: systemImage)
+                Text(text)
+            }
+            .accessibilityLabel(text)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .center)
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(16)
         }
     }
 }
