@@ -255,7 +255,6 @@ class Camera: NSObject, ObservableObject {
         let settings = AVCapturePhotoSettings()
         settings.flashMode = isFlashOn ? .on : .off
         output.capturePhoto(with: settings, delegate: self)
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
     
     func startSession() {

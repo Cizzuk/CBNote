@@ -34,6 +34,7 @@ struct CameraView: View {
                         viewModel.focus(at: point)
                     }
                     .ignoresSafeArea()
+                    .opacity(viewModel.shouldFlashScreen ? 0 : 1)
                     .onCameraCaptureEvent(defaultSoundDisabled: true) { event in
                         if event.phase == .began {
                             viewModel.takePhoto()
