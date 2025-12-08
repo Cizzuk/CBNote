@@ -9,18 +9,20 @@ import Foundation
 import UniformTypeIdentifiers
 
 struct FileTypes {
-    static let editableText = ["txt", "md", "csv", "rtf", "xml", "html", "htm", "log", "tex", "json", "yaml", "yml", "toml"]
-    static let previewableImage = ["png", "jpg", "jpeg", "heic"]
-    
     static func isText(_ url: URL) -> Bool {
-        guard let type = UTType(filenameExtension: url.pathExtension) else {
-            return false
+        let editableText = ["rtf", "xml", "html", "htm", "tex", "json", "yaml", "yml", "toml"]
+        let isEditableText: Bool = editableText.contains(url.pathExtension.lowercased())
+        
+        if let type = UTType(filenameExtension: url.pathExtension) {
+            return (type.conforms(to: .plainText) || isEditableText)
+        } else {
+            return isEditableText
         }
-        return type.conforms(to: .plainText) || editableText.contains(url.pathExtension.lowercased())
     }
     
     static func isImage(_ url: URL) -> Bool {
-        previewableImage.contains(url.pathExtension.lowercased())
+        let previewableImage = ["png", "jpg", "jpeg", "heic"]
+        return previewableImage.contains(url.pathExtension.lowercased())
     }
     
     static func name(for url: URL) -> String {
