@@ -16,7 +16,7 @@ struct CameraView: View {
     
     var isLockedMode: Bool = false
     var onSave: (Data) -> Void
-    @State private var alertMessage: String? = nil
+    @State private var alertMessage: LocalizedStringResource? = nil
     
     var body: some View {
         NavigationStack {

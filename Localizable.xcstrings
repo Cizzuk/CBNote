@@ -72,6 +72,16 @@
         }
       }
     },
+    "Camera access is might not be granted." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラへのアクセスが許可されていない可能性があります。"
+          }
+        }
+      }
+    },
     "Camera access is restricted." : {
       "localizations" : {
         "ja" : {
@@ -352,6 +362,16 @@
         }
       }
     },
+    "Please allow camera access to take photos." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を撮るにはカメラへのアクセスを許可する必要があります。"
+          }
+        }
+      }
+    },
     "Privacy Policy" : {
       "localizations" : {
         "ja" : {
@@ -508,6 +528,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カメラコントロールから起動した時の動作"
+          }
+        }
+      }
+    },
+    "You are on the lock screen. You can check photos taken after unlocking your device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ロック画面から起動しています。撮影した写真はロック解除したあとに確認できます。"
           }
         }
       }
