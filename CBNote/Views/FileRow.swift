@@ -10,10 +10,12 @@ import AVKit
 
 struct FileRow: View {
     let url: URL
+    let onPreview: () -> Void
     @StateObject private var viewModel: FileRowViewModel
     
-    init(url: URL) {
+    init(url: URL, onPreview: @escaping () -> Void = {}) {
         self.url = url
+        self.onPreview = onPreview
         _viewModel = StateObject(wrappedValue: FileRowViewModel(url: url))
     }
     
@@ -25,15 +27,20 @@ struct FileRow: View {
                         viewModel.saveText()
                     }
             } else if FileTypes.isImage(url) {
-                ImageView(url: url)
+                Button(action: onPreview) {
+                    ImageView(url: url)
+                }
             } else if FileTypes.isVideo(url) {
-                VideoPlayer(player: AVPlayer(url: url))
-                    .frame(height: 300)
-                    .cornerRadius(16)
+                Button(action: onPreview) {
+                    AnyFileItem(text: "Video File", systemImage: "video")
+                }
+            } else if FileTypes.isAudio(url) {
+                Button(action: onPreview) {
+                    AnyFileItem(text: "Audio File", systemImage: "waveform")
+                }
             } else {
-                HStack {
-                    Image(systemName: "doc")
-                    Text(url.lastPathComponent)
+                Button(action: onPreview) {
+                    AnyFileItem(text: "Unknown File Type", systemImage: "doc")
                 }
             }
             
@@ -48,6 +55,20 @@ struct FileRow: View {
         }
         .onAppear {
             viewModel.loadContent()
+        }
+    }
+    
+    struct AnyFileItem: View {
+        var text: LocalizedStringResource
+        var systemImage: String
+        
+        var body: some View {
+            Image(systemName: systemImage)
+                .accessibilityLabel(text)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .center)
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(16)
         }
     }
 }
