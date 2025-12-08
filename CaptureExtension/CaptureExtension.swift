@@ -5,12 +5,10 @@
 //  Created by Cizzuk on 2025/11/30.
 //
 
-import ExtensionKit
-import Foundation
-import SwiftUI
-import LockedCameraCapture
-import Photos
 import AppIntents
+import ExtensionKit
+import LockedCameraCapture
+import SwiftUI
 
 @main
 struct CaptureExtension: LockedCameraCaptureExtension {

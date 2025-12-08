@@ -5,10 +5,8 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-import SwiftUI
-import AVFoundation
 import AVKit
-import Photos
+import SwiftUI
 
 struct CameraView: View {
     @StateObject private var viewModel = CameraViewModel()

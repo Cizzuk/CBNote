@@ -5,9 +5,8 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-import SwiftUI
-import Combine
 import AppIntents
+import Combine
 
 class SettingsViewModel: ObservableObject {
     @Published var autoPasteWhenOpening: Bool = UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {

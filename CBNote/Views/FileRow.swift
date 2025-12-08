@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AVKit
 
 struct FileRow: View {
     let url: URL
@@ -59,7 +58,6 @@ struct FileRow: View {
                 Image(systemName: systemImage)
                 Text(text)
             }
-            .accessibilityLabel(text)
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
             .background(Color.gray.opacity(0.1))

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 nonisolated
 struct CaptureContext: Codable {
