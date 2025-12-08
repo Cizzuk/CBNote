@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct FileRow: View {
     let url: URL
@@ -25,6 +26,10 @@ struct FileRow: View {
                     }
             } else if FileTypes.isImage(url) {
                 ImageView(url: url)
+            } else if FileTypes.isVideo(url) {
+                VideoPlayer(player: AVPlayer(url: url))
+                    .frame(height: 300)
+                    .cornerRadius(16)
             } else {
                 HStack {
                     Image(systemName: "doc")

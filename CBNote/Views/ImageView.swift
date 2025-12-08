@@ -30,7 +30,7 @@ struct ImageView: View {
                 .interpolation(shouldPixelate(uiImage) ? .none : .medium)
                 .scaledToFit()
                 .frame(maxWidth: .infinity, maxHeight: maxHeight, alignment: .center)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .cornerRadius(16)
         } else {
             ProgressView()
                 .frame(maxWidth: .infinity)
