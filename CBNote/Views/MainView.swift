@@ -5,12 +5,12 @@
 //  Created by Cizzuk on 2025/12/02.
 //
 
-import LockedCameraCapture
 import SwiftUI
-import AVKit
+import QuickLook
 
 struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
+    @State private var previewURL: URL?
 
     var body: some View {
         ZStack {
@@ -27,29 +27,42 @@ struct MainView: View {
                         }
                     }
                     ForEach(viewModel.files, id: \.self) { url in
-                        FileRow(url: url)
+                        FileRow(url: url, onPreview: { previewURL = url })
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                if FileTypes.isImage(url) || FileTypes.isText(url) {
+                                if FileTypes.isCopiableToClipboard(url) {
                                     Button {
                                         viewModel.copyFile(at: url)
                                     } label: {
                                         Label("Copy", systemImage: "document.on.document")
                                     }
-                                    .tint(.blue)
+                                    .tint(.accent)
                                 }
                                 ShareLink(item: url) {
                                     Label("Share", systemImage: "square.and.arrow.up")
                                 }
+                                .tint(.indigo)
+                                Button(action: { previewURL = url }) {
+                                    Label("Quick Look", systemImage: "eye")
+                                }
+                                .tint(.yellow)
                             }
                             .contextMenu {
-                                Button {
-                                    viewModel.copyFile(at: url)
-                                } label: {
-                                    Label("Copy", systemImage: "document.on.document")
+                                if FileTypes.isCopiableToClipboard(url) {
+                                    Button {
+                                        viewModel.copyFile(at: url)
+                                    } label: {
+                                        Label("Copy", systemImage: "document.on.document")
+                                    }
                                 }
                                 ShareLink(item: url) {
                                     Label("Share", systemImage: "square.and.arrow.up")
                                 }
+                                Button {
+                                    previewURL = url
+                                } label: {
+                                    Label("Quick Look", systemImage: "eye")
+                                }
+                                Divider()
                                 Button {
                                     viewModel.startRenaming(url: url)
                                 } label: {
@@ -68,7 +81,7 @@ struct MainView: View {
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         Button(action: { viewModel.showCamera = true }) {
-                            Label("Camera", systemImage: "camera")
+                            Label("Camera", systemImage: viewModel.showCamera ? "camera.fill" : "camera")
                         }
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
@@ -134,6 +147,7 @@ struct MainView: View {
                     }
                     .disabled(!viewModel.isValidFileName(viewModel.newName))
                 }
+                .quickLookPreview($previewURL)
             }
             .scrollDismissesKeyboard(.interactively)
         }

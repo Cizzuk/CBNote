@@ -37,7 +37,9 @@ struct FileDetailView: View {
                 }
             } else {
                 Text("Failed to load content.")
-                    .foregroundColor(.red)
+                Text("Could not load file or unsupported file type.")
+                    .font(.caption)
+                    .foregroundColor(.gray)
             }
         }
         .navigationTitle(file.name)

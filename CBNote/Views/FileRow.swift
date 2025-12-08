@@ -6,29 +6,33 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct FileRow: View {
     let url: URL
+    let onPreview: () -> Void
     @StateObject private var viewModel: FileRowViewModel
     
-    init(url: URL) {
+    init(url: URL, onPreview: @escaping () -> Void = {}) {
         self.url = url
+        self.onPreview = onPreview
         _viewModel = StateObject(wrappedValue: FileRowViewModel(url: url))
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            if FileTypes.isText(url) {
+            if FileTypes.isEditableText(url) {
                 TextField("New Note", text: $viewModel.text, axis: .vertical)
                     .onChange(of: viewModel.text) {
                         viewModel.saveText()
                     }
-            } else if FileTypes.isImage(url) {
-                ImageView(url: url)
+            } else if FileTypes.isPreviewableImage(url) {
+                Button(action: onPreview) {
+                    ImageView(url: url)
+                }
             } else {
-                HStack {
-                    Image(systemName: "doc")
-                    Text(url.lastPathComponent)
+                Button(action: onPreview) {
+                    AnyFileItem(text: FileTypes.name(for: url), systemImage: FileTypes.systemImage(for: url))
                 }
             }
             
@@ -43,6 +47,23 @@ struct FileRow: View {
         }
         .onAppear {
             viewModel.loadContent()
+        }
+    }
+    
+    struct AnyFileItem: View {
+        var text: String
+        var systemImage: String
+        
+        var body: some View {
+            HStack {
+                Image(systemName: systemImage)
+                Text(text)
+            }
+            .accessibilityLabel(text)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .center)
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(16)
         }
     }
 }

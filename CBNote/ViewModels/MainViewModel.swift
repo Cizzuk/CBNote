@@ -127,11 +127,11 @@ class MainViewModel: ObservableObject {
     }
 
     func copyFile(at url: URL) {
-        if FileTypes.isText(url) {
+        if FileTypes.isEditableText(url) {
             if let text = try? String(contentsOf: url, encoding: .utf8) {
                 UIPasteboard.general.string = text
             }
-        } else if FileTypes.isImage(url) {
+        } else if FileTypes.isPreviewableImage(url) {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 UIPasteboard.general.image = image
             }
@@ -208,7 +208,7 @@ class MainViewModel: ObservableObject {
         openApp(with: action)
         
         // Launch a dummy camera to avoid being killed by the system.
-        if action != .launchCamera {
+        if action != .launchCamera && UIApplication.shared.applicationState != .active {
             showDummyCamera = true
             
             // Kill the dummy camera after 1s.

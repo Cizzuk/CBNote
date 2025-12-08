@@ -12,6 +12,7 @@ import Photos
 
 class CameraViewModel: ObservableObject {
     @Published var camera = Camera()
+    @Published var shouldFlashScreen = false
     
     var onPhotoCaptured: ((Data) -> Void)? {
         get { camera.onPhotoCaptured }
@@ -64,6 +65,11 @@ class CameraViewModel: ObservableObject {
     }
     
     func takePhoto() {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        shouldFlashScreen = true
+        withAnimation(.linear(duration: 0.1)) {
+            shouldFlashScreen = false
+        }
         camera.takePhoto()
     }
     

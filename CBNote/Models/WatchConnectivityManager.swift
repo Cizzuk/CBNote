@@ -44,7 +44,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 var info = ["name": url.lastPathComponent]
                 
                 // Add preview for text files
-                if FileTypes.isText(url) {
+                if FileTypes.isEditableText(url) {
                     if let content = try? String(contentsOf: url, encoding: .utf8) {
                         // Cut to first line only
                         let firstLine = content.components(separatedBy: .newlines).first ?? ""
@@ -63,7 +63,8 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             let documentsURL = NoteManager.shared.getDocumentsDirectory()
             let fileURL = documentsURL.appendingPathComponent(fileName)
             
-            if FileTypes.isImage(fileURL) {
+            if FileTypes.isPreviewableImage(fileURL) {
+                // Handle image file
                 if let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
                     // Resize to max 300px width/height for Watch
                     let maxDimension: CGFloat = 300
@@ -85,12 +86,13 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 } else {
                     replyHandler(["error": "Could not load file"])
                 }
+                
+            } else if let text = try? String(contentsOf: fileURL, encoding: .utf8) {
+                // Handle text file
+                replyHandler(["text": text])
+                
             } else {
-                if let text = try? String(contentsOf: fileURL, encoding: .utf8) {
-                    replyHandler(["text": text])
-                } else {
-                    replyHandler(["error": "Could not load file"])
-                }
+                replyHandler(["error": "Could not load file"])
             }
         }
     }

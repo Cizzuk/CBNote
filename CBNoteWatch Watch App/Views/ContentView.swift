@@ -35,7 +35,7 @@ struct ContentView: View {
                                         .truncationMode(.tail)
                                     Divider()
                                 }
-                                Label(file.name, systemImage: file.isImage ? "photo" : "doc.text")
+                                Label(file.name, systemImage: FileTypes.systemImage(for: file.url))
                                     .font(.caption)
                             }
                         }
