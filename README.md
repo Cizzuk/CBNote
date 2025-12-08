@@ -22,7 +22,6 @@ And other app features:
 - Quick access to notes by launching from the Action Button, Camera Control, Control Center and other shortcut actions
 - Easily add new notes by pasting from the clipboard
 - Notes can be easily copied to the clipboard with a swipe gesture
-- The in-app camera shutter sound will be silent in Japan as well
 
 ## License
 
