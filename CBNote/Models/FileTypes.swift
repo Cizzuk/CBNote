@@ -11,6 +11,7 @@ struct FileTypes {
     static let text = ["txt", "md", "csv", "rtf", "xml", "html", "htm", "log", "tex", "json", "yaml", "yml", "toml"]
     static let image = ["png", "jpg", "jpeg", "heic"]
     static let video = ["mov", "mp4"]
+    static let audio = ["mp3", "wav", "m4a"]
     
     static func isText(_ url: URL) -> Bool {
         text.contains(url.pathExtension.lowercased())
@@ -22,5 +23,9 @@ struct FileTypes {
     
     static func isVideo(_ url: URL) -> Bool {
         video.contains(url.pathExtension.lowercased())
+    }
+    
+    static func isAudio(_ url: URL) -> Bool {
+        audio.contains(url.pathExtension.lowercased())
     }
 }
