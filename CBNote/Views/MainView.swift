@@ -1,0 +1,141 @@
+//
+//  MainView.swift
+//  CBNote
+//
+//  Created by Cizzuk on 2025/12/02.
+//
+
+import LockedCameraCapture
+import SwiftUI
+import AVKit
+
+struct MainView: View {
+    @StateObject private var viewModel = MainViewModel()
+
+    var body: some View {
+        ZStack {
+            if viewModel.showDummyCamera {
+                DummyCameraView()
+            }
+            
+            NavigationStack {
+                List {
+                    if viewModel.files.isEmpty {
+                        Section {} footer: {
+                            Text("No notes yet. Tap the + button to add a new note.")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    }
+                    ForEach(viewModel.files, id: \.self) { url in
+                        FileRow(url: url)
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                if FileTypes.isImage(url) || FileTypes.isText(url) {
+                                    Button {
+                                        viewModel.copyFile(at: url)
+                                    } label: {
+                                        Label("Copy", systemImage: "document.on.document")
+                                    }
+                                    .tint(.blue)
+                                }
+                                ShareLink(item: url) {
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                }
+                            }
+                            .contextMenu {
+                                Button {
+                                    viewModel.copyFile(at: url)
+                                } label: {
+                                    Label("Copy", systemImage: "document.on.document")
+                                }
+                                ShareLink(item: url) {
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                }
+                                Button {
+                                    viewModel.startRenaming(url: url)
+                                } label: {
+                                    Label("Rename", systemImage: "pencil")
+                                }
+                                Button(role: .destructive) {
+                                    viewModel.deleteFile(at: url)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                    }
+                    .onDelete(perform: viewModel.deleteFile)
+                }
+                .animation(.default, value: viewModel.files)
+                .toolbar {
+                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        Button(action: { viewModel.showCamera = true }) {
+                            Label("Camera", systemImage: "camera")
+                        }
+                        Button(action: { viewModel.addAndPaste() }) {
+                            Label("Paste", systemImage: "document.on.clipboard")
+                        }
+                        .popover(isPresented: $viewModel.showPasteError) {
+                            Text("No valid content found in clipboard to paste.")
+                                .padding()
+                                .presentationCompactAdaptation(.popover)
+                        }
+                        Button(action: viewModel.addItem) {
+                            Label("Add New Note", systemImage: "plus")
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: { viewModel.showSettings = true }) {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                    }
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button {
+                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        } label: {
+                            Label("Done", systemImage: "checkmark")
+                        }
+                    }
+                }
+                .refreshable {
+                    viewModel.checkLockedCameraCaptures()
+                    viewModel.loadFiles()
+                }
+                .onAppear {
+                    viewModel.checkLockedCameraCaptures()
+                    viewModel.checkAutoPaste()
+                    viewModel.loadFiles()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                    viewModel.checkLockedCameraCaptures()
+                    viewModel.checkAutoPaste()
+                    viewModel.loadFiles()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
+                    viewModel.handleCameraControlAction()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
+                    if let option = action.object as? OpenAppOption {
+                        viewModel.openApp(with: option)
+                    }
+                }
+                .sheet(isPresented: $viewModel.showCamera) {
+                    CameraView { data in
+                        viewModel.saveImage(data: data)
+                    }
+                }
+                .sheet(isPresented: $viewModel.showSettings) {
+                    SettingsView()
+                }
+                .alert("Rename", isPresented: $viewModel.isRenaming) {
+                    TextField("New Name", text: $viewModel.newName)
+                    Button("Cancel", role: .cancel) {}
+                    Button("Rename", role: .confirm) {
+                        viewModel.renameFile()
+                    }
+                    .disabled(!viewModel.isValidFileName(viewModel.newName))
+                }
+            }
+            .scrollDismissesKeyboard(.interactively)
+        }
+    }
+}

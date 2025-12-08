@@ -1,0 +1,72 @@
+{
+  "fill" : {
+    "solid" : "srgb:0.00000,0.00000,0.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-gray:1.00000,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "cam-watch.png",
+          "name" : "cam-watch"
+        }
+      ],
+      "name" : "Cam",
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          -8
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.25
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "srgb:0.20000,0.60000,1.00000,1.00000"
+          },
+          "glass" : true,
+          "image-name" : "glare.png",
+          "name" : "glare"
+        }
+      ],
+      "name" : "Glare",
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          -8
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.25
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
