@@ -36,9 +36,9 @@ struct FileDetailView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                Text(FileTypes.name(for: file.url))
-                    .font(.headline)
-                Text("Failed to load content. Unsupported file.")
+                Text("Failed to load content.")
+                Text("Could not load file or unsupported file type.")
+                    .font(.caption)
                     .foregroundColor(.gray)
             }
         }
