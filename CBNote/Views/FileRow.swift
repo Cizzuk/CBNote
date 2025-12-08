@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AVKit
 
 struct FileRow: View {
     let url: URL

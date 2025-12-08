@@ -5,10 +5,9 @@
 //  Created by Cizzuk on 2025/12/07.
 //
 
-import Foundation
-import WatchConnectivity
-import UIKit
 import Combine
+import UIKit
+import WatchConnectivity
 
 class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
     static let shared = WatchConnectivityManager()

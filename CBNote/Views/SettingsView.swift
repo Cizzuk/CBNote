@@ -5,9 +5,8 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-import SwiftUI
-import AVFoundation
 import Photos
+import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss

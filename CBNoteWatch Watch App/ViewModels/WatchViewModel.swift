@@ -5,10 +5,9 @@
 //  Created by Cizzuk on 2025/12/07.
 //
 
-import Foundation
-import WatchConnectivity
-import SwiftUI
 import Combine
+import SwiftUI
+import WatchConnectivity
 
 class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
     @Published var files: [FileItem] = []

@@ -5,8 +5,8 @@
 //  Created by Cizzuk on 2025/12/07.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 class NoteManager: ObservableObject {
     static let shared = NoteManager()

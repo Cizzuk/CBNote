@@ -5,9 +5,7 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-import Foundation
 import AppIntents
-import LockedCameraCapture
 
 extension Notification.Name {
     static let cameraControlDidActivate = Notification.Name("cameraControlDidActivate")
