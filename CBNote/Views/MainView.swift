@@ -83,7 +83,7 @@ struct MainView: View {
                         Button(action: { viewModel.showCamera = true }) {
                             Label("Camera", systemImage: viewModel.showCamera ? "camera.fill" : "camera")
                         }
-                        Button(action: { viewModel.addAndPaste() }) {
+                        Button(action: { Task { await viewModel.addAndPaste() } }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
                         .popover(isPresented: $viewModel.showPasteError) {

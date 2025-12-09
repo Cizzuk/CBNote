@@ -45,7 +45,7 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    func addAndPaste(suppressError: Bool = false) {
+    func addAndPaste(suppressError: Bool = false) async {
         let currentChangeCount = UIPasteboard.general.changeCount
         if suppressError && currentChangeCount == lastPasteboardChangeCount {
             return
@@ -122,7 +122,7 @@ class MainViewModel: ObservableObject {
     
     func checkAutoPaste() {
         if UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
-            addAndPaste(suppressError: true)
+            Task { await addAndPaste(suppressError: true) }
         }
     }
 
@@ -228,7 +228,7 @@ class MainViewModel: ObservableObject {
             showCamera = true
         case .pasteFromClipboard:
             showCamera = false
-            addAndPaste()
+            Task { await addAndPaste() }
         case .addNewNote:
             showCamera = false
             addItem()
