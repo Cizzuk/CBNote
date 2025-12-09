@@ -212,7 +212,7 @@ class MainViewModel: ObservableObject {
             showDummyCamera = true
             
             // Kill the dummy camera after 2s.
-            // In the test, system killed the app when it was below 0.8s.
+            // In the test, system killed the app when it was below 0.8 - 1s.
             // For safety, the dummy will be killed in 2s.
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.showDummyCamera = false
