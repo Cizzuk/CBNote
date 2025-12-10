@@ -37,22 +37,23 @@ class NoteManager: ObservableObject {
     
     func createFileURL(fileExtension: String, suffix: String = "") -> URL {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss-SS"
         let baseName = dateFormatter.string(from: Date()) + suffix
         
         let documentsURL = getDocumentsDirectory()
-        
-        var counter = 1
         let extensionPart = fileExtension.isEmpty ? "" : ".\(fileExtension)"
-        var fileName = "\(baseName)-\(counter)\(extensionPart)"
-        var fileURL = documentsURL.appendingPathComponent(fileName)
         
         // Ensure unique filename
-        while FileManager.default.fileExists(atPath: fileURL.path) {
+        var counter = 0
+        var fileURL: URL
+        repeat {
             counter += 1
-            fileName = "\(baseName)-\(counter)\(extensionPart)"
+            let counterNumber = counter > 1 ? "-\(counter)" : ""
+
+            let fileName = "\(baseName)\(counterNumber)\(extensionPart)"
             fileURL = documentsURL.appendingPathComponent(fileName)
-        }
+        } while FileManager.default.fileExists(atPath: fileURL.path)
+                    
         return fileURL
     }
     
