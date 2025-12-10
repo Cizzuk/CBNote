@@ -24,10 +24,6 @@ struct FileTypes {
         return previewableImage.contains(url.pathExtension.lowercased())
     }
     
-    static func isCopiableToClipboard(_ url: URL) -> Bool {
-        return isEditableText(url) || isPreviewableImage(url)
-    }
-    
     static func name(for url: URL) -> String {
         if url.hasDirectoryPath {
             return "Folder"

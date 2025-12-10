@@ -136,7 +136,9 @@ class MainViewModel: ObservableObject {
                 UIPasteboard.general.image = image
             }
         } else {
-            UIPasteboard.general.url = url
+            if let fileData = try? Data(contentsOf: url) {
+                UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
+            }
         }
         lastPasteboardChangeCount = UIPasteboard.general.changeCount
     }

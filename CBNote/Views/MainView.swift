@@ -32,14 +32,12 @@ struct MainView: View {
                                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                if FileTypes.isCopiableToClipboard(url) {
-                                    Button {
-                                        viewModel.copyFile(at: url)
-                                    } label: {
-                                        Label("Copy", systemImage: "document.on.document")
-                                    }
-                                    .tint(.accent)
+                                Button {
+                                    viewModel.copyFile(at: url)
+                                } label: {
+                                    Label("Copy", systemImage: "document.on.document")
                                 }
+                                .tint(.accent)
                                 ShareLink(item: url) {
                                     Label("Share", systemImage: "square.and.arrow.up")
                                 }
@@ -58,12 +56,10 @@ struct MainView: View {
                                 }
                             }
                             .contextMenu {
-                                if FileTypes.isCopiableToClipboard(url) {
-                                    Button {
-                                        viewModel.copyFile(at: url)
-                                    } label: {
-                                        Label("Copy", systemImage: "document.on.document")
-                                    }
+                                Button {
+                                    viewModel.copyFile(at: url)
+                                } label: {
+                                    Label("Copy", systemImage: "document.on.document")
                                 }
                                 ShareLink(item: url) {
                                     Label("Share", systemImage: "square.and.arrow.up")
