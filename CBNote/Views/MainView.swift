@@ -28,6 +28,9 @@ struct MainView: View {
                     }
                     ForEach(viewModel.files, id: \.self) { url in
                         FileRow(url: url, onPreview: { previewURL = url })
+                            .onDrag() {
+                                return NSItemProvider(contentsOf: url) ?? NSItemProvider()
+                            }
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 if FileTypes.isCopiableToClipboard(url) {
                                     Button {
