@@ -129,6 +129,9 @@
         }
       }
     },
+    "Cizzuk" : {
+      "shouldTranslate" : false
+    },
     "Close" : {
       "localizations" : {
         "ja" : {
@@ -165,6 +168,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除"
+          }
+        }
+      }
+    },
+    "Developer" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発者"
           }
         }
       }
@@ -255,6 +268,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CBNoteでカメラを起動"
+          }
+        }
+      }
+    },
+    "License" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライセンス"
           }
         }
       }
