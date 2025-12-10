@@ -44,10 +44,6 @@ struct MainView: View {
                                     Label("Share", systemImage: "square.and.arrow.up")
                                 }
                                 .tint(.indigo)
-                                Button(action: { previewURL = url }) {
-                                    Label("Quick Look", systemImage: "eye")
-                                }
-                                .tint(.yellow)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
