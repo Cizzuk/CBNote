@@ -49,6 +49,18 @@ struct MainView: View {
                                 }
                                 .tint(.yellow)
                             }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    viewModel.deleteFile(at: url)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                Button {
+                                    viewModel.startRenaming(url: url)
+                                } label: {
+                                    Label("Rename", systemImage: "pencil")
+                                }
+                            }
                             .contextMenu {
                                 if FileTypes.isCopiableToClipboard(url) {
                                     Button {
