@@ -37,7 +37,8 @@ class NoteManager: ObservableObject {
     
     func createFileURL(fileExtension: String, suffix: String = "") -> URL {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss-SS"
+        let dateFormat = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss"
+        dateFormatter.dateFormat = dateFormat
         let baseName = dateFormatter.string(from: Date()) + suffix
         
         let documentsURL = getDocumentsDirectory()

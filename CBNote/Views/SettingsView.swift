@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = SettingsViewModel()
     @State private var cameraAccessStatus = AVCaptureDevice.authorizationStatus(for: .video)
+    @State private var nameFormatSample: String = ""
     
     var body: some View {
         NavigationStack {
@@ -33,21 +34,14 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    Toggle("Auto Paste when Opening", isOn: $viewModel.autoPasteWhenOpening)
-                } footer: {
-                    Text("Recommended to set \"Paste from Other Apps\" to \"Allow\" in the Settings.")
-                }
-                
-                Section {
-                    Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
-                }
-                
-                Section {
-                    Picker("When Launching with Camera Control", selection: $viewModel.cameraControlAction) {
+                    Toggle("Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
+                    Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
                         ForEach(OpenAppOption.allCases) { action in
                             Text(String(localized: action.localizedName)).tag(action)
                         }
                     }
+                } header: {
+                    Text("When App Opening")
                 } footer: {
                     if viewModel.cameraControlAction != .launchCamera {
                         let actionName = String(localized: viewModel.cameraControlAction.localizedName)
@@ -56,13 +50,33 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
                     Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
                         ForEach(CaptureContext.LaunchAction.allCases) { action in
                             Text(String(localized: action.localizedName)).tag(action)
                         }
                     }
+                } header: {
+                    Text("Camera")
+                }
+                
+                Section {
+                    TextField("yyyy-MM-dd-HH-mm-ss", text: $viewModel.nameFormat)
+                        .disableAutocorrection(true)
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: viewModel.nameFormat) {
+                            updateNameFormatSample()
+                        }
+                } header: {
+                    Text("File Name Format")
                 } footer: {
-                    Text("Choose action when launching from the Lock Screen.")
+                    VStack(alignment: .leading) {
+                        Text("Use date format patterns to customize file names.")
+                        Text("Sample: \(nameFormatSample)")
+                    }
+                }
+                .onAppear {
+                    updateNameFormatSample()
                 }
                 
                 Section {
@@ -79,8 +93,22 @@ struct SettingsView: View {
                         Label("Close", systemImage: "xmark")
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button {
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    } label: {
+                        Label("Done", systemImage: "checkmark")
+                    }
+                }
             }
         }
+    }
+    
+    private func updateNameFormatSample() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = viewModel.nameFormat
+        nameFormatSample = dateFormatter.string(from: Date()) + ".txt"
     }
     
     struct AboutView: View {
