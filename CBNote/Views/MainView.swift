@@ -84,7 +84,7 @@ struct MainView: View {
                                 .padding()
                                 .presentationCompactAdaptation(.popover)
                         }
-                        Button(action: viewModel.addItem) {
+                        Button(action: viewModel.createNewNote) {
                             Label("Add New Note", systemImage: "plus")
                         }
                     }
@@ -102,8 +102,8 @@ struct MainView: View {
                                         viewModel.toggleSort(key: key)
                                     } label: {
                                         HStack {
-                                            if viewModel.currentSortKey == key {
-                                                Image(systemName: viewModel.currentSortDirection == .descending ? "chevron.down" : "chevron.up")
+                                            if viewModel.sortKey == key {
+                                                Image(systemName: viewModel.sortDirection == .descending ? "chevron.down" : "chevron.up")
                                             }
                                             Text(key.localizedName)
                                         }
@@ -149,7 +149,7 @@ struct MainView: View {
                 }
                 .sheet(isPresented: $viewModel.showCamera) {
                     CameraView { data in
-                        viewModel.saveImage(data: data)
+                        viewModel.saveCapturedImage(data: data)
                     }
                 }
                 .sheet(isPresented: $viewModel.showSettings) {
