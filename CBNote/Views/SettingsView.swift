@@ -37,14 +37,14 @@ struct SettingsView: View {
                     Toggle("Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
                     Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
                         ForEach(OpenAppOption.allCases) { action in
-                            Text(String(localized: action.localizedName)).tag(action)
+                            Text(action.localizedName).tag(action)
                         }
                     }
                 } header: {
                     Text("When App Opening")
                 } footer: {
                     if viewModel.cameraControlAction != .launchCamera {
-                        let actionName = String(localized: OpenAppOption.launchCamera.localizedName)
+                        let actionName = OpenAppOption.launchCamera.localizedName
                         Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
                     }
                 }
@@ -53,7 +53,7 @@ struct SettingsView: View {
                     Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
                     Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
                         ForEach(CaptureContext.LaunchAction.allCases) { action in
-                            Text(String(localized: action.localizedName)).tag(action)
+                            Text(action.localizedName).tag(action)
                         }
                     }
                 } header: {

@@ -14,7 +14,7 @@ struct CaptureContext: Codable {
         case doNothing = "Do Nothing"
         
         var id: String { rawValue }
-        var localizedName: String.LocalizationValue {
+        var localizedName: LocalizedStringResource {
             switch self {
             case .launchCamera:
                 return "Launch Camera"
