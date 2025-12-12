@@ -102,10 +102,10 @@ struct MainView: View {
                                         viewModel.toggleSort(key: key)
                                     } label: {
                                         HStack {
-                                            Text(key.localizedName)
                                             if viewModel.currentSortKey == key {
                                                 Image(systemName: viewModel.currentSortDirection == .descending ? "chevron.down" : "chevron.up")
                                             }
+                                            Text(key.localizedName)
                                         }
                                     }
                                 }
