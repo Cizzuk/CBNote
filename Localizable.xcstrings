@@ -395,6 +395,26 @@
         }
       }
     },
+    "Pin" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留め"
+          }
+        }
+      }
+    },
+    "Pinned Notes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めされたノート"
+          }
+        }
+      }
+    },
     "Please allow camera access to take photos." : {
       "localizations" : {
         "ja" : {
@@ -551,6 +571,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フラッシュを切り替え"
+          }
+        }
+      }
+    },
+    "Unpin" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めを解除"
           }
         }
       }

@@ -23,6 +23,16 @@ class MainViewModel: ObservableObject {
     
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
+    
+    @Published var pinnedFiles: [URL] = {
+        let urls = UserDefaults.standard.array(forKey: "pinnedFiles") as? [String] ?? []
+        return urls.compactMap { URL(string: $0) }
+    }() {
+        didSet {
+            let pinnedFilesString = pinnedFiles.map { $0.absoluteString }
+            UserDefaults.standard.set(pinnedFilesString, forKey: "pinnedFiles")
+        }
+    }
 
     init() {
         NoteManager.shared.$files
@@ -155,6 +165,18 @@ class MainViewModel: ObservableObject {
     func renameFile() {
         guard let url = renamingURL else { return }
         NoteManager.shared.renameFile(at: url, newName: newName)
+    }
+    
+    func isFilePinned(_ url: URL) -> Bool {
+        pinnedFiles.contains(url)
+    }
+    
+    func pinUnpinFile(at url: URL) {
+        if isFilePinned(url) {
+            pinnedFiles.removeAll { $0 == url }
+        } else {
+            pinnedFiles.append(url)
+        }
     }
     
     func isValidFileName(_ name: String) -> Bool {

@@ -26,63 +26,47 @@ struct MainView: View {
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
                     }
-                    ForEach(viewModel.files, id: \.self) { url in
-                        FileRow(url: url, onPreview: { previewURL = url })
-                            .onDrag() {
-                                return NSItemProvider(contentsOf: url) ?? NSItemProvider()
+                    
+                    if !viewModel.pinnedFiles.isEmpty {
+                        Section {
+                            ForEach(viewModel.pinnedFiles, id: \.self) { url in
+                                fileRow(url: url, onPreview: { previewURL = url })
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button {
+                                            viewModel.pinUnpinFile(at: url)
+                                        } label: {
+                                            if viewModel.isFilePinned(url) {
+                                                Label("Unpin", systemImage: "pin.slash")
+                                            } else {
+                                                Label("Pin", systemImage: "pin")
+                                            }
+                                        }
+                                        .tint(.yellow)
+                                    }
                             }
-                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                Button {
-                                    viewModel.copyFile(at: url)
-                                } label: {
-                                    Label("Copy", systemImage: "document.on.document")
-                                }
-                                .tint(.accent)
-                                ShareLink(item: url) {
-                                    Label("Share", systemImage: "square.and.arrow.up")
-                                }
-                                .tint(.indigo)
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    viewModel.deleteFile(at: url)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                                Button {
-                                    viewModel.startRenaming(url: url)
-                                } label: {
-                                    Label("Rename", systemImage: "pencil")
-                                }
-                            }
-                            .contextMenu {
-                                Button {
-                                    viewModel.copyFile(at: url)
-                                } label: {
-                                    Label("Copy", systemImage: "document.on.document")
-                                }
-                                ShareLink(item: url) {
-                                    Label("Share", systemImage: "square.and.arrow.up")
-                                }
-                                Button {
-                                    previewURL = url
-                                } label: {
-                                    Label("Quick Look", systemImage: "eye")
-                                }
-                                Divider()
-                                Button {
-                                    viewModel.startRenaming(url: url)
-                                } label: {
-                                    Label("Rename", systemImage: "pencil")
-                                }
-                                Button(role: .destructive) {
-                                    viewModel.deleteFile(at: url)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
+                        } header: {
+                            Label("Pinned Notes", systemImage: "pin.fill")
+                        }
                     }
-                    .onDelete(perform: viewModel.deleteFile)
+                    
+                    Section {
+                        ForEach(viewModel.files, id: \.self) { url in
+                            fileRow(url: url, onPreview: { previewURL = url })
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        viewModel.deleteFile(at: url)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    Button {
+                                        viewModel.startRenaming(url: url)
+                                    } label: {
+                                        Label("Rename", systemImage: "pencil")
+                                    }
+                                }
+                        }
+                        .onDelete(perform: viewModel.deleteFile)
+                    }
                 }
                 .animation(.default, value: viewModel.files)
                 .toolbar {
@@ -158,5 +142,60 @@ struct MainView: View {
             }
             .scrollDismissesKeyboard(.interactively)
         }
+    }
+    
+    func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
+        FileRow(url: url, onPreview: onPreview)
+            .onDrag() {
+                return NSItemProvider(contentsOf: url) ?? NSItemProvider()
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                Button {
+                    viewModel.copyFile(at: url)
+                } label: {
+                    Label("Copy", systemImage: "document.on.document")
+                }
+                .tint(.accent)
+                ShareLink(item: url) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                .tint(.indigo)
+            }
+            .contextMenu {
+                Button {
+                    viewModel.pinUnpinFile(at: url)
+                } label: {
+                    if viewModel.isFilePinned(url) {
+                        Label("Unpin", systemImage: "pin.slash")
+                    } else {
+                        Label("Pin", systemImage: "pin")
+                    }
+                }
+                Divider()
+                Button {
+                    viewModel.copyFile(at: url)
+                } label: {
+                    Label("Copy", systemImage: "document.on.document")
+                }
+                ShareLink(item: url) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                Button {
+                    previewURL = url
+                } label: {
+                    Label("Quick Look", systemImage: "eye")
+                }
+                Divider()
+                Button {
+                    viewModel.startRenaming(url: url)
+                } label: {
+                    Label("Rename", systemImage: "pencil")
+                }
+                Button(role: .destructive) {
+                    viewModel.deleteFile(at: url)
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
     }
 }
