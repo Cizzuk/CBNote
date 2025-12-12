@@ -68,7 +68,9 @@ class NoteManager: ObservableObject {
         return urls.sorted { url1, url2 in
             switch key {
             case .name:
-                return direction == .descending ? url1.lastPathComponent.lowercased() > url2.lastPathComponent.lowercased() : url1.lastPathComponent.lowercased() < url2.lastPathComponent.lowercased()
+                let name1 = url1.lastPathComponent.lowercased()
+                let name2 = url2.lastPathComponent.lowercased()
+                return direction == .descending ? name1 > name2 : name1 < name2
             case .date:
                 let date1 = (try? url1.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? Date.distantPast
                 let date2 = (try? url2.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? Date.distantPast
