@@ -22,21 +22,23 @@ struct ContentView: View {
                     }
                 } else if viewModel.isLoading {
                     ProgressView()
-                } else if viewModel.files.isEmpty {
+                } else if viewModel.isNotesEmpty() {
                     Text("No notes yet. Add notes from your iPhone first.")
                         .multilineTextAlignment(.center)
                 } else {
-                    List(viewModel.files) { file in
-                        NavigationLink(value: file) {
-                            VStack(alignment: .leading) {
-                                if let preview = file.preview {
-                                    Text(preview)
-                                        .lineLimit(2)
-                                        .truncationMode(.tail)
-                                    Divider()
+                    List {
+                        if !viewModel.pinnedFiles.isEmpty {
+                            Section {
+                                ForEach(viewModel.pinnedFiles) { file in
+                                    fileRow(file: file)
                                 }
-                                Label(file.name, systemImage: FileTypes.systemImage(for: file.url))
-                                    .font(.caption)
+                            } header: {
+                                Label("Pinned Notes", systemImage: "pin.fill")
+                            }
+                        }
+                        Section {
+                            ForEach(viewModel.unpinnedFiles) { file in
+                                fileRow(file: file)
                             }
                         }
                     }
@@ -57,6 +59,21 @@ struct ContentView: View {
         }
         .onAppear() {
             viewModel.loadFiles()
+        }
+    }
+    
+    func fileRow(file: WatchViewModel.FileItem) -> some View {
+        NavigationLink(value: file) {
+            VStack(alignment: .leading) {
+                if let preview = file.preview {
+                    Text(preview)
+                        .lineLimit(2)
+                        .truncationMode(.tail)
+                    Divider()
+                }
+                Label(file.name, systemImage: FileTypes.systemImage(for: file.url))
+                    .font(.caption)
+            }
         }
     }
 }

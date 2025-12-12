@@ -37,9 +37,12 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             // Get all files info
             
             NoteManager.shared.loadFiles()
-            
             let files = NoteManager.shared.files
-            let fileList = files.map { url -> [String: String] in
+            
+            let pinnedFiles = files.filter { NoteManager.shared.isPinned($0) }
+            let unpinnedFiles = files.filter { !NoteManager.shared.isPinned($0) }
+            
+            let fileMapper: (URL) -> [String: String] = { url in
                 var info = ["name": url.lastPathComponent]
                 
                 // Add preview for text files
@@ -54,7 +57,11 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 }
                 return info
             }
-            replyHandler(["files": fileList])
+            
+            replyHandler([
+                "unpinnedFiles": unpinnedFiles.map(fileMapper),
+                "pinnedFiles": pinnedFiles.map(fileMapper)
+            ])
             
         } else if request == "getFileContent", let fileName = message["fileName"] as? String {
             // Get file content

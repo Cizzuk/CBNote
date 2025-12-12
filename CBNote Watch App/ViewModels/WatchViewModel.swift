@@ -10,7 +10,8 @@ import SwiftUI
 import WatchConnectivity
 
 class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
-    @Published var files: [FileItem] = []
+    @Published var unpinnedFiles: [FileItem] = []
+    @Published var pinnedFiles: [FileItem] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     
@@ -48,6 +49,10 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
         }
     }
     
+    func isNotesEmpty() -> Bool {
+        return unpinnedFiles.isEmpty && pinnedFiles.isEmpty
+    }
+    
     func loadFiles() {
         guard WCSession.default.activationState == .activated else { return }
         
@@ -58,17 +63,23 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
         
         // Send request to iPhone
         WCSession.default.sendMessage(["request": "getFileList"], replyHandler: { message in
-            if let filesData = message["files"] as? [[String: String]] {
-                // Parse file items
-                let items = filesData.compactMap { dict -> FileItem? in
+            
+            func parseFiles(from data: Any?) -> [FileItem] {
+                guard let filesData = data as? [[String: String]] else { return [] }
+                return filesData.compactMap { dict -> FileItem? in
                     guard let name = dict["name"] else { return nil }
                     let preview = dict["preview"]
                     return FileItem(name: name, preview: preview)
                 }
-                DispatchQueue.main.async {
-                    self.files = items
-                    self.isLoading = false
-                }
+            }
+            
+            let unpinnedFilesItems = parseFiles(from: message["unpinnedFiles"])
+            let pinnedFilesItems = parseFiles(from: message["pinnedFiles"])
+            
+            DispatchQueue.main.async {
+                self.unpinnedFiles = unpinnedFilesItems
+                self.pinnedFiles = pinnedFilesItems
+                self.isLoading = false
             }
         }, errorHandler: { error in
             DispatchQueue.main.async {
