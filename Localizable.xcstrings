@@ -43,7 +43,14 @@
       }
     },
     "Ascending" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昇順"
+          }
+        }
+      }
     },
     "Camera" : {
       "localizations" : {
@@ -145,7 +152,14 @@
       }
     },
     "Date" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日付"
+          }
+        }
+      }
     },
     "Delete" : {
       "localizations" : {
@@ -158,7 +172,14 @@
       }
     },
     "Descending" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降順"
+          }
+        }
+      }
     },
     "Developer" : {
       "localizations" : {
@@ -294,7 +315,14 @@
       "shouldTranslate" : false
     },
     "Name" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
+        }
+      }
     },
     "New Name" : {
       "localizations" : {
@@ -367,7 +395,14 @@
       }
     },
     "Option" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オプション"
+          }
+        }
+      }
     },
     "Paste" : {
       "localizations" : {
@@ -530,7 +565,14 @@
       }
     },
     "Sort By" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "並び順"
+          }
+        }
+      }
     },
     "Source" : {
       "localizations" : {
