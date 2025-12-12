@@ -88,9 +88,32 @@ struct MainView: View {
                             Label("Add New Note", systemImage: "plus")
                         }
                     }
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button(action: { viewModel.showSettings = true }) {
                             Label("Settings", systemImage: "gearshape")
+                        }
+                        Menu {
+                            // Reserved for iCloud/On-Device
+                            // Divider()
+                            
+                            Section {
+                                ForEach(SortKey.allCases, id: \.self) { key in
+                                    Button {
+                                        viewModel.toggleSort(key: key)
+                                    } label: {
+                                        HStack {
+                                            Text(key.localizedName)
+                                            if viewModel.currentSortKey == key {
+                                                Image(systemName: viewModel.currentSortDirection == .descending ? "chevron.down" : "chevron.up")
+                                            }
+                                        }
+                                    }
+                                }
+                            } header: {
+                                Text("Sort By")
+                            }
+                        } label: {
+                            Label("Option", systemImage: "ellipsis")
                         }
                     }
                     ToolbarItemGroup(placement: .keyboard) {

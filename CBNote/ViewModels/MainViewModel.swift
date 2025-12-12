@@ -21,6 +21,9 @@ class MainViewModel: ObservableObject {
     @Published var newName = ""
     @Published var isRenaming = false
     
+    @Published var currentSortKey: SortKey = SortKey(rawValue: UserDefaults.standard.string(forKey: "sortKey") ?? "") ?? .name
+    @Published var currentSortDirection: SortDirection = SortDirection(rawValue: UserDefaults.standard.string(forKey: "sortDirection") ?? "") ?? .descending
+    
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
     
@@ -40,10 +43,27 @@ class MainViewModel: ObservableObject {
         NoteManager.shared.$files
             .assign(to: \.files, on: self)
             .store(in: &cancellables)
+            
+        pinnedFiles = NoteManager.shared.sortFiles(pinnedFiles)
     }
 
     func loadFiles() {
         NoteManager.shared.loadFiles()
+    }
+    
+    func toggleSort(key: SortKey) {
+        if currentSortKey == key {
+            currentSortDirection = currentSortDirection == .descending ? .ascending : .descending
+        } else {
+            currentSortKey = key
+            currentSortDirection = .descending
+        }
+        
+        UserDefaults.standard.set(currentSortKey.rawValue, forKey: "sortKey")
+        UserDefaults.standard.set(currentSortDirection.rawValue, forKey: "sortDirection")
+        
+        loadFiles()
+        pinnedFiles = NoteManager.shared.sortFiles(pinnedFiles)
     }
 
     func addItem() {

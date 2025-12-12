@@ -8,6 +8,34 @@
 import Combine
 import Foundation
 
+enum SortKey: String, CaseIterable {
+    case name // Default
+    case date // Modification Date
+    
+    var localizedName: LocalizedStringResource {
+        switch self {
+        case .name:
+            return "Name"
+        case .date:
+            return "Date"
+        }
+    }
+}
+
+enum SortDirection: String {
+    case descending // Default
+    case ascending
+    
+    var localizedName: LocalizedStringResource {
+        switch self {
+        case .descending:
+            return "Descending"
+        case .ascending:
+            return "Ascending"
+        }
+    }
+}
+
 class NoteManager: ObservableObject {
     static let shared = NoteManager()
     
@@ -24,14 +52,28 @@ class NoteManager: ObservableObject {
     func loadFiles() {
         do {
             let documentsURL = getDocumentsDirectory()
-            let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
+            let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
             
-            files = fileURLs.sorted { url1, url2 in
-                url1.lastPathComponent > url2.lastPathComponent
-            }
+            files = sortFiles(fileURLs)
         } catch {
             print("Error loading files: \(error)")
             files = []
+        }
+    }
+    
+    func sortFiles(_ urls: [URL]) -> [URL] {
+        let key = SortKey(rawValue: UserDefaults.standard.string(forKey: "sortKey") ?? "") ?? .name
+        let direction = SortDirection(rawValue: UserDefaults.standard.string(forKey: "sortDirection") ?? "") ?? .ascending
+        
+        return urls.sorted { url1, url2 in
+            switch key {
+            case .name:
+                return direction == .descending ? url1.lastPathComponent.lowercased() > url2.lastPathComponent.lowercased() : url1.lastPathComponent.lowercased() < url2.lastPathComponent.lowercased()
+            case .date:
+                let date1 = (try? url1.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? Date.distantPast
+                let date2 = (try? url2.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? Date.distantPast
+                return direction == .descending ? date1 > date2 : date1 < date2
+            }
         }
     }
     
