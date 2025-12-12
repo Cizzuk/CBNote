@@ -11,6 +11,7 @@ nonisolated
 struct CaptureContext: Codable {
     enum LaunchAction: String, Codable, CaseIterable, Identifiable {
         case launchCamera = "Launch Camera"
+        case openApp = "Open App"
         case doNothing = "Do Nothing"
         
         var id: String { rawValue }
@@ -18,6 +19,8 @@ struct CaptureContext: Codable {
             switch self {
             case .launchCamera:
                 return "Launch Camera"
+            case .openApp:
+                return "Open App"
             case .doNothing:
                 return "Do Nothing"
             }

@@ -374,6 +374,16 @@
         }
       }
     },
+    "Open App" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開く"
+          }
+        }
+      }
+    },
     "Open App Only" : {
       "localizations" : {
         "ja" : {

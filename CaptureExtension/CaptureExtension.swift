@@ -9,6 +9,7 @@ import AppIntents
 import ExtensionKit
 import LockedCameraCapture
 import SwiftUI
+import WidgetKit
 
 @main
 struct CaptureExtension: LockedCameraCaptureExtension {
@@ -31,6 +32,14 @@ struct ExtensionContentView: View {
                     CameraView(isLockedMode: true) { data in
                         saveToSession(session, data: data)
                     }
+                case .openApp:
+                    Color.black
+                        .ignoresSafeArea()
+                        .task {
+                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension")
+                            try? await session.openApplication(for: activity)
+                            exit(0)
+                        }
                 case .doNothing:
                     Color.black
                         .ignoresSafeArea()
@@ -50,7 +59,7 @@ struct ExtensionContentView: View {
                     launchAction = .launchCamera
                 }
             } catch {
-                launchAction = .doNothing
+                launchAction = .openApp
             }
         }
     }
