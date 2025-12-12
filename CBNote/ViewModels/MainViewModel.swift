@@ -25,12 +25,14 @@ class MainViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Published var pinnedFiles: [URL] = {
-        let urls = UserDefaults.standard.array(forKey: "pinnedFiles") as? [String] ?? []
-        return urls.compactMap { URL(string: $0) }
+        let savedStrings = UserDefaults.standard.array(forKey: "pinnedFiles") as? [String] ?? []
+        let documentsURL = NoteManager.shared.getDocumentsDirectory()
+        return savedStrings.map { documentsURL.appendingPathComponent($0) }
     }() {
         didSet {
-            let pinnedFilesString = pinnedFiles.map { $0.absoluteString }
-            UserDefaults.standard.set(pinnedFilesString, forKey: "pinnedFiles")
+            let filenames = pinnedFiles.map { $0.lastPathComponent }
+            print("Saving pinned files: \(filenames)")
+            UserDefaults.standard.set(filenames, forKey: "pinnedFiles")
         }
     }
 
@@ -155,11 +157,15 @@ class MainViewModel: ObservableObject {
     
     func deleteFile(at url: URL) {
         NoteManager.shared.deleteFile(at: url)
+        pinnedFiles.removeAll { $0 == url }
     }
     
     // Handler for swipe/context menu delete action
     func deleteFile(offsets: IndexSet) {
         offsets.map { files[$0] }.forEach(deleteFile)
+        pinnedFiles.removeAll { url in
+            offsets.contains(files.firstIndex(of: url) ?? -1)
+        }
     }
     
     func renameFile() {
