@@ -51,19 +51,21 @@ struct MainView: View {
                     
                     Section {
                         ForEach(viewModel.files, id: \.self) { url in
-                            fileRow(url: url, onPreview: { previewURL = url })
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        viewModel.deleteFile(at: url)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
+                            if !viewModel.isFilePinned(url) {
+                                fileRow(url: url, onPreview: { previewURL = url })
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            viewModel.deleteFile(at: url)
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                        Button {
+                                            viewModel.startRenaming(url: url)
+                                        } label: {
+                                            Label("Rename", systemImage: "pencil")
+                                        }
                                     }
-                                    Button {
-                                        viewModel.startRenaming(url: url)
-                                    } label: {
-                                        Label("Rename", systemImage: "pencil")
-                                    }
-                                }
+                            }
                         }
                         .onDelete(perform: viewModel.deleteFile)
                     }
