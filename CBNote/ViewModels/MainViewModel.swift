@@ -174,7 +174,8 @@ class MainViewModel: ObservableObject {
     }
     
     func isFilePinned(_ url: URL) -> Bool {
-        pinnedFiles.contains(url)
+        let filename = url.lastPathComponent
+        return pinnedFiles.contains(where: { $0.lastPathComponent == filename })
     }
     
     func pinUnpinFile(at url: URL) {
