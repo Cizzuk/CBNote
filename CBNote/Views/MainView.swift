@@ -49,18 +49,18 @@ struct MainView: View {
                                 }
                             }
                         } header: {
-                            HStack {
-                                Label("Pinned Notes", systemImage: "pin.fill")
-                                Button {
-                                    withAnimation {
-                                        isExpandPinnedSection.toggle()
-                                    }
-                                } label: {
-                                    Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
-                                        .foregroundColor(.secondary)
+                            Button {
+                                withAnimation {
+                                    isExpandPinnedSection.toggle()
                                 }
-                                .accessibilityLabel(isExpandPinnedSection ? "Collapse" : "Expand")
+                            } label: {
+                                HStack {
+                                    Label("Pinned Notes", systemImage: "pin.fill")
+                                    Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
+                                }
                             }
+                            .foregroundColor(.secondary)
+                            .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
                         }
                     }
                     
