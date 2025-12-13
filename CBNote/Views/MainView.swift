@@ -11,6 +11,7 @@ import QuickLook
 struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
+    @State private var isExpandPinnedSection = true
 
     var body: some View {
         ZStack {
@@ -29,23 +30,36 @@ struct MainView: View {
                     
                     if !viewModel.pinnedFiles.isEmpty {
                         Section {
-                            ForEach(viewModel.pinnedFiles, id: \.self) { url in
-                                fileRow(url: url, onPreview: { previewURL = url })
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button {
-                                            viewModel.pinUnpinFile(at: url)
-                                        } label: {
-                                            if viewModel.isFilePinned(url) {
-                                                Label("Unpin", systemImage: "pin.slash")
-                                            } else {
-                                                Label("Pin", systemImage: "pin")
+                            if isExpandPinnedSection {
+                                ForEach(viewModel.pinnedFiles, id: \.self) { url in
+                                    fileRow(url: url, onPreview: { previewURL = url })
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button {
+                                                viewModel.pinUnpinFile(at: url)
+                                            } label: {
+                                                if viewModel.isFilePinned(url) {
+                                                    Label("Unpin", systemImage: "pin.slash")
+                                                } else {
+                                                    Label("Pin", systemImage: "pin")
+                                                }
                                             }
+                                            .tint(.yellow)
                                         }
-                                        .tint(.yellow)
-                                    }
+                                }
                             }
                         } header: {
-                            Label("Pinned Notes", systemImage: "pin.fill")
+                            HStack {
+                                Label("Pinned Notes", systemImage: "pin.fill")
+                                Button {
+                                    withAnimation {
+                                        isExpandPinnedSection.toggle()
+                                    }
+                                } label: {
+                                    Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
+                                        .foregroundColor(.secondary)
+                                }
+                                .accessibilityLabel(isExpandPinnedSection ? "Collapse" : "Expand")
+                            }
                         }
                     }
                     
