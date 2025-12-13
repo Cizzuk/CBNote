@@ -12,6 +12,7 @@ struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
+    @State private var refreshID = UUID() // Update this to force refresh file views
 
     var body: some View {
         ZStack {
@@ -142,6 +143,7 @@ struct MainView: View {
                 .refreshable {
                     viewModel.checkLockedCameraCaptures()
                     viewModel.loadFiles()
+                    refreshID = UUID()
                 }
                 .onAppear {
                     viewModel.checkLockedCameraCaptures()
@@ -185,6 +187,7 @@ struct MainView: View {
     
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
         FileRow(url: url, onPreview: onPreview)
+            .id("\(url.absoluteString)-\(refreshID)")
             .onDrag() {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
             }
