@@ -50,4 +50,12 @@ class TextEditViewModel: ObservableObject {
             print("Error saving text: \(error)")
         }
     }
+    
+    func textFont() -> Font {
+        if FileTypes.shouldMonospaceFont(url) {
+            return .system(.body, design: .monospaced)
+        } else {
+            return .body
+        }
+    }
 }

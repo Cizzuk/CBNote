@@ -24,6 +24,7 @@ struct TextEditView: View {
                     .onChange(of: viewModel.text) {
                         viewModel.saveText()
                     }
+                    .font(viewModel.textFont())
             } else {
                 AnyFileItem(url: viewModel.url)
             }

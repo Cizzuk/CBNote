@@ -24,6 +24,26 @@ struct FileTypes {
         return previewableImage.contains(url.pathExtension.lowercased())
     }
     
+    static func shouldMonospaceFont(_ url: URL) -> Bool {
+        guard let type = UTType(filenameExtension: url.pathExtension) else {
+            return false
+        }
+        
+        // Check UTType
+        let trueTypes: [UTType] = [.sourceCode, .script, .xml, .json, .css, .html, .swiftSource]
+        if trueTypes.contains(where: { type.conforms(to: $0) }) {
+            return true
+        }
+        
+        // Check Extensions
+        let trueExts: [String] = ["md", "markdown", "csv", "log", "tex", "yml", "yaml", "toml"]
+        if trueExts.contains(url.pathExtension.lowercased()) {
+            return true
+        }
+        
+        return false
+    }
+    
     static func name(for url: URL) -> String {
         if url.hasDirectoryPath {
             return "Folder"
@@ -130,8 +150,8 @@ struct FileTypes {
             return "arrowshape.turn.up.left"
         } else if type.conforms(to: .symbolicLink) {
             return "arrowshape.turn.up.left"
-        } else {
-            return "doc"
         }
+        
+        return "doc"
     }
 }
