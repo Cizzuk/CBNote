@@ -130,7 +130,6 @@
 		BEF0D9AB2EDFDB900059DFA3 /* Exceptions for "CBNote" folder in "CaptureExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/AppStateSupport.swift,
 				Models/Camera.swift,
 				Models/CaptureContext.swift,
 				Models/CaptureIntent.swift,
@@ -143,6 +142,7 @@
 		BEFA7AE92EE55FCB0023643B /* Exceptions for "CBNote" folder in "CBNote Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/AppStateSupport.swift,
 				Models/FileTypes.swift,
 			);
 			target = BEAF98682EE546A100488245 /* CBNote Watch App */;
