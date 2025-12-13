@@ -26,7 +26,8 @@ enum DocumentDir: String, CaseIterable {
         case .onDevice:
             return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         case .iCloud:
-            if let url = FileManager.default.url(forUbiquityContainerIdentifier: nil) {
+            if self.isAvailable,
+               let url = FileManager.default.url(forUbiquityContainerIdentifier: nil) {
                 return url.appendingPathComponent("Documents")
             } else {
                 print("iCloud container not available")
@@ -34,14 +35,35 @@ enum DocumentDir: String, CaseIterable {
             }
         }
     }
+    
+    var isAvailable: Bool {
+        switch self {
+        case .onDevice:
+            return true
+        case .iCloud:
+            return FileManager.default.url(forUbiquityContainerIdentifier: nil) != nil
+        }
+    }
+    
+    static var availableDirs: [DocumentDir] {
+        return DocumentDir.allCases.filter { $0.isAvailable }
+    }
+    
+    static var defaultDir: DocumentDir {
+        if DocumentDir.iCloud.isAvailable {
+            return .iCloud
+        } else {
+            return .onDevice
+        }
+    }
 
     // For UserDefaults
     var pinnedKey: String {
         switch self {
         case .onDevice:
-            return "pinnedFilesOnDevice"
+            return "pinnedFiles_OnDevice"
         case .iCloud:
-            return "pinnedFilesiCloud"
+            return "pinnedFiles_iCloud"
         }
     }
 }
@@ -76,34 +98,35 @@ enum SortDirection: String {
 }
 
 class NoteManager: ObservableObject {
-    static let shared = NoteManager()
     
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
     
-    @Published var documentDir: DocumentDir = DocumentDir(rawValue: UserDefaults.standard.string(forKey: "documentDir") ?? "") ?? .onDevice {
+    @Published var documentDir: DocumentDir {
         didSet {
-            UserDefaults.standard.set(documentDir.rawValue, forKey: "documentDir")
             loadPinnedFiles()
             loadFiles()
         }
     }
     
-    @Published var sortKey: SortKey = SortKey(rawValue: UserDefaults.standard.string(forKey: "sortKey") ?? "") ?? .name {
+    @Published var sortKey: SortKey {
         didSet {
-            UserDefaults.standard.set(sortKey.rawValue, forKey: "sortKey")
             loadFiles()
         }
     }
     
-    @Published var sortDirection: SortDirection = SortDirection(rawValue: UserDefaults.standard.string(forKey: "sortDirection") ?? "") ?? .descending {
+    @Published var sortDirection: SortDirection {
         didSet {
-            UserDefaults.standard.set(sortDirection.rawValue, forKey: "sortDirection")
             loadFiles()
         }
     }
     
-    private init() {
+    init() {
+        // Load UserDefaults
+        self.documentDir = DocumentDir(rawValue: UserDefaults.standard.string(forKey: "documentDir") ?? "") ?? .defaultDir
+        self.sortKey = SortKey(rawValue: UserDefaults.standard.string(forKey: "sortKey") ?? "") ?? .name
+        self.sortDirection = SortDirection(rawValue: UserDefaults.standard.string(forKey: "sortDirection") ?? "") ?? .descending
+        
         loadPinnedFiles()
         loadFiles()
     }
@@ -145,19 +168,13 @@ class NoteManager: ObservableObject {
         }
     }
     
-    func toggleSort(key: SortKey) {
-        if sortKey == key {
-            sortDirection = sortDirection == .descending ? .ascending : .descending
-        } else {
-            sortKey = key
-            sortDirection = .descending
-        }
+    func setSort(key: SortKey, direction: SortDirection) {
+        sortKey = key
+        sortDirection = direction
     }
     
-    func createFileURL(fileExtension: String, suffix: String = "") -> URL {
-        guard let documentsURL = documentDir.directory else {
-            fatalError("Documents directory not available")
-        }
+    func createFileURL(fileExtension: String, suffix: String = "") -> URL? {
+        guard let documentsURL = documentDir.directory else { return nil }
         
         let dateFormatter = DateFormatter()
         let dateFormat = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss"
@@ -180,7 +197,7 @@ class NoteManager: ObservableObject {
     }
     
     func createNewNote() {
-        let fileURL = createFileURL(fileExtension: "txt")
+        guard let fileURL = createFileURL(fileExtension: "txt") else { return }
         do {
             try "".write(to: fileURL, atomically: true, encoding: .utf8)
             loadFiles()
@@ -190,7 +207,7 @@ class NoteManager: ObservableObject {
     }
     
     func saveCapturedImage(data: Data) {
-        let fileURL = createFileURL(fileExtension: "jpeg")
+        guard let fileURL = createFileURL(fileExtension: "jpeg") else { return }
         do {
             try data.write(to: fileURL)
             loadFiles()

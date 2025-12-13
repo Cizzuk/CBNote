@@ -33,14 +33,16 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
         guard let request = message["request"] as? String else { return }
         
+        let noteManager = NoteManager()
+        
         if request == "getFileList" {
             // Get all files info
             
-            NoteManager.shared.loadFiles()
-            let files = NoteManager.shared.files
+            noteManager.loadFiles()
+            let files = noteManager.files
             
-            let pinnedFiles = files.filter { NoteManager.shared.isPinned($0) }
-            let unpinnedFiles = files.filter { !NoteManager.shared.isPinned($0) }
+            let pinnedFiles = files.filter { noteManager.isPinned($0) }
+            let unpinnedFiles = files.filter { !noteManager.isPinned($0) }
             
             let fileMapper: (URL) -> [String: String] = { url in
                 var info = ["name": url.lastPathComponent]
@@ -66,7 +68,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         } else if request == "getFileContent", let fileName = message["fileName"] as? String {
             // Get file content
             
-            guard let documentsURL = NoteManager.shared.documentDir.directory else {
+            guard let documentsURL = noteManager.documentDir.directory else {
                 replyHandler(["error": "Could not access documents directory"])
                 return
             }

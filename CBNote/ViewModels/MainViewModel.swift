@@ -26,45 +26,62 @@ class MainViewModel: ObservableObject {
     @Published var sortKey: SortKey = .name
     @Published var sortDirection: SortDirection = .descending
     
+    let noteManager = NoteManager()
+    
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        NoteManager.shared.$files
+        noteManager.$files
             .assign(to: \.files, on: self)
             .store(in: &cancellables)
             
-        NoteManager.shared.$pinnedFiles
+        noteManager.$pinnedFiles
             .assign(to: \.pinnedFiles, on: self)
             .store(in: &cancellables)
         
-        NoteManager.shared.$documentDir
-            .assign(to: \.documentDir, on: self)
+        noteManager.$documentDir
+            .sink { [weak self] dir in
+                self?.documentDir = dir
+                UserDefaults.standard.set(dir.rawValue, forKey: "documentDir")
+            }
             .store(in: &cancellables)
             
-        NoteManager.shared.$sortKey
-            .assign(to: \.sortKey, on: self)
+        noteManager.$sortKey
+            .sink { [weak self] key in
+                self?.sortKey = key
+                UserDefaults.standard.set(key.rawValue, forKey: "sortKey")
+            }
             .store(in: &cancellables)
             
-        NoteManager.shared.$sortDirection
-            .assign(to: \.sortDirection, on: self)
+        noteManager.$sortDirection
+            .sink { [weak self] direction in
+                self?.sortDirection = direction
+                UserDefaults.standard.set(direction.rawValue, forKey: "sortDirection")
+            }
             .store(in: &cancellables)
     }
 
     func loadFiles() {
-        NoteManager.shared.loadFiles()
+        noteManager.loadFiles()
     }
     
     func setDocumentDir(type: DocumentDir) {
-        NoteManager.shared.setDocumentDir(type: type)
+        noteManager.setDocumentDir(type: type)
     }
     
     func toggleSort(key: SortKey) {
-        NoteManager.shared.toggleSort(key: key)
+        var newDirection = sortDirection
+        if sortKey == key {
+            newDirection = sortDirection == .descending ? .ascending : .descending
+        } else {
+            newDirection = .descending
+        }
+        noteManager.setSort(key: key, direction: newDirection)
     }
 
     func createNewNote() {
-        NoteManager.shared.createNewNote()
+        noteManager.createNewNote()
     }
     
     func addAndPaste(suppressError: Bool = false) async {
@@ -101,7 +118,7 @@ class MainViewModel: ObservableObject {
             }
             
             if let text = textContent {
-                let destURL = NoteManager.shared.createFileURL(fileExtension: "txt")
+                guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
                 try? text.write(to: destURL, atomically: true, encoding: .utf8)
                 handled = true
                 continue
@@ -112,7 +129,7 @@ class MainViewModel: ObservableObject {
                let data = getData(for: UTType.fileURL.identifier),
                let url = URL(dataRepresentation: data, relativeTo: nil) {
                 
-                let destURL = NoteManager.shared.createFileURL(fileExtension: url.pathExtension)
+                guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
                 if let fileData = try? Data(contentsOf: url) {
                     try? fileData.write(to: destURL)
                     handled = true
@@ -126,7 +143,7 @@ class MainViewModel: ObservableObject {
                       let data = getData(for: typeIdentifier) else { continue }
                 
                 let ext = type.preferredFilenameExtension ?? ""
-                let destURL = NoteManager.shared.createFileURL(fileExtension: ext)
+                guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
                 try? data.write(to: destURL)
                 handled = true
                 break
@@ -166,31 +183,31 @@ class MainViewModel: ObservableObject {
     }
     
     func deleteFile(at url: URL) {
-        NoteManager.shared.deleteFile(at: url)
+        noteManager.deleteFile(at: url)
     }
     
     // Handler for swipe/context menu delete action
     func deleteFile(offsets: IndexSet) {
         offsets.map { files[$0] }.forEach {
-            NoteManager.shared.deleteFile(at: $0)
+            noteManager.deleteFile(at: $0)
         }
     }
     
     func renameFile() {
         guard let url = renamingURL else { return }
-        NoteManager.shared.renameFile(at: url, newName: newName)
+        noteManager.renameFile(at: url, newName: newName)
     }
     
     func isFilePinned(_ url: URL) -> Bool {
-        NoteManager.shared.isPinned(url)
+        noteManager.isPinned(url)
     }
     
     func pinUnpinFile(at url: URL) {
-        NoteManager.shared.togglePin(for: url)
+        noteManager.togglePin(for: url)
     }
     
     func isValidFileName(_ name: String) -> Bool {
-        NoteManager.shared.isValidFileName(name)
+        noteManager.isValidFileName(name)
     }
     
     func startRenaming(url: URL) {
@@ -201,7 +218,7 @@ class MainViewModel: ObservableObject {
     
     // Handler for camera capture
     func saveCapturedImage(data: Data) {
-        NoteManager.shared.saveCapturedImage(data: data)
+        noteManager.saveCapturedImage(data: data)
     }
     
     // Handler for locked camera captures

@@ -110,7 +110,7 @@ struct MainView: View {
                         Menu {
                             // iCloud/On-Device
                             Section {
-                                ForEach(DocumentDir.allCases, id: \.self) { type in
+                                ForEach(DocumentDir.availableDirs, id: \.self) { type in
                                     Button {
                                         viewModel.setDocumentDir(type: type)
                                     } label: {
