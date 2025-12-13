@@ -46,6 +46,10 @@ class MainViewModel: ObservableObject {
                 UserDefaults.standard.set(dir.rawValue, forKey: "documentDir")
             }
             .store(in: &cancellables)
+        
+        if !documentDir.isAvailable {
+            noteManager.setDocumentDir(type: .defaultDir)
+        }
             
         noteManager.$sortKey
             .sink { [weak self] key in
