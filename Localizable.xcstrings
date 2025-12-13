@@ -404,7 +404,7 @@
         }
       }
     },
-    "On Device" : {
+    "On This Device" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {

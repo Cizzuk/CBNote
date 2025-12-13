@@ -14,7 +14,7 @@ enum DocumentDir: String, CaseIterable {
     var localizedName: LocalizedStringResource {
         switch self {
         case .onDevice:
-            return "On Device"
+            return "On This Device"
         case .iCloud:
             return "iCloud"
         }
