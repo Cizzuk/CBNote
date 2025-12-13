@@ -12,7 +12,7 @@ struct DummyCameraView: View {
     @StateObject private var viewModel = CameraViewModel()
     
     var body: some View {
-        CameraPreview(session: viewModel.session) { _ in }
+        DummyCameraPreview(session: viewModel.session)
             .opacity(0)
             .frame(width: 0, height: 0)
             .onAppear {
@@ -22,5 +22,15 @@ struct DummyCameraView: View {
                 viewModel.stopSession()
             }
             .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }
+    }
+    
+    struct DummyCameraPreview: UIViewRepresentable {
+        let session: AVCaptureSession
+        
+        func makeUIView(context: Context) -> UIView {
+            return UIView(frame: .zero)
+        }
+        
+        func updateUIView(_ uiView: UIView, context: Context) { }
     }
 }
