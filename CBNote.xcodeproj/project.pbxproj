@@ -130,6 +130,7 @@
 		BEF0D9AB2EDFDB900059DFA3 /* Exceptions for "CBNote" folder in "CaptureExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/AppStateSupport.swift,
 				Models/Camera.swift,
 				Models/CaptureContext.swift,
 				Models/CaptureIntent.swift,
