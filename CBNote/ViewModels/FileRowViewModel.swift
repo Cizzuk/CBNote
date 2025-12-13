@@ -11,6 +11,7 @@ import SwiftUI
 class FileRowViewModel: ObservableObject {
     let url: URL
     @Published var text: String = ""
+    @Published var isLoading: Bool = true
     
     init(url: URL) {
         self.url = url
@@ -18,9 +19,15 @@ class FileRowViewModel: ObservableObject {
     
     func loadContent() {
         if FileTypes.isEditableText(url) {
-            if let content = try? String(contentsOf: url, encoding: .utf8) {
-                text = content
+            DispatchQueue.global(qos: .userInitiated).async {
+                let content = (try? String(contentsOf: self.url, encoding: .utf8)) ?? ""
+                DispatchQueue.main.async {
+                    self.text = content
+                    self.isLoading = false
+                }
             }
+        } else {
+            isLoading = false
         }
     }
     

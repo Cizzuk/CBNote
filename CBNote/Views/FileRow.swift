@@ -10,21 +10,16 @@ import SwiftUI
 struct FileRow: View {
     let url: URL
     let onPreview: () -> Void
-    @StateObject private var viewModel: FileRowViewModel
     
     init(url: URL, onPreview: @escaping () -> Void = {}) {
         self.url = url
         self.onPreview = onPreview
-        _viewModel = StateObject(wrappedValue: FileRowViewModel(url: url))
     }
     
     var body: some View {
         VStack(alignment: .leading) {
             if FileTypes.isEditableText(url) {
-                TextField("New Note", text: $viewModel.text, axis: .vertical)
-                    .onChange(of: viewModel.text) {
-                        viewModel.saveText()
-                    }
+                TextEditView(url: url)
             } else if FileTypes.isPreviewableImage(url) {
                 Button(action: onPreview) {
                     ImageView(url: url)
@@ -32,7 +27,7 @@ struct FileRow: View {
                 .accessibilityLabel(FileTypes.name(for: url))
             } else {
                 Button(action: onPreview) {
-                    AnyFileItem(text: FileTypes.name(for: url), systemImage: FileTypes.systemImage(for: url))
+                    AnyFileItem(url: url)
                 }
             }
             
@@ -45,24 +40,20 @@ struct FileRow: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .onAppear {
-            viewModel.loadContent()
-        }
     }
+}
+
+struct AnyFileItem: View {
+    var url: URL
     
-    struct AnyFileItem: View {
-        var text: String
-        var systemImage: String
-        
-        var body: some View {
-            HStack {
-                Image(systemName: systemImage)
-                Text(text)
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .center)
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(16)
+    var body: some View {
+        HStack {
+            Image(systemName: FileTypes.systemImage(for: url))
+            Text(FileTypes.name(for: url))
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .center)
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(16)
     }
 }

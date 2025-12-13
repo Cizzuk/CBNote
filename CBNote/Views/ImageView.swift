@@ -15,27 +15,31 @@ struct ImageView: View {
     }
     
     var body: some View {
-        if let uiImage = viewModel.uiImage {
-            // Calculate max height from screen size
-            let maxHeight: CGFloat = {
-                if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    return window.screen.bounds.height * 0.8
-                } else {
-                    return .infinity
-                }
-            }()
-            
-            Image(uiImage: uiImage)
-                .resizable()
-                .interpolation(shouldPixelate(uiImage) ? .none : .medium)
-                .scaledToFit()
-                .frame(maxWidth: .infinity, maxHeight: maxHeight, alignment: .center)
-                .cornerRadius(16)
-        } else {
-            ProgressView()
-                .frame(maxWidth: .infinity)
-                .onAppear(perform: viewModel.loadImage)
+        Group {
+            if viewModel.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+            } else if let uiImage = viewModel.uiImage {
+                // Calculate max height from screen size
+                let maxHeight: CGFloat = {
+                    if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        return window.screen.bounds.height * 0.8
+                    } else {
+                        return .infinity
+                    }
+                }()
+                
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .interpolation(shouldPixelate(uiImage) ? .none : .medium)
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: maxHeight, alignment: .center)
+                    .cornerRadius(16)
+            } else {
+                AnyFileItem(url: viewModel.url)
+            }
         }
+        .onAppear(perform: viewModel.loadImage)
     }
     
     private func shouldPixelate(_ image: UIImage) -> Bool {
