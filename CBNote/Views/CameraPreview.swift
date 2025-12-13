@@ -14,17 +14,21 @@ struct CameraPreview: UIViewControllerRepresentable {
     
     func makeUIViewController(context: Context) -> UIViewController {
         let controller = VideoPreviewController()
-        let view = VideoPreviewView()
+        
         DispatchQueue.global(qos: .userInteractive).async {
+            let view = VideoPreviewView()
             view.videoPreviewLayer.videoGravity = .resizeAspectFill
             view.videoPreviewLayer.session = session
+            
+            // Add tap gesture recognizer
+            let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
+            view.addGestureRecognizer(tapGesture)
+            
+            DispatchQueue.main.async {
+                controller.view = view
+            }
         }
         
-        // Add tap gesture recognizer
-        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
-        view.addGestureRecognizer(tapGesture)
-        
-        controller.view = view
         return controller
     }
     
