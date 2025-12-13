@@ -91,6 +91,12 @@ struct MainView: View {
                         Button(action: { viewModel.showCamera = true }) {
                             Label("Camera", systemImage: viewModel.showCamera ? "camera.fill" : "camera")
                         }
+                        .popover(isPresented: $viewModel.showCamera) {
+                            CameraView { data in
+                                viewModel.saveCapturedImage(data: data)
+                            }
+                            .presentationCompactAdaptation(.fullScreenCover)
+                        }
                         Button(action: { Task { await viewModel.addAndPaste() } }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
@@ -106,6 +112,10 @@ struct MainView: View {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button(action: { viewModel.showSettings = true }) {
                             Label("Settings", systemImage: "gearshape")
+                        }
+                        .popover(isPresented: $viewModel.showSettings) {
+                            SettingsView()
+                                .presentationCompactAdaptation(.sheet)
                         }
                         Menu {
                             // iCloud/On-Device
@@ -178,14 +188,6 @@ struct MainView: View {
                     if let option = action.object as? OpenAppOption {
                         viewModel.openApp(with: option)
                     }
-                }
-                .fullScreenCover(isPresented: $viewModel.showCamera) {
-                    CameraView { data in
-                        viewModel.saveCapturedImage(data: data)
-                    }
-                }
-                .sheet(isPresented: $viewModel.showSettings) {
-                    SettingsView()
                 }
                 .alert("Rename", isPresented: $viewModel.isRenaming) {
                     TextField("New Name", text: $viewModel.newName)
