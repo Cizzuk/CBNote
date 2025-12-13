@@ -66,7 +66,10 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         } else if request == "getFileContent", let fileName = message["fileName"] as? String {
             // Get file content
             
-            let documentsURL = NoteManager.shared.getDocumentsDirectory()
+            guard let documentsURL = NoteManager.shared.documentDir.directory else {
+                replyHandler(["error": "Could not access documents directory"])
+                return
+            }
             let fileURL = documentsURL.appendingPathComponent(fileName)
             
             if FileTypes.isPreviewableImage(fileURL) {

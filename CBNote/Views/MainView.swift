@@ -108,9 +108,25 @@ struct MainView: View {
                             Label("Settings", systemImage: "gearshape")
                         }
                         Menu {
-                            // Reserved for iCloud/On-Device
-                            // Divider()
+                            // iCloud/On-Device
+                            Section {
+                                ForEach(DocumentDir.allCases, id: \.self) { type in
+                                    Button {
+                                        viewModel.setDocumentDir(type: type)
+                                    } label: {
+                                        HStack {
+                                            if viewModel.documentDir == type {
+                                                Image(systemName: "checkmark")
+                                            }
+                                            Text(type.localizedName)
+                                        }
+                                    }
+                                }
+                            }
                             
+                            Divider()
+                            
+                            // Sort
                             Section {
                                 ForEach(SortKey.allCases, id: \.self) { key in
                                     Button {

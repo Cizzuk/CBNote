@@ -22,6 +22,7 @@ class MainViewModel: ObservableObject {
     @Published var newName = ""
     @Published var isRenaming = false
     
+    @Published var documentDir: DocumentDir = .onDevice
     @Published var sortKey: SortKey = .name
     @Published var sortDirection: SortDirection = .descending
     
@@ -36,6 +37,10 @@ class MainViewModel: ObservableObject {
         NoteManager.shared.$pinnedFiles
             .assign(to: \.pinnedFiles, on: self)
             .store(in: &cancellables)
+        
+        NoteManager.shared.$documentDir
+            .assign(to: \.documentDir, on: self)
+            .store(in: &cancellables)
             
         NoteManager.shared.$sortKey
             .assign(to: \.sortKey, on: self)
@@ -48,6 +53,10 @@ class MainViewModel: ObservableObject {
 
     func loadFiles() {
         NoteManager.shared.loadFiles()
+    }
+    
+    func setDocumentDir(type: DocumentDir) {
+        NoteManager.shared.setDocumentDir(type: type)
     }
     
     func toggleSort(key: SortKey) {

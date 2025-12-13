@@ -291,6 +291,9 @@
         }
       }
     },
+    "iCloud" : {
+
+    },
     "Launch Camera" : {
       "localizations" : {
         "ja" : {
@@ -393,6 +396,9 @@
           }
         }
       }
+    },
+    "On Device" : {
+
     },
     "Open App" : {
       "localizations" : {

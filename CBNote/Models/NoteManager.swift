@@ -8,6 +8,45 @@
 import Combine
 import Foundation
 
+enum DocumentDir: String, CaseIterable {
+    case onDevice
+    case iCloud
+    
+    var localizedName: LocalizedStringResource {
+        switch self {
+        case .onDevice:
+            return "On Device"
+        case .iCloud:
+            return "iCloud"
+        }
+    }
+    
+    var directory: URL? {
+        switch self {
+        case .onDevice:
+            return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        case .iCloud:
+            if let url = FileManager.default.url(forUbiquityContainerIdentifier: nil) {
+                return url.appendingPathComponent("Documents")
+            } else {
+                print("iCloud container not available")
+                return nil
+            }
+        }
+    }
+
+    // For UserDefaults
+    var pinnedKey: String {
+        switch self {
+        case .onDevice:
+            return "pinnedFilesOnDevice"
+        case .iCloud:
+            return "pinnedFilesiCloud"
+        }
+    }
+}
+
+
 enum SortKey: String, CaseIterable {
     case name // Default
     case date // Modification Date
@@ -42,6 +81,14 @@ class NoteManager: ObservableObject {
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
     
+    @Published var documentDir: DocumentDir = DocumentDir(rawValue: UserDefaults.standard.string(forKey: "documentDir") ?? "") ?? .onDevice {
+        didSet {
+            UserDefaults.standard.set(documentDir.rawValue, forKey: "documentDir")
+            loadPinnedFiles()
+            loadFiles()
+        }
+    }
+    
     @Published var sortKey: SortKey = SortKey(rawValue: UserDefaults.standard.string(forKey: "sortKey") ?? "") ?? .name {
         didSet {
             UserDefaults.standard.set(sortKey.rawValue, forKey: "sortKey")
@@ -61,13 +108,13 @@ class NoteManager: ObservableObject {
         loadFiles()
     }
     
-    func getDocumentsDirectory() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
-    
     func loadFiles() {
         do {
-            let documentsURL = getDocumentsDirectory()
+            guard let documentsURL = documentDir.directory else {
+                files = []
+                return
+            }
+            
             let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
             
             // Sort
@@ -77,6 +124,10 @@ class NoteManager: ObservableObject {
             print("Error loading files: \(error)")
             files = []
         }
+    }
+    
+    func setDocumentDir(type: DocumentDir) {
+        documentDir = type
     }
     
     func sortFiles(_ urls: [URL]) -> [URL] {
@@ -104,12 +155,14 @@ class NoteManager: ObservableObject {
     }
     
     func createFileURL(fileExtension: String, suffix: String = "") -> URL {
+        guard let documentsURL = documentDir.directory else {
+            fatalError("Documents directory not available")
+        }
+        
         let dateFormatter = DateFormatter()
         let dateFormat = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss"
         dateFormatter.dateFormat = dateFormat
         let baseName = dateFormatter.string(from: Date()) + suffix
-        
-        let documentsURL = getDocumentsDirectory()
         let extensionPart = fileExtension.isEmpty ? "" : ".\(fileExtension)"
         
         // Ensure unique filename
@@ -188,16 +241,19 @@ class NoteManager: ObservableObject {
     // MARK: - Pinned Files
     
     private func loadPinnedFiles() {
-        let savedStrings = UserDefaults.standard.array(forKey: "pinnedFiles") as? [String] ?? []
-        let documentsURL = getDocumentsDirectory()
+        guard let documentsURL = documentDir.directory else {
+            pinnedFiles = []
+            return
+        }
+        
+        let savedStrings = UserDefaults.standard.array(forKey: documentDir.pinnedKey) as? [String] ?? []
         let loadedFiles = savedStrings.map { documentsURL.appendingPathComponent($0) }
         pinnedFiles = sortFiles(loadedFiles)
     }
     
     private func savePinnedFiles() {
         let filenames = pinnedFiles.map { $0.lastPathComponent }
-        print("Saving pinned files: \(filenames)")
-        UserDefaults.standard.set(filenames, forKey: "pinnedFiles")
+        UserDefaults.standard.set(filenames, forKey: documentDir.pinnedKey)
     }
     
     func isPinned(_ url: URL) -> Bool {
