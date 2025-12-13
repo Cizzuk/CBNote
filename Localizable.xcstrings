@@ -292,7 +292,14 @@
       }
     },
     "iCloud" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        }
+      }
     },
     "Launch Camera" : {
       "localizations" : {
@@ -398,7 +405,14 @@
       }
     },
     "On Device" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイス内"
+          }
+        }
+      }
     },
     "Open App" : {
       "localizations" : {
