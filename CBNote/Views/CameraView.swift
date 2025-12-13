@@ -29,6 +29,7 @@ struct CameraView: View {
                     .multilineTextAlignment(.center)
                 #else
                 if viewModel.cameraPermission == .authorized {
+                    ProgressView()
                     CameraPreview(session: viewModel.session) { point in
                         viewModel.focus(at: point)
                     }
