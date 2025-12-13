@@ -179,7 +179,7 @@ struct MainView: View {
                         viewModel.openApp(with: option)
                     }
                 }
-                .sheet(isPresented: $viewModel.showCamera) {
+                .fullScreenCover(isPresented: $viewModel.showCamera) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
                     }
