@@ -13,6 +13,9 @@ import UniformTypeIdentifiers
 class MainViewModel: ObservableObject {
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
+    
+    @Published var searchQuery = ""
+    
     @Published var showPasteError = false
     @Published var showDummyCamera = false
     @Published var showCamera_sheet = false
@@ -34,12 +37,18 @@ class MainViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        noteManager.$files
-            .assign(to: \.files, on: self)
+        Publishers.CombineLatest(noteManager.$files, $searchQuery)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] files, query in
+                self?.files = self?.filterFiles(files, query: query) ?? []
+            }
             .store(in: &cancellables)
             
-        noteManager.$pinnedFiles
-            .assign(to: \.pinnedFiles, on: self)
+        Publishers.CombineLatest(noteManager.$pinnedFiles, $searchQuery)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] files, query in
+                self?.pinnedFiles = self?.filterFiles(files, query: query) ?? []
+            }
             .store(in: &cancellables)
         
         noteManager.$documentDir
@@ -66,6 +75,27 @@ class MainViewModel: ObservableObject {
                 UserDefaults.standard.set(direction.rawValue, forKey: "sortDirection")
             }
             .store(in: &cancellables)
+    }
+
+    private func filterFiles(_ files: [URL], query: String) -> [URL] {
+        guard !query.isEmpty else { return files }
+        
+        return files.filter { url in
+            // File name search
+            if url.lastPathComponent.localizedCaseInsensitiveContains(query) {
+                return true
+            }
+            
+            // File content search
+            if FileTypes.isEditableText(url) {
+                if let content = try? String(contentsOf: url, encoding: .utf8),
+                   content.localizedCaseInsensitiveContains(query) {
+                    return true
+                }
+            }
+            
+            return false
+        }
     }
 
     func loadFiles() {

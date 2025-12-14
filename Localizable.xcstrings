@@ -738,6 +738,16 @@
         }
       }
     },
+    "Search Notes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノートを検索"
+          }
+        }
+      }
+    },
     "Set the behavior when you start the CBNote camera from the lock screen." : {
       "localizations" : {
         "ja" : {

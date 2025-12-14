@@ -86,6 +86,7 @@ struct MainView: View {
                     }
                 }
                 .animation(.default, value: viewModel.files)
+                .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         Button(action: { viewModel.showCamera(true) }) {

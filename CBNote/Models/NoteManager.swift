@@ -46,17 +46,19 @@ class NoteManager: ObservableObject {
         do {
             guard let documentsURL = documentDir.directory else {
                 files = []
+                pinnedFiles = []
                 return
             }
             
             let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
             
-            // Sort
+            // Sort & Filter
             files = sortFiles(fileURLs)
-            pinnedFiles = sortFiles(pinnedFiles)
+            pinnedFiles = files.filter { isPinned($0) }
         } catch {
             print("Error loading files: \(error)")
             files = []
+            pinnedFiles = []
         }
     }
     
