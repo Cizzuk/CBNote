@@ -49,9 +49,7 @@ struct MainView: View {
                                 ForEach(viewModel.pinnedFiles, id: \.self) { url in
                                     fileRow(url: url, onPreview: { previewURL = url })
                                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button {
-                                                viewModel.pinUnpinFile(at: url)
-                                            } label: {
+                                            Button(action: { viewModel.pinUnpinFile(at: url) }) {
                                                 if viewModel.isFilePinned(url) {
                                                     Label("Unpin", systemImage: "pin.slash")
                                                 } else {
@@ -88,9 +86,7 @@ struct MainView: View {
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
-                                    Button {
-                                        viewModel.startRenaming(url: url)
-                                    } label: {
+                                    Button(action: { viewModel.startRenaming(url: url) }) {
                                         Label("Rename", systemImage: "pencil")
                                     }
                                 }
@@ -233,9 +229,7 @@ struct MainView: View {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
             }
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                Button {
-                    viewModel.copyFile(at: url)
-                } label: {
+                Button(action: { viewModel.copyFile(at: url) }) {
                     Label("Copy", systemImage: "document.on.document")
                 }
                 .tint(.accent)
@@ -245,9 +239,7 @@ struct MainView: View {
                 .tint(.indigo)
             }
             .contextMenu {
-                Button {
-                    viewModel.pinUnpinFile(at: url)
-                } label: {
+                Button(action: { viewModel.pinUnpinFile(at: url) }) {
                     if viewModel.isFilePinned(url) {
                         Label("Unpin", systemImage: "pin.slash")
                     } else {
@@ -255,23 +247,17 @@ struct MainView: View {
                     }
                 }
                 Divider()
-                Button {
-                    viewModel.copyFile(at: url)
-                } label: {
+                Button(action: { viewModel.copyFile(at: url) }) {
                     Label("Copy", systemImage: "document.on.document")
                 }
                 ShareLink(item: url) {
                     Label("Share", systemImage: "square.and.arrow.up")
                 }
-                Button {
-                    previewURL = url
-                } label: {
+                Button(action: { previewURL = url }) {
                     Label("Quick Look", systemImage: "eye")
                 }
                 Divider()
-                Button {
-                    viewModel.startRenaming(url: url)
-                } label: {
+                Button(action: { viewModel.startRenaming(url: url) }) {
                     Label("Rename", systemImage: "pencil")
                 }
                 Button(role: .destructive) {
