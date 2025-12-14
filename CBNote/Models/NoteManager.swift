@@ -12,6 +12,7 @@ class NoteManager: ObservableObject {
     
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
+    @Published var unpinnedFiles: [URL] = []
     
     @Published var documentDir: DocumentDir {
         didSet {
@@ -47,6 +48,7 @@ class NoteManager: ObservableObject {
             guard let documentsURL = documentDir.directory else {
                 files = []
                 pinnedFiles = []
+                unpinnedFiles = []
                 return
             }
             
@@ -55,10 +57,12 @@ class NoteManager: ObservableObject {
             // Sort & Filter
             files = sortFiles(fileURLs)
             pinnedFiles = files.filter { isPinned($0) }
+            unpinnedFiles = files.filter { !isPinned($0) }
         } catch {
             print("Error loading files: \(error)")
             files = []
             pinnedFiles = []
+            unpinnedFiles = []
         }
     }
     
@@ -181,11 +185,6 @@ class NoteManager: ObservableObject {
         pinnedFiles = sortFiles(loadedFiles)
     }
     
-    private func savePinnedFiles() {
-        let filenames = pinnedFiles.map { $0.lastPathComponent }
-        UserDefaults.standard.set(filenames, forKey: documentDir.pinnedKey)
-    }
-    
     func isPinned(_ url: URL) -> Bool {
         let filename = url.lastPathComponent
         return pinnedFiles.contains(where: { $0.lastPathComponent == filename })
@@ -197,7 +196,16 @@ class NoteManager: ObservableObject {
         } else {
             pinnedFiles.append(url)
         }
+        
+        // Re sort and update
         pinnedFiles = sortFiles(pinnedFiles)
+        unpinnedFiles = files.filter { !isPinned($0) }
+        
         savePinnedFiles()
+    }
+    
+    private func savePinnedFiles() {
+        let filenames = pinnedFiles.map { $0.lastPathComponent }
+        UserDefaults.standard.set(filenames, forKey: documentDir.pinnedKey)
     }
 }

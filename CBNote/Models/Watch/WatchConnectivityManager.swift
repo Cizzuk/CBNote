@@ -72,8 +72,8 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 return WatchFileItem(url: url, preview: preview, isPinned: noteManager.isPinned(url))
             }
             
-            let unpinned = noteManager.files.filter { !noteManager.isPinned($0) }.map(mapFile)
-            let pinned = noteManager.files.filter { noteManager.isPinned($0) }.map(mapFile)
+            let pinned = noteManager.pinnedFiles.map(mapFile)
+            let unpinned = noteManager.unpinnedFiles.map(mapFile)
             
             sendResponse(.fileList(unpinned: unpinned, pinned: pinned), replyHandler: replyHandler)
             

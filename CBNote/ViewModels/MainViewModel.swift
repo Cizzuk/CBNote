@@ -11,8 +11,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 class MainViewModel: ObservableObject {
-    @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
+    @Published var unpinnedFiles: [URL] = []
     
     @Published var searchQuery = ""
     
@@ -37,17 +37,17 @@ class MainViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        Publishers.CombineLatest(noteManager.$files, $searchQuery)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] files, query in
-                self?.files = self?.filterFiles(files, query: query) ?? []
-            }
-            .store(in: &cancellables)
-            
         Publishers.CombineLatest(noteManager.$pinnedFiles, $searchQuery)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] files, query in
                 self?.pinnedFiles = self?.filterFiles(files, query: query) ?? []
+            }
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest(noteManager.$unpinnedFiles, $searchQuery)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] files, query in
+                self?.unpinnedFiles = self?.filterFiles(files, query: query) ?? []
             }
             .store(in: &cancellables)
         
@@ -238,13 +238,6 @@ class MainViewModel: ObservableObject {
     
     func deleteFile(at url: URL) {
         noteManager.deleteFile(at: url)
-    }
-    
-    // Handler for swipe/context menu delete action
-    func deleteFile(offsets: IndexSet) {
-        offsets.map { files[$0] }.forEach {
-            noteManager.deleteFile(at: $0)
-        }
     }
     
     func renameFile() {

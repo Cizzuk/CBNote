@@ -22,7 +22,8 @@ struct MainView: View {
             
             NavigationStack {
                 List {
-                    if viewModel.files.isEmpty {
+                    // Empty State
+                    if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
                         Section {} footer: {
                             if viewModel.searchQuery.isEmpty {
                                 Text("No notes yet. Tap the + button to add a new note.")
@@ -41,6 +42,7 @@ struct MainView: View {
                         }
                     }
                     
+                    // Pinned Files
                     if !viewModel.pinnedFiles.isEmpty {
                         Section {
                             if isExpandPinnedSection {
@@ -76,28 +78,29 @@ struct MainView: View {
                         }
                     }
                     
+                    // Unpinned Files
                     Section {
-                        ForEach(viewModel.files, id: \.self) { url in
-                            if !viewModel.isFilePinned(url) {
-                                fileRow(url: url, onPreview: { previewURL = url })
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            viewModel.deleteFile(at: url)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
-                                        }
-                                        Button {
-                                            viewModel.startRenaming(url: url)
-                                        } label: {
-                                            Label("Rename", systemImage: "pencil")
-                                        }
+                        ForEach(viewModel.unpinnedFiles, id: \.self) { url in
+                            fileRow(url: url, onPreview: { previewURL = url })
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        viewModel.deleteFile(at: url)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
                                     }
-                            }
+                                    Button {
+                                        viewModel.startRenaming(url: url)
+                                    } label: {
+                                        Label("Rename", systemImage: "pencil")
+                                    }
+                                }
                         }
-                        .onDelete(perform: viewModel.deleteFile)
                     }
+                    
+                    // MARK: - End of List
                 }
-                .animation(.default, value: viewModel.files)
+                .animation(.default, value: viewModel.pinnedFiles)
+                .animation(.default, value: viewModel.unpinnedFiles)
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -220,6 +223,8 @@ struct MainView: View {
             .scrollDismissesKeyboard(.interactively)
         }
     }
+    
+    // MARK: - File Row View
     
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
         FileRow(url: url, onPreview: onPreview)
