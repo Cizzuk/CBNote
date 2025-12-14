@@ -121,9 +121,7 @@ struct MainView: View {
                             // iCloud/On-Device
                             Section {
                                 ForEach(DocumentDir.availableDirs, id: \.self) { type in
-                                    Button {
-                                        viewModel.setDocumentDir(type: type)
-                                    } label: {
+                                    Button(action: { viewModel.setDocumentDir(type: type) }) {
                                         HStack {
                                             if viewModel.documentDir == type {
                                                 Image(systemName: "checkmark")
@@ -139,9 +137,7 @@ struct MainView: View {
                             // Sort
                             Section {
                                 ForEach(SortKey.allCases, id: \.self) { key in
-                                    Button {
-                                        viewModel.toggleSort(key: key)
-                                    } label: {
+                                    Button(action: { viewModel.toggleSort(key: key) }) {
                                         HStack {
                                             if viewModel.sortKey == key {
                                                 Image(systemName: viewModel.sortDirection == .descending ? "chevron.down" : "chevron.up")
