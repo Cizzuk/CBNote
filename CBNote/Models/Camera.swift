@@ -122,8 +122,10 @@ class Camera: NSObject, ObservableObject {
             session.setControlsDelegate(controlsDelegate, queue: sessionQueue)
             
             if session.canAddInput(newInput) {
-                session.addInput(newInput)
-                input = newInput
+                DispatchQueue.global(qos: .userInteractive).async {
+                    self.session.addInput(newInput)
+                    self.input = newInput
+                }
             }
         } catch {
             print("Error setting up input: \(error)")
