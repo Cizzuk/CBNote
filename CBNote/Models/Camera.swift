@@ -68,18 +68,13 @@ class Camera: NSObject, ObservableObject {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
             session.sessionPreset = .high
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.setupDefaultInput()
+            }
         default:
             session.sessionPreset = .photo
-        }
-        
-        // Setup default input
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let backCamera = self.backCameraDiscoverySession.devices.first {
-                self.setupInput(for: backCamera)
-            } else if let frontCamera = self.frontCameraDiscoverySession.devices.first {
-                self.setupInput(for: frontCamera)
-            } else if let externalCamera = self.externalCameraDiscoverySession.devices.first {
-                self.setupInput(for: externalCamera)
+            DispatchQueue.main.async {
+                self.setupDefaultInput()
             }
         }
         
@@ -91,6 +86,16 @@ class Camera: NSObject, ObservableObject {
         
         DispatchQueue.global(qos: .userInitiated).async {
             self.session.startRunning()
+        }
+    }
+    
+    private func setupDefaultInput() {
+        if let backCamera = self.backCameraDiscoverySession.devices.first {
+            self.setupInput(for: backCamera)
+        } else if let frontCamera = self.frontCameraDiscoverySession.devices.first {
+            self.setupInput(for: frontCamera)
+        } else if let externalCamera = self.externalCameraDiscoverySession.devices.first {
+            self.setupInput(for: externalCamera)
         }
     }
     
