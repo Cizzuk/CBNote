@@ -117,6 +117,9 @@ class MainViewModel: ObservableObject {
     }
     
     func showCamera(_ show: Bool) {
+        // Prevent multiple modals
+        guard !isAnyModalShown() else { return }
+        
         let device = UIDevice.current.userInterfaceIdiom
         if device == .phone {
             showCamera_popover = show
@@ -126,12 +129,19 @@ class MainViewModel: ObservableObject {
     }
     
     func showSettings(_ show: Bool) {
+        // Prevent multiple modals
+        guard !isAnyModalShown() else { return }
+        
         let device = UIDevice.current.userInterfaceIdiom
         if device == .phone {
             showSettings_popover = show
         } else {
             showSettings_sheet = show
         }
+    }
+    
+    func isAnyModalShown() -> Bool {
+        return showCamera_popover || showCamera_sheet || showSettings_popover || showSettings_sheet
     }
 
     func createNewNote() {
