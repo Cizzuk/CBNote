@@ -261,7 +261,7 @@ class Camera: NSObject, ObservableObject {
     }
     
     func startSession() {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             if !self.session.isRunning {
                 self.session.startRunning()
             }
@@ -290,7 +290,7 @@ extension Camera: AVCapturePhotoCaptureDelegate {
         
         guard let data = photo.fileDataRepresentation() else { return }
         
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInitiated).async {
             self.onPhotoCaptured?(data)
         }
     }
