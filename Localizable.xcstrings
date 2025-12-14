@@ -103,7 +103,14 @@
       }
     },
     "Camera is not available in the Simulator" : {
-      "shouldTranslate" : false
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラはシミュレーターでは利用できません"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
