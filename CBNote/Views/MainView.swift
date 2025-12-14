@@ -24,8 +24,20 @@ struct MainView: View {
                 List {
                     if viewModel.files.isEmpty {
                         Section {} footer: {
-                            Text("No notes yet. Tap the + button to add a new note.")
-                                .frame(maxWidth: .infinity, alignment: .center)
+                            if viewModel.searchQuery.isEmpty {
+                                Text("No notes yet. Tap the + button to add a new note.")
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            } else {
+                                VStack {
+                                    Label("No Results", systemImage: "magnifyingglass")
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("for \"\(viewModel.searchQuery)\".")
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .font(.caption)
+                                }
+                            }
                         }
                     }
                     

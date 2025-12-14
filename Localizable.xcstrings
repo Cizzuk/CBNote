@@ -352,6 +352,16 @@
         }
       }
     },
+    "for \"%@\"." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対象: \"%@\""
+          }
+        }
+      }
+    },
     "iCloud Drive" : {
       "shouldTranslate" : false
     },
@@ -464,6 +474,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ノートがまだありません。「+」ボタンをタップして新規ノートを追加します。"
+          }
+        }
+      }
+    },
+    "No Results" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果なし"
           }
         }
       }
