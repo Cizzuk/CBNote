@@ -5,8 +5,38 @@
 //  Created by Cizzuk on 2025/12/14.
 //
 
+#if canImport(AVFoundation)
+import AVFoundation
+#endif
 import Foundation
 import UIKit
+
+// Return true device state
+struct TrueDevice {
+    static let userInterfaceIdiom: UIUserInterfaceIdiom = {
+        #if targetEnvironment(macCatalyst)
+        return .mac
+        
+        #else
+        if ProcessInfo().isiOSAppOnMac {
+            return .mac
+        } else if ProcessInfo().isiOSAppOnVision {
+            return .vision
+        }
+        
+        return UIDevice.current.userInterfaceIdiom
+        
+        #endif
+    }()
+    
+    static let isCamControlAvailable: Bool = {
+        #if canImport(AVFoundation)
+        return AVCaptureSession().supportsControls
+        #else
+        return false
+        #endif
+    }()
+}
 
 enum DocumentDir: String, CaseIterable {
     case onDevice
@@ -15,11 +45,7 @@ enum DocumentDir: String, CaseIterable {
     var localizedName: LocalizedStringResource {
         switch self {
         case .onDevice:
-            #if targetEnvironment(macCatalyst)
-            return "On My Mac"
-            #endif
-            let device = UIDevice.current.userInterfaceIdiom
-            switch device {
+            switch TrueDevice.userInterfaceIdiom {
             case .phone:
                 return "On My iPhone"
             case .pad:
@@ -43,11 +69,7 @@ enum DocumentDir: String, CaseIterable {
     var systemImage: String {
         switch self {
         case .onDevice:
-            #if targetEnvironment(macCatalyst)
-            return "internaldrive"
-            #endif
-            let device = UIDevice.current.userInterfaceIdiom
-            switch device {
+            switch TrueDevice.userInterfaceIdiom {
             case .phone:
                 return "iphone"
             case .pad:

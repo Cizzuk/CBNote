@@ -56,11 +56,6 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
-    @Published var doesDeviceHaveCameraControl: Bool = {
-        let device = UIDevice.current.userInterfaceIdiom
-        return device == .phone
-    }()
-
     init() {
         Task {
             if let context = try? await CaptureIntent.appContext {

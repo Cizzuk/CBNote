@@ -35,7 +35,7 @@ struct SettingsView: View {
                 
                 Section {
                     Toggle("Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
-                    if viewModel.doesDeviceHaveCameraControl {
+                    if TrueDevice.isCamControlAvailable {
                         Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
                             ForEach(OpenAppOption.allCases) { action in
                                 Text(action.localizedName).tag(action)
@@ -53,7 +53,7 @@ struct SettingsView: View {
                 
                 Section {
                     Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
-                    if viewModel.doesDeviceHaveCameraControl {
+                    if TrueDevice.isCamControlAvailable {
                         Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
                             ForEach(CaptureContext.LaunchAction.allCases) { action in
                                 Text(action.localizedName).tag(action)
@@ -63,7 +63,9 @@ struct SettingsView: View {
                 } header: {
                     Text("Camera")
                 } footer: {
-                    Text("Set the behavior when you start the CBNote camera from the lock screen.")
+                    if TrueDevice.isCamControlAvailable {
+                        Text("Set the behavior when you start the CBNote camera from the lock screen.")
+                    }
                 }
                 
                 Section {
