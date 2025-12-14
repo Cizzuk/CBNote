@@ -88,10 +88,10 @@ struct MainView: View {
                 .animation(.default, value: viewModel.files)
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button(action: { viewModel.showCamera = true }) {
-                            Label("Camera", systemImage: viewModel.showCamera ? "camera.fill" : "camera")
+                        Button(action: { viewModel.showCamera(true) }) {
+                            Label("Camera", systemImage: "camera")
                         }
-                        .popover(isPresented: $viewModel.showCamera) {
+                        .popover(isPresented: $viewModel.showCamera_popover) {
                             CameraView { data in
                                 viewModel.saveCapturedImage(data: data)
                             }
@@ -110,11 +110,12 @@ struct MainView: View {
                         }
                     }
                     ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Button(action: { viewModel.showSettings = true }) {
+                        Button(action: { viewModel.showSettings(true) }) {
                             Label("Settings", systemImage: "gearshape")
                         }
-                        .popover(isPresented: $viewModel.showSettings) {
+                        .popover(isPresented: $viewModel.showSettings_popover) {
                             SettingsView()
+                                .presentationDetents([.large])
                                 .presentationCompactAdaptation(.sheet)
                         }
                         Menu {
@@ -184,6 +185,14 @@ struct MainView: View {
                     if let option = action.object as? OpenAppOption {
                         viewModel.openApp(with: option)
                     }
+                }
+                .fullScreenCover(isPresented: $viewModel.showCamera_sheet) {
+                    CameraView { data in
+                        viewModel.saveCapturedImage(data: data)
+                    }
+                }
+                .sheet(isPresented: $viewModel.showSettings_sheet) {
+                    SettingsView()
                 }
                 .alert("Rename", isPresented: $viewModel.isRenaming) {
                     TextField("New Name", text: $viewModel.newName)

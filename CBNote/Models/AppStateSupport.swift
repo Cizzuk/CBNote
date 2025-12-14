@@ -15,6 +15,9 @@ enum DocumentDir: String, CaseIterable {
     var localizedName: LocalizedStringResource {
         switch self {
         case .onDevice:
+            #if targetEnvironment(macCatalyst)
+            return "On My Mac"
+            #endif
             let device = UIDevice.current.userInterfaceIdiom
             switch device {
             case .phone:
@@ -40,6 +43,9 @@ enum DocumentDir: String, CaseIterable {
     var systemImage: String {
         switch self {
         case .onDevice:
+            #if targetEnvironment(macCatalyst)
+            return "internaldrive"
+            #endif
             let device = UIDevice.current.userInterfaceIdiom
             switch device {
             case .phone:
