@@ -44,7 +44,7 @@ enum WatchConnectivityRequest: Codable {
 // Responses sent from iPhone to Watch
 enum WatchConnectivityResponse: Codable {
     case directoryList([WatchDirectoryInfo])
-    case fileList(unpinned: [WatchFileItem], pinned: [WatchFileItem])
+    case fileList(pinned: [WatchFileItem], unpinned: [WatchFileItem])
     case fileContent(WatchFileContent)
     case error(String)
 }

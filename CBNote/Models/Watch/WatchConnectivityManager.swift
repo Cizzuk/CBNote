@@ -75,7 +75,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             let pinned = noteManager.pinnedFiles.map(mapFile)
             let unpinned = noteManager.unpinnedFiles.map(mapFile)
             
-            sendResponse(.fileList(unpinned: unpinned, pinned: pinned), replyHandler: replyHandler)
+            sendResponse(.fileList(pinned: pinned, unpinned: unpinned), replyHandler: replyHandler)
             
         case .getFileContent(let directoryRawValue, let fileName):
             // Resolve directory

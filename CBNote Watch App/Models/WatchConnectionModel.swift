@@ -17,8 +17,8 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     
     // Current directory
     @Published var currentDirectoryId: String?
-    @Published var unpinnedFiles: [WatchFileItem] = []
     @Published var pinnedFiles: [WatchFileItem] = []
+    @Published var unpinnedFiles: [WatchFileItem] = []
     
     // Watch state
     @Published var isLoading = false
@@ -76,9 +76,9 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch response {
-                case .fileList(let unpinned, let pinned):
-                    self.unpinnedFiles = unpinned
+                case .fileList(let pinned, let unpinned):
                     self.pinnedFiles = pinned
+                    self.unpinnedFiles = unpinned
                 case .error(let msg):
                     self.setError(msg)
                 default:
