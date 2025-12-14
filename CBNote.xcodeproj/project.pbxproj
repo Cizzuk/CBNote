@@ -131,8 +131,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/Camera.swift,
-				Models/CaptureContext.swift,
-				Models/CaptureIntent.swift,
+				Models/CaptureExtension/CaptureContext.swift,
+				Models/CaptureExtension/CaptureIntent.swift,
 				ViewModels/CameraViewModel.swift,
 				Views/CameraPreview.swift,
 				Views/CameraView.swift,
@@ -143,7 +143,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/FileTypes.swift,
-				Models/WatchConnectivitySupport.swift,
+				Models/Watch/WatchConnectivitySupport.swift,
 			);
 			target = BEAF98682EE546A100488245 /* CBNote Watch App */;
 		};
