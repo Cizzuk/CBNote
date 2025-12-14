@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum DocumentDir: String, CaseIterable {
     case onDevice
@@ -14,9 +15,48 @@ enum DocumentDir: String, CaseIterable {
     var localizedName: LocalizedStringResource {
         switch self {
         case .onDevice:
-            return "On This Device"
+            let device = UIDevice.current.userInterfaceIdiom
+            switch device {
+            case .phone:
+                return "On My iPhone"
+            case .pad:
+                return "On My iPad"
+            case .mac:
+                return "On My Mac"
+            case .vision:
+                return "On My Apple Vision"
+            case .tv:
+                return "On My Apple TV"
+            case .carPlay:
+                return "On My CarPlay"
+            default:
+                return "On My Device"
+            }
         case .iCloud:
             return "iCloud"
+        }
+    }
+    
+    var systemImage: String {
+        switch self {
+        case .onDevice:
+            let device = UIDevice.current.userInterfaceIdiom
+            switch device {
+            case .phone:
+                return "iphone"
+            case .pad:
+                return "ipad"
+            case .mac:
+                return "internaldrive"
+            case .vision:
+                return "vision.pro"
+            case .tv:
+                return "appletv"
+            default:
+                return "internaldrive"
+            }
+        case .iCloud:
+            return "icloud"
         }
     }
     

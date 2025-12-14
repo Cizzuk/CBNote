@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct CBNoteWatch_Watch_AppApp: App {
+struct CBNoteWatchApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

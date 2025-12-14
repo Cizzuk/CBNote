@@ -142,8 +142,8 @@
 		BEFA7AE92EE55FCB0023643B /* Exceptions for "CBNote" folder in "CBNote Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/AppStateSupport.swift,
 				Models/FileTypes.swift,
+				Models/WatchConnectivitySupport.swift,
 			);
 			target = BEAF98682EE546A100488245 /* CBNote Watch App */;
 		};

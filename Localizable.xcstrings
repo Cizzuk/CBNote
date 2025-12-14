@@ -112,6 +112,16 @@
         }
       }
     },
+    "Cannot connect to iPhone." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneに接続できませんでした。"
+          }
+        }
+      }
+    },
     "CaptureIntent" : {
       "shouldTranslate" : false
     },
@@ -141,22 +151,32 @@
         }
       }
     },
+    "Companion app is not installed on iPhone." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンパニオンアプリがiPhoneにインストールされていません"
+          }
+        }
+      }
+    },
+    "Connection is not activated." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続が有効になっていません。"
+          }
+        }
+      }
+    },
     "Copy" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー"
-          }
-        }
-      }
-    },
-    "Could not load file or unsupported file type." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ファイルを読み込めないか、サポートされていないファイル形式です。"
           }
         }
       }
@@ -221,6 +241,16 @@
         }
       }
     },
+    "Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー"
+          }
+        }
+      }
+    },
     "Even when setting something other than %@, the camera will temporarily launch in the background." : {
       "localizations" : {
         "ja" : {
@@ -251,12 +281,12 @@
         }
       }
     },
-    "File is empty" : {
+    "Failed to load image." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイルは空です"
+            "value" : "画像の読み込みに失敗しました"
           }
         }
       }
@@ -297,6 +327,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "iPhone needs to be unlocked after reboot." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneを再起動した後に、ロックを解除する必要があります。"
           }
         }
       }
@@ -374,12 +414,22 @@
         }
       }
     },
-    "No notes yet. Add notes from your iPhone first." : {
+    "No locations available." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ノートがまだありません。iPhoneで追加してください。"
+            "value" : "利用可能な場所がありません。"
+          }
+        }
+      }
+    },
+    "No notes found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノートがありません。"
           }
         }
       }
@@ -404,12 +454,92 @@
         }
       }
     },
-    "On This Device" : {
+    "Note is empty" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空のノート"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "On My Apple TV" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このApple TV内"
+          }
+        }
+      }
+    },
+    "On My Apple Vision" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このApple Vision内"
+          }
+        }
+      }
+    },
+    "On My CarPlay" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このCarPlay内"
+          }
+        }
+      }
+    },
+    "On My Device" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "このデバイス内"
+          }
+        }
+      }
+    },
+    "On My iPad" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPad内"
+          }
+        }
+      }
+    },
+    "On My iPhone" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhone内"
+          }
+        }
+      }
+    },
+    "On My Mac" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMac内"
           }
         }
       }
@@ -534,7 +664,7 @@
         }
       }
     },
-    "Refresh" : {
+    "Reload" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -570,16 +700,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カメラにアクセスする権限をリクエスト"
-          }
-        }
-      }
-    },
-    "Retry" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "再試行"
           }
         }
       }
@@ -680,6 +800,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留めを解除"
+          }
+        }
+      }
+    },
+    "Unsupported file type." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないファイル形式です。"
           }
         }
       }

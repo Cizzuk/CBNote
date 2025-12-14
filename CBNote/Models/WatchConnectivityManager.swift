@@ -24,87 +24,97 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         print("WCSession activated: \(activationState.rawValue)")
     }
     
-    func sessionDidBecomeInactive(_ session: WCSession) {}
+    func sessionDidBecomeInactive(_ session: WCSession) { }
     
     func sessionDidDeactivate(_ session: WCSession) {
         WCSession.default.activate()
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
-        guard let request = message["request"] as? String else { return }
+        
+        // Parse request
+        guard let data = message["payload"] as? Data,
+              let request = try? JSONDecoder().decode(WatchConnectivityRequest.self, from: data) else {
+            return
+        }
         
         let noteManager = NoteManager()
         
-        if request == "getFileList" {
-            // Get all files info
+        switch request {
+        case .getDirectoryList:
+            let dirs = DocumentDir.availableDirs.map { dir -> WatchDirectoryInfo in
+                // Resolve localized string
+                let name = String(localized: dir.localizedName)
+                let systemImage = dir.systemImage
+                return WatchDirectoryInfo(id: dir.rawValue, name: name, systemImage: systemImage)
+            }
+            sendResponse(.directoryList(dirs), replyHandler: replyHandler)
             
+        case .getFileList(let directoryRawValue):
+            // Prepare NoteManager
+            guard let dir = DocumentDir(rawValue: directoryRawValue) else {
+                sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
+                return
+            }
+            noteManager.setDocumentDir(type: dir)
             noteManager.loadFiles()
-            let files = noteManager.files
             
-            let pinnedFiles = files.filter { noteManager.isPinned($0) }
-            let unpinnedFiles = files.filter { !noteManager.isPinned($0) }
-            
-            let fileMapper: (URL) -> [String: String] = { url in
-                var info = ["name": url.lastPathComponent]
-                
-                // Add preview for text files
+            // Map files to WatchFileItem
+            let mapFile: (URL) -> WatchFileItem = { url in
+                var preview: String?
                 if FileTypes.isEditableText(url) {
                     if let content = try? String(contentsOf: url, encoding: .utf8) {
-                        // Cut to first line only
-                        let firstLine = content.components(separatedBy: .newlines).first ?? ""
-                        if !firstLine.isEmpty {
-                            info["preview"] = firstLine
+                        if !content.isEmpty {
+                            preview = content.components(separatedBy: .newlines).first
                         }
                     }
                 }
-                return info
+                return WatchFileItem(url: url, preview: preview, isPinned: noteManager.isPinned(url))
             }
             
-            replyHandler([
-                "unpinnedFiles": unpinnedFiles.map(fileMapper),
-                "pinnedFiles": pinnedFiles.map(fileMapper)
-            ])
+            let unpinned = noteManager.files.filter { !noteManager.isPinned($0) }.map(mapFile)
+            let pinned = noteManager.files.filter { noteManager.isPinned($0) }.map(mapFile)
             
-        } else if request == "getFileContent", let fileName = message["fileName"] as? String {
-            // Get file content
+            sendResponse(.fileList(unpinned: unpinned, pinned: pinned), replyHandler: replyHandler)
             
-            guard let documentsURL = noteManager.documentDir.directory else {
-                replyHandler(["error": "Could not access documents directory"])
+        case .getFileContent(let directoryRawValue, let fileName):
+            // Resolve directory
+            guard let dir = DocumentDir(rawValue: directoryRawValue), let documentsURL = dir.directory else {
+                sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
                 return
             }
             let fileURL = documentsURL.appendingPathComponent(fileName)
             
             if FileTypes.isPreviewableImage(fileURL) {
-                // Handle image file
+                // Compress to lower quality JPEG
                 if let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
-                    // Resize to max 300px width/height for Watch
                     let maxDimension: CGFloat = 300
                     let size = image.size
                     let ratio = min(maxDimension / size.width, maxDimension / size.height)
                     let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
-                    
                     let renderer = UIGraphicsImageRenderer(size: newSize)
                     let resizedImage = renderer.image { _ in
                         image.draw(in: CGRect(origin: .zero, size: newSize))
                     }
-                    
-                    // Compress to lower quality JPEG
                     if let jpegData = resizedImage.jpegData(compressionQuality: 0.3) {
-                         replyHandler(["imageData": jpegData])
+                        sendResponse(.fileContent(.image(jpegData)), replyHandler: replyHandler)
                     } else {
-                         replyHandler(["error": "Could not process image"])
+                        sendResponse(.error("Could not process image"), replyHandler: replyHandler)
                     }
                 } else {
-                    replyHandler(["error": "Could not load file"])
+                    sendResponse(.error("Could not load image"), replyHandler: replyHandler)
                 }
-                
             } else if let text = try? String(contentsOf: fileURL, encoding: .utf8) {
-                // Handle text file
-                replyHandler(["text": text])
-                
+                sendResponse(.fileContent(.text(text)), replyHandler: replyHandler)
             } else {
-                replyHandler(["error": "Could not load file"])
+                sendResponse(.fileContent(.unsupported), replyHandler: replyHandler)
             }
+        }
+    }
+    
+    private func sendResponse(_ response: WatchConnectivityResponse, replyHandler: @escaping ([String : Any]) -> Void) {
+        if let data = try? JSONEncoder().encode(response) {
+            replyHandler(["payload": data])
         }
     }
 }
