@@ -62,7 +62,7 @@ enum DocumentDir: String, CaseIterable {
                 return "On My Device"
             }
         case .iCloud:
-            return "iCloud"
+            return "iCloud Drive"
         }
     }
     

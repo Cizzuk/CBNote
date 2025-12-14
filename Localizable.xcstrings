@@ -352,15 +352,8 @@
         }
       }
     },
-    "iCloud" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud"
-          }
-        }
-      }
+    "iCloud Drive" : {
+      "shouldTranslate" : false
     },
     "iPhone needs to be unlocked after reboot." : {
       "localizations" : {
