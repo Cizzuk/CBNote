@@ -53,7 +53,9 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     // MARK: - Requests
     
     func fetchDirectories() {
-        isLoading = true
+        DispatchQueue.main.async {
+            self.isLoading = true
+        }
         sendRequest(.getDirectoryList) { response in
             DispatchQueue.main.async {
                 self.isLoading = false
@@ -108,7 +110,12 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     }
     
     private func sendRequest(_ request: WatchConnectivityRequest, completion: @escaping (WatchConnectivityResponse) -> Void) {
-        guard connectabilityCheck() else { return }
+        guard connectabilityCheck() else {
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
+            return
+        }
         
         guard let data = try? JSONEncoder().encode(request) else { return }
         
