@@ -62,7 +62,7 @@ struct FileTypes {
         }
         
         guard let type = UTType(filenameExtension: url.pathExtension) else {
-            return "doc"
+            return "document"
         }
         
         // Media
@@ -97,7 +97,7 @@ struct FileTypes {
         } else if type.conforms(to: .presentation) {
             return "chart.bar.doc.horizontal"
         } else if type.conforms(to: .pdf) {
-            return "doc.richtext"
+            return "richtext.page"
         } else if type.conforms(to: .database) {
             return "server.rack"
         } else if type.conforms(to: .calendarEvent) {
@@ -113,11 +113,11 @@ struct FileTypes {
             
         // Text
         } else if type.conforms(to: .text) {
-            return "doc.text"
+            return "text.document"
         } else if type.conforms(to: .plainText) {
-            return "doc.plaintext"
+            return "text.page"
         } else if type.conforms(to: .rtf) {
-            return "doc.richtext"
+            return "richtext.page"
         } else if type.conforms(to: .font) {
             return "textformat"
             
@@ -152,6 +152,6 @@ struct FileTypes {
             return "arrowshape.turn.up.left"
         }
         
-        return "doc"
+        return "document"
     }
 }
