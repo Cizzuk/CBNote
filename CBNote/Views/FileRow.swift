@@ -18,7 +18,9 @@ struct FileRow: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            if FileTypes.isEditableText(url) {
+            if !FileManager.default.fileExists(atPath: url.path) {
+                AnyFileNotFoundItem(url: url)
+            } else if FileTypes.isEditableText(url) {
                 TextEditView(url: url)
             } else if FileTypes.isPreviewableImage(url) {
                 Button(action: onPreview) {
@@ -51,6 +53,22 @@ struct AnyFileItem: View {
             Image(systemName: FileTypes.systemImage(for: url))
             Text(FileTypes.name(for: url))
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .center)
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(16)
+    }
+}
+
+struct AnyFileNotFoundItem: View {
+    var url: URL
+    
+    var body: some View {
+        HStack {
+            Image(systemName: FileTypes.systemImageQuestionmark(for: url))
+            Text(url.hasDirectoryPath ? "Folder Not Found" : "File Not Found")
+        }
+        .foregroundStyle(.gray)
         .padding()
         .frame(maxWidth: .infinity, alignment: .center)
         .background(Color.gray.opacity(0.1))

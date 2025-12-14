@@ -154,4 +154,24 @@ struct FileTypes {
         
         return "document"
     }
+    
+    static func systemImageQuestionmark(for url: URL) -> String {
+        if url.hasDirectoryPath {
+            return "questionmark.folder"
+        }
+        
+        guard let type = UTType(filenameExtension: url.pathExtension) else {
+            return "questionmark.square"
+        }
+        
+        if type.conforms(to: .text) {
+            return "questionmark.text.page"
+        } else if type.conforms(to: .plainText) {
+            return "questionmark.text.page"
+        } else if type.conforms(to: .rtf) {
+            return "questionmark.text.page"
+        }
+        
+        return "questionmark.square"
+    }
 }

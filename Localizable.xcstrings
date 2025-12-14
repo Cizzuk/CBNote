@@ -312,6 +312,16 @@
         }
       }
     },
+    "File Not Found" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルが見つかりません"
+          }
+        }
+      }
+    },
     "Flash is Off" : {
       "localizations" : {
         "ja" : {
@@ -328,6 +338,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フラッシュオン"
+          }
+        }
+      }
+    },
+    "Folder Not Found" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダが見つかりません"
           }
         }
       }
