@@ -100,6 +100,7 @@ struct SettingsView: View {
                     Button(action: { dismiss() }) {
                         Label("Close", systemImage: "xmark")
                     }
+                    .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()

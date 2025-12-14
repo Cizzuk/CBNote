@@ -198,6 +198,22 @@ struct MainView: View {
                         viewModel.openApp(with: option)
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
+                    if let shortcut = action.object as? CustomKeyboardShortcut {
+                        switch shortcut {
+                        case .openSettings:
+                            viewModel.showSettings(true)
+                        case .reloadFiles:
+                            viewModel.checkLockedCameraCaptures()
+                            viewModel.loadFiles()
+                            refreshID = UUID()
+                        case .addNewNote:
+                            viewModel.createNewNote()
+                        case .pasteFromClipboard:
+                            Task { await viewModel.addAndPaste() }
+                        }
+                    }
+                }
                 .fullScreenCover(isPresented: $viewModel.showCamera_sheet) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)

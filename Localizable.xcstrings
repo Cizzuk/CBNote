@@ -788,6 +788,16 @@
         }
       }
     },
+    "Settings..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定…"
+          }
+        }
+      }
+    },
     "Share" : {
       "localizations" : {
         "ja" : {
