@@ -103,6 +103,7 @@
       }
     },
     "Camera is not available in the Simulator" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
