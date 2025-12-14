@@ -102,6 +102,9 @@
         }
       }
     },
+    "Camera is not available in the Simulator" : {
+      "shouldTranslate" : false
+    },
     "Cancel" : {
       "localizations" : {
         "ja" : {
@@ -710,6 +713,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイル名の例: %@"
+          }
+        }
+      }
+    },
+    "Set the behavior when you start the CBNote camera from the lock screen." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ロック画面からCBNoteのカメラを起動したときの動作を設定します。"
           }
         }
       }

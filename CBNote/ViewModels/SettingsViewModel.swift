@@ -7,6 +7,7 @@
 
 import AppIntents
 import Combine
+import UIKit
 
 class SettingsViewModel: ObservableObject {
     @Published var autoPasteWhenOpening: Bool = UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
@@ -54,6 +55,11 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
+
+    @Published var doesDeviceHaveCameraControl: Bool = {
+        let device = UIDevice.current.userInterfaceIdiom
+        return device == .phone
+    }()
 
     init() {
         Task {
