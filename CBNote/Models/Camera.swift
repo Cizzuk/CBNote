@@ -73,12 +73,14 @@ class Camera: NSObject, ObservableObject {
         }
         
         // Setup default input
-        if let backCamera = backCameraDiscoverySession.devices.first {
-            setupInput(for: backCamera)
-        } else if let frontCamera = frontCameraDiscoverySession.devices.first {
-            setupInput(for: frontCamera)
-        } else if let externalCamera = externalCameraDiscoverySession.devices.first {
-            setupInput(for: externalCamera)
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let backCamera = self.backCameraDiscoverySession.devices.first {
+                self.setupInput(for: backCamera)
+            } else if let frontCamera = self.frontCameraDiscoverySession.devices.first {
+                self.setupInput(for: frontCamera)
+            } else if let externalCamera = self.externalCameraDiscoverySession.devices.first {
+                self.setupInput(for: externalCamera)
+            }
         }
         
         if session.canAddOutput(output) {
@@ -87,7 +89,7 @@ class Camera: NSObject, ObservableObject {
         
         session.commitConfiguration()
         
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             self.session.startRunning()
         }
     }
