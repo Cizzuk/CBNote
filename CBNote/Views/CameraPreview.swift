@@ -17,7 +17,7 @@ struct CameraPreview: UIViewControllerRepresentable {
         
         DispatchQueue.global(qos: .userInteractive).async {
             let view = VideoPreviewView()
-            view.videoPreviewLayer.videoGravity = .resizeAspectFill
+            view.videoPreviewLayer.videoGravity = .resizeAspect
             view.videoPreviewLayer.session = session
             
             // Add tap gesture recognizer
