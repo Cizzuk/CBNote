@@ -119,85 +119,89 @@ class MainViewModel: ObservableObject {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
     
-    func addAndPaste(suppressError: Bool = false) async {
-        let currentChangeCount = UIPasteboard.general.changeCount
-        if suppressError && currentChangeCount == lastPasteboardChangeCount {
-            return
-        }
-        
-        var handled = false
-        let pasteboard = UIPasteboard.general
-        
-        for (index, item) in pasteboard.items.enumerated() {
-            let indexSet = IndexSet(integer: index)
-            func getData(for type: String) -> Data? {
-                pasteboard.data(forPasteboardType: type, inItemSet: indexSet)?.first
+    func addAndPaste(suppressError: Bool = false) {
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self else { return }
+            
+            let currentChangeCount = UIPasteboard.general.changeCount
+            if suppressError && currentChangeCount == lastPasteboardChangeCount {
+                return
             }
             
-            // 1. Text or URL -> .txt
-            var textContent: String?
-            let textTypes = [
-                UTType.plainText.identifier,
-                UTType.utf8PlainText.identifier,
-                UTType.text.identifier,
-                UTType.rtf.identifier,
-            ]
+            var handled = false
+            let pasteboard = UIPasteboard.general
             
-            if let matchedType = textTypes.first(where: { item.keys.contains($0) }),
-               let data = getData(for: matchedType) {
-                textContent = String(data: data, encoding: .utf8)
-            } else if item.keys.contains(UTType.url.identifier),
-                      let data = getData(for: UTType.url.identifier),
-                      let url = URL(dataRepresentation: data, relativeTo: nil) {
-                textContent = url.absoluteString
-            }
-            
-            if let text = textContent {
-                guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
-                try? text.write(to: destURL, atomically: true, encoding: .utf8)
-                handled = true
-                continue
-            }
-            
-            // 2. File URL
-            if item.keys.contains(UTType.fileURL.identifier),
-               let data = getData(for: UTType.fileURL.identifier),
-               let url = URL(dataRepresentation: data, relativeTo: nil) {
+            for (index, item) in pasteboard.items.enumerated() {
+                let indexSet = IndexSet(integer: index)
+                func getData(for type: String) -> Data? {
+                    pasteboard.data(forPasteboardType: type, inItemSet: indexSet)?.first
+                }
                 
-                guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
-                if let fileData = try? Data(contentsOf: url) {
-                    try? fileData.write(to: destURL)
+                // 1. Text or URL -> .txt
+                var textContent: String?
+                let textTypes = [
+                    UTType.plainText.identifier,
+                    UTType.utf8PlainText.identifier,
+                    UTType.text.identifier,
+                    UTType.rtf.identifier,
+                ]
+                
+                if let matchedType = textTypes.first(where: { item.keys.contains($0) }),
+                   let data = getData(for: matchedType) {
+                    textContent = String(data: data, encoding: .utf8)
+                } else if item.keys.contains(UTType.url.identifier),
+                          let data = getData(for: UTType.url.identifier),
+                          let url = URL(dataRepresentation: data, relativeTo: nil) {
+                    textContent = url.absoluteString
+                }
+                
+                if let text = textContent {
+                    guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
+                    try? text.write(to: destURL, atomically: true, encoding: .utf8)
                     handled = true
                     continue
                 }
+                
+                // 2. File URL
+                if item.keys.contains(UTType.fileURL.identifier),
+                   let data = getData(for: UTType.fileURL.identifier),
+                   let url = URL(dataRepresentation: data, relativeTo: nil) {
+                    
+                    guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
+                    if let fileData = try? Data(contentsOf: url) {
+                        try? fileData.write(to: destURL)
+                        handled = true
+                        continue
+                    }
+                }
+                
+                // 3. Generic Data (Fallback) (No extension)
+                for typeIdentifier in item.keys.sorted() {
+                    guard let type = UTType(typeIdentifier),
+                          let data = getData(for: typeIdentifier) else { continue }
+                    
+                    let ext = type.preferredFilenameExtension ?? ""
+                    guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
+                    try? data.write(to: destURL)
+                    handled = true
+                    break
+                }
             }
             
-            // 3. Generic Data (Fallback) (No extension)
-            for typeIdentifier in item.keys.sorted() {
-                guard let type = UTType(typeIdentifier),
-                      let data = getData(for: typeIdentifier) else { continue }
-                
-                let ext = type.preferredFilenameExtension ?? ""
-                guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
-                try? data.write(to: destURL)
-                handled = true
-                break
+            if handled {
+                lastPasteboardChangeCount = currentChangeCount
+                loadFiles()
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } else if !suppressError {
+                showPasteError = true
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
-        }
-        
-        if handled {
-            lastPasteboardChangeCount = currentChangeCount
-            loadFiles()
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-        } else if !suppressError {
-            showPasteError = true
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
     
     func checkAutoPaste() {
         if UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
-            Task { await addAndPaste(suppressError: true) }
+            addAndPaste(suppressError: true)
         }
     }
 
@@ -304,7 +308,7 @@ class MainViewModel: ObservableObject {
             showCamera = true
         case .pasteFromClipboard:
             showCamera = false
-            Task { await addAndPaste() }
+            addAndPaste()
         case .addNewNote:
             showCamera = false
             createNewNote()

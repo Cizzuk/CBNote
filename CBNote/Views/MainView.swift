@@ -103,7 +103,7 @@ struct MainView: View {
                         Button(action: { viewModel.showCamera = true }) {
                             Label("Camera", systemImage: "camera")
                         }
-                        Button(action: { Task { await viewModel.addAndPaste() } }) {
+                        Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
                         .popover(isPresented: $viewModel.showPasteError) {
@@ -199,7 +199,7 @@ struct MainView: View {
                         case .addNewNote:
                             viewModel.createNewNote()
                         case .pasteFromClipboard:
-                            Task { await viewModel.addAndPaste() }
+                            viewModel.addAndPaste()
                         }
                     }
                 }
