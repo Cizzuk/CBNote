@@ -271,7 +271,9 @@ class MainViewModel: ObservableObject {
         }
         
         if !suppress {
-            newFileURLToScroll = newImageURL
+            DispatchQueue.main.async {
+                self.newFileURLToScroll = newImageURL
+            }
         }
     }
     
