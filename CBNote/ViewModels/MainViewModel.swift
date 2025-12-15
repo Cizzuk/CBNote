@@ -18,10 +18,8 @@ class MainViewModel: ObservableObject {
     
     @Published var showPasteError = false
     @Published var showDummyCamera = false
-    @Published var showCamera_sheet = false
-    @Published var showCamera_popover = false
-    @Published var showSettings_sheet = false
-    @Published var showSettings_popover = false
+    @Published var showCamera = false
+    @Published var showSettings = false
     
     @Published var renamingURL: URL?
     @Published var newName = ""
@@ -116,32 +114,8 @@ class MainViewModel: ObservableObject {
         noteManager.setSort(key: key, direction: newDirection)
     }
     
-    func showCamera(_ show: Bool) {
-        // Prevent multiple modals
-        guard !isAnyModalShown() else { return }
-        
-        let device = UIDevice.current.userInterfaceIdiom
-        if device == .phone {
-            showCamera_popover = show
-        } else {
-            showCamera_sheet = show
-        }
-    }
-    
-    func showSettings(_ show: Bool) {
-        // Prevent multiple modals
-        guard !isAnyModalShown() else { return }
-        
-        let device = UIDevice.current.userInterfaceIdiom
-        if device == .phone {
-            showSettings_popover = show
-        } else {
-            showSettings_sheet = show
-        }
-    }
-    
     func isAnyModalShown() -> Bool {
-        return showCamera_popover || showCamera_sheet || showSettings_popover || showSettings_sheet
+        return showCamera || showSettings
     }
 
     func createNewNote() {
@@ -323,19 +297,19 @@ class MainViewModel: ObservableObject {
     }
     
     func openApp(with action: OpenAppOption) {
-        showSettings(false)
+        showSettings = false
         showDummyCamera = false
         switch action {
         case .launchCamera:
-            showCamera(true)
+            showCamera = true
         case .pasteFromClipboard:
-            showCamera(false)
+            showCamera = false
             Task { await addAndPaste() }
         case .addNewNote:
-            showCamera(false)
+            showCamera = false
             createNewNote()
         case .openAppOnly:
-            showCamera(false)
+            showCamera = false
         }
     }
 }
