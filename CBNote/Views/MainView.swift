@@ -164,7 +164,9 @@ struct MainView: View {
                             withAnimation {
                                 proxy.scrollTo("\(scrollPos.absoluteString)-\(refreshID)")
                             }
-                            viewModel.newFileURLToScroll = nil
+                            DispatchQueue.main.async {
+                                self.viewModel.newFileURLToScroll = nil
+                            }
                         }
                     }
                 }
