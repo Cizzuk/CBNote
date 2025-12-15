@@ -44,26 +44,20 @@ class NoteManager: ObservableObject {
     }
     
     func loadFiles() {
-        do {
-            guard let documentsURL = documentDir.directory else {
-                files = []
-                pinnedFiles = []
-                unpinnedFiles = []
-                return
-            }
-            
-            let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
-            
-            // Sort & Filter
-            files = sortFiles(fileURLs)
-            pinnedFiles = files.filter { isPinned($0) }
-            unpinnedFiles = files.filter { !isPinned($0) }
-        } catch {
-            print("Error loading files: \(error)")
+        guard let documentsURL = documentDir.directory,
+              let fileURLs = try? FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
+        else {
             files = []
             pinnedFiles = []
             unpinnedFiles = []
+            print("Error loading files from directory: \(documentDir.rawValue)")
+            return
         }
+        
+        // Sort & Filter
+        files = sortFiles(fileURLs)
+        pinnedFiles = files.filter { self.isPinned($0) }
+        unpinnedFiles = files.filter { !self.isPinned($0) }
     }
     
     func setDocumentDir(type: DocumentDir) {
@@ -124,46 +118,47 @@ class NoteManager: ObservableObject {
     }
     
     func saveCapturedImage(data: Data) {
-        guard let fileURL = createFileURL(fileExtension: "jpeg") else { return }
-        do {
-            try data.write(to: fileURL)
-            loadFiles()
-        } catch {
-            print("Error saving camera image: \(error)")
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let fileURL = self.createFileURL(fileExtension: "jpeg") else { return }
+            
+            do { try data.write(to: fileURL) }
+            catch { print("Error saving captured image: \(error)") }
+            
+            self.loadFiles()
         }
     }
     
     func deleteFile(at url: URL) {
-        do {
-            try FileManager.default.removeItem(at: url)
-            if isPinned(url) {
-                togglePin(for: url)
+        DispatchQueue.global(qos: .utility).async {
+            do { try FileManager.default.removeItem(at: url) }
+            catch { print("Error deleting file: \(error)") }
+                
+            if self.isPinned(url) {
+                self.togglePin(for: url)
             }
-            loadFiles()
-        } catch {
-            print("Error deleting file: \(error)")
+            
+            self.loadFiles()
         }
     }
     
     func renameFile(at url: URL, newName: String) {
-        let folder = url.deletingLastPathComponent()
-        let newURL = folder.appendingPathComponent(newName)
-        
-        let wasPinned = isPinned(url)
-        
-        do {
-            try FileManager.default.moveItem(at: url, to: newURL)
+        DispatchQueue.global(qos: .userInitiated).async {
+            let folder = url.deletingLastPathComponent()
+            let newURL = folder.appendingPathComponent(newName)
+            let wasPinned = self.isPinned(url)
             
-            // Re pin
-            if wasPinned {
-                pinnedFiles.removeAll { $0.path == url.path }
-                pinnedFiles.append(newURL)
-                savePinnedFiles()
-            }
+            do {
+                try FileManager.default.moveItem(at: url, to: newURL)
+                
+                // Re pin
+                if wasPinned {
+                    self.pinnedFiles.removeAll { $0.path == url.path }
+                    self.pinnedFiles.append(newURL)
+                    self.savePinnedFiles()
+                }
+            } catch { print("Error renaming file: \(error)") }
             
-            loadFiles()
-        } catch {
-            print("Error renaming file: \(error)")
+            self.loadFiles()
         }
     }
     
