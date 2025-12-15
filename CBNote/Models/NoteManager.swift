@@ -119,15 +119,16 @@ class NoteManager: ObservableObject {
         return nil
     }
     
-    func saveCapturedImage(data: Data) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let fileURL = self.createFileURL(fileExtension: "jpeg") else { return }
-            
-            do { try data.write(to: fileURL) }
-            catch { print("Error saving captured image: \(error)") }
-            
+    func saveCapturedImage(data: Data) -> URL? {
+        guard let fileURL = self.createFileURL(fileExtension: "jpeg") else { return nil }
+        do {
+            try data.write(to: fileURL)
             self.loadFiles()
+            return fileURL
+        } catch {
+            print("Error saving captured image: \(error)")
         }
+        return nil
     }
     
     func deleteFile(at url: URL) {

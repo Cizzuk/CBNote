@@ -135,7 +135,7 @@ class MainViewModel: ObservableObject {
                 return
             }
             
-            var handled = false
+            var lastHandled: URL?
             let pasteboard = UIPasteboard.general
             
             for (index, item) in pasteboard.items.enumerated() {
@@ -165,7 +165,7 @@ class MainViewModel: ObservableObject {
                 if let text = textContent {
                     guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
                     try? text.write(to: destURL, atomically: true, encoding: .utf8)
-                    handled = true
+                    lastHandled = destURL
                     continue
                 }
                 
@@ -177,7 +177,7 @@ class MainViewModel: ObservableObject {
                     guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
                     if let fileData = try? Data(contentsOf: url) {
                         try? fileData.write(to: destURL)
-                        handled = true
+                        lastHandled = destURL
                         continue
                     }
                 }
@@ -190,13 +190,14 @@ class MainViewModel: ObservableObject {
                     let ext = type.preferredFilenameExtension ?? ""
                     guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
                     try? data.write(to: destURL)
-                    handled = true
+                    lastHandled = destURL
                     break
                 }
             }
             
-            if handled {
+            if let handledURL = lastHandled {
                 lastPasteboardChangeCount = currentChangeCount
+                newFileURLToScroll = handledURL
                 loadFiles()
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             } else if !suppressError {
@@ -261,8 +262,17 @@ class MainViewModel: ObservableObject {
     }
     
     // Handler for camera capture
-    func saveCapturedImage(data: Data) {
-        noteManager.saveCapturedImage(data: data)
+    func saveCapturedImage(data: Data, suppress: Bool = false) {
+        guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
+            if !suppress {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+            return
+        }
+        
+        if !suppress {
+            newFileURLToScroll = newImageURL
+        }
     }
     
     // Handler for locked camera captures
@@ -280,7 +290,7 @@ class MainViewModel: ObservableObject {
                 
                 for fileURL in fileURLs {
                     if let data = try? Data(contentsOf: fileURL) {
-                        self.saveCapturedImage(data: data)
+                        self.saveCapturedImage(data: data, suppress: true)
                     }
                 }
                 
