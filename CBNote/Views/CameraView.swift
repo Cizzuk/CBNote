@@ -109,7 +109,9 @@ struct CameraView: View {
                 viewModel.onPhotoCaptured = { data in
                     onSave(data)
                     if !viewModel.remainCameraAfterCapture {
-                        dismiss()
+                        DispatchQueue.main.async {
+                            dismiss()
+                        }
                     }
                 }
                 updateAlertMessage()
