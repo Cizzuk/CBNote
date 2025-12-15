@@ -113,10 +113,6 @@ class MainViewModel: ObservableObject {
         }
         noteManager.setSort(key: key, direction: newDirection)
     }
-    
-    func isAnyModalShown() -> Bool {
-        return showCamera || showSettings
-    }
 
     func createNewNote() {
         noteManager.createNewNote()
