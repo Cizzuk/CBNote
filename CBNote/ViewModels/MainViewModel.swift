@@ -15,6 +15,7 @@ class MainViewModel: ObservableObject {
     @Published var unpinnedFiles: [URL] = []
     
     @Published var searchQuery = ""
+    @Published var newFileURLToScroll: URL?
     
     @Published var showPasteError = false
     @Published var showDummyCamera = false
@@ -115,7 +116,13 @@ class MainViewModel: ObservableObject {
     }
 
     func createNewNote() {
-        noteManager.createNewNote()
+        guard let newNoteURL = noteManager.createNewNote() else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        newFileURLToScroll = newNoteURL
+        
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
     

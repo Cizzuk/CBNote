@@ -107,14 +107,16 @@ class NoteManager: ObservableObject {
         return fileURL
     }
     
-    func createNewNote() {
-        guard let fileURL = createFileURL(fileExtension: "txt") else { return }
+    func createNewNote() -> URL? {
+        guard let fileURL = createFileURL(fileExtension: "txt") else { return nil }
         do {
             try "".write(to: fileURL, atomically: true, encoding: .utf8)
             loadFiles()
+            return fileURL
         } catch {
             print("Error creating file: \(error)")
         }
+        return nil
     }
     
     func saveCapturedImage(data: Data) {
