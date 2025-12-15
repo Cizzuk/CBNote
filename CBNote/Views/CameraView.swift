@@ -120,6 +120,7 @@ struct CameraView: View {
                 #endif
                 viewModel.stopSession()
             }
+            .accessibilityAction(.escape) { dismiss() }
         }
     }
     

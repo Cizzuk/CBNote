@@ -100,14 +100,8 @@ struct MainView: View {
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button(action: { viewModel.showCamera(true) }) {
+                        Button(action: { viewModel.showCamera = true }) {
                             Label("Camera", systemImage: "camera")
-                        }
-                        .popover(isPresented: $viewModel.showCamera_popover) {
-                            CameraView { data in
-                                viewModel.saveCapturedImage(data: data)
-                            }
-                            .presentationCompactAdaptation(.fullScreenCover)
                         }
                         Button(action: { Task { await viewModel.addAndPaste() } }) {
                             Label("Paste", systemImage: "document.on.clipboard")
@@ -122,13 +116,8 @@ struct MainView: View {
                         }
                     }
                     ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Button(action: { viewModel.showSettings(true) }) {
+                        Button(action: { viewModel.showSettings = true }) {
                             Label("Settings", systemImage: "gearshape")
-                        }
-                        .popover(isPresented: $viewModel.showSettings_popover) {
-                            SettingsView()
-                                .presentationDetents([.large])
-                                .presentationCompactAdaptation(.sheet)
                         }
                         Menu {
                             // iCloud/On-Device
@@ -202,7 +191,7 @@ struct MainView: View {
                     if let shortcut = action.object as? CustomKeyboardShortcut {
                         switch shortcut {
                         case .openSettings:
-                            viewModel.showSettings(true)
+                            viewModel.showSettings = true
                         case .reloadFiles:
                             viewModel.checkLockedCameraCaptures()
                             viewModel.loadFiles()
@@ -214,12 +203,12 @@ struct MainView: View {
                         }
                     }
                 }
-                .fullScreenCover(isPresented: $viewModel.showCamera_sheet) {
+                .fullScreenCover(isPresented: $viewModel.showCamera) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
                     }
                 }
-                .sheet(isPresented: $viewModel.showSettings_sheet) {
+                .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
                 }
                 .alert("Rename", isPresented: $viewModel.isRenaming) {
