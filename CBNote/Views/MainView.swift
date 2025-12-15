@@ -9,6 +9,7 @@ import SwiftUI
 import QuickLook
 
 struct MainView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
@@ -174,10 +175,12 @@ struct MainView: View {
                     viewModel.checkAutoPaste()
                     viewModel.loadFiles()
                 }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                    viewModel.checkLockedCameraCaptures()
-                    viewModel.checkAutoPaste()
-                    viewModel.loadFiles()
+                .onChange(of: scenePhase) {
+                    if scenePhase == .active {
+                        viewModel.checkLockedCameraCaptures()
+                        viewModel.checkAutoPaste()
+                        viewModel.loadFiles()
+                    }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()
