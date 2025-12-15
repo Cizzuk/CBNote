@@ -214,24 +214,21 @@ class Camera: NSObject, ObservableObject {
     func focus(at point: CGPoint) {
         guard let device = input?.device else { return }
         
-        do {
-            try device.lockForConfiguration()
-            
-            if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
-                device.focusPointOfInterest = point
-                device.focusMode = .autoFocus
-            }
-            
-            if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.autoExpose) {
-                device.exposurePointOfInterest = point
-                device.exposureMode = .autoExpose
-            }
-            
-            device.isSubjectAreaChangeMonitoringEnabled = true
-            device.unlockForConfiguration()
-        } catch {
-            print("Error focusing: \(error)")
+        do { try device.lockForConfiguration() }
+        catch { return }
+        
+        if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
+            device.focusPointOfInterest = point
+            device.focusMode = .autoFocus
         }
+        
+        if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.autoExpose) {
+            device.exposurePointOfInterest = point
+            device.exposureMode = .autoExpose
+        }
+        
+        device.isSubjectAreaChangeMonitoringEnabled = true
+        device.unlockForConfiguration()
     }
     
     // Update rotation angle based on device orientation
