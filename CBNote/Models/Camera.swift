@@ -79,17 +79,13 @@ class Camera: NSObject, ObservableObject {
         if let defaultDevice = AVCaptureDevice.default(for: .video) {
             self.setupInput(for: defaultDevice)
         }
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.session.startRunning()
-        }
     }
     
-    }
     // Setup new camera or lens input
     private func setupInput(for device: AVCaptureDevice) {
         do {
             let newInput = try AVCaptureDeviceInput(device: device)
+            
             if let currentInput = input {
                 session.removeInput(currentInput)
             }
@@ -115,10 +111,11 @@ class Camera: NSObject, ObservableObject {
             let sessionQueue = DispatchSerialQueue(label: "cameraControlSessionQueue")
             session.setControlsDelegate(controlsDelegate, queue: sessionQueue)
             
-            if session.canAddInput(newInput) {
-                DispatchQueue.global(qos: .userInteractive).async {
-                    self.session.addInput(newInput)
-                    self.input = newInput
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
+                if session.canAddInput(newInput) {
+                    session.addInput(newInput)
+                    input = newInput
                 }
             }
         } catch {
