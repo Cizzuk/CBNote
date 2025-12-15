@@ -197,11 +197,15 @@ class MainViewModel: ObservableObject {
             
             if let handledURL = lastHandled {
                 lastPasteboardChangeCount = currentChangeCount
-                newFileURLToScroll = handledURL
+                DispatchQueue.main.async {
+                    self.newFileURLToScroll = handledURL
+                }
                 loadFiles()
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             } else if !suppressError {
-                showPasteError = true
+                DispatchQueue.main.async {
+                    self.showPasteError = true
+                }
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
@@ -320,7 +324,7 @@ class MainViewModel: ObservableObject {
             // Kill the dummy camera after 2s.
             // In the test, system killed the app when it was below 0.8 - 1s.
             // For safety, the dummy will be killed in 2s.
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.showDummyCamera = false
             }
         }
