@@ -111,7 +111,7 @@ class Camera: NSObject, ObservableObject {
             let sessionQueue = DispatchSerialQueue(label: "cameraControlSessionQueue")
             session.setControlsDelegate(controlsDelegate, queue: sessionQueue)
             
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let self = self else { return }
                 if session.canAddInput(newInput) {
                     session.addInput(newInput)
@@ -247,7 +247,7 @@ class Camera: NSObject, ObservableObject {
     }
     
     func startSession() {
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             if !self.session.isRunning {
                 self.session.startRunning()
             }
@@ -277,7 +277,7 @@ extension Camera: AVCapturePhotoCaptureDelegate {
         
         guard let data = photo.fileDataRepresentation() else { return }
         
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             self.onPhotoCaptured?(data)
         }
     }

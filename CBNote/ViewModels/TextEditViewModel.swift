@@ -19,7 +19,7 @@ class TextEditViewModel: ObservableObject {
     }
     
     func loadContent() {
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             // Check permissions
             if !FileManager.default.isWritableFile(atPath: self.url.path) {
                 DispatchQueue.main.async {

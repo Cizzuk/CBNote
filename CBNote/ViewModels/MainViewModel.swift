@@ -120,7 +120,7 @@ class MainViewModel: ObservableObject {
     }
     
     func addAndPaste(suppressError: Bool = false) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
             let currentChangeCount = UIPasteboard.general.changeCount
@@ -206,7 +206,7 @@ class MainViewModel: ObservableObject {
     }
 
     func copyFile(at url: URL) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
             if FileTypes.isEditableText(url) {
@@ -301,7 +301,7 @@ class MainViewModel: ObservableObject {
             // Kill the dummy camera after 2s.
             // In the test, system killed the app when it was below 0.8 - 1s.
             // For safety, the dummy will be killed in 2s.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
                 self.showDummyCamera = false
             }
         }
