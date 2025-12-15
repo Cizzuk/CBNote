@@ -206,7 +206,9 @@ class MainViewModel: ObservableObject {
     }
 
     func copyFile(at url: URL) {
-        DispatchQueue.global(qos: .utility).async {
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self else { return }
+            
             if FileTypes.isEditableText(url) {
                 if let text = try? String(contentsOf: url, encoding: .utf8) {
                     UIPasteboard.general.string = text
@@ -220,7 +222,7 @@ class MainViewModel: ObservableObject {
                     UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
                 }
             }
-            self.lastPasteboardChangeCount = UIPasteboard.general.changeCount
+            lastPasteboardChangeCount = UIPasteboard.general.changeCount
         }
     }
     
@@ -259,23 +261,28 @@ class MainViewModel: ObservableObject {
     // Handler for locked camera captures
     func checkLockedCameraCaptures() {
         #if !targetEnvironment(macCatalyst)
-        Task {
+        DispatchQueue.global(qos: .utility).async {
             let urls = LockedCameraCaptureManager.shared.sessionContentURLs
+            guard !urls.isEmpty else { return }
+            
             for url in urls {
-                do {
-                    let fileURLs = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
-                    for fileURL in fileURLs {
-                        if let data = try? Data(contentsOf: fileURL) {
-                            await MainActor.run {
-                                saveCapturedImage(data: data)
-                            }
-                        }
+                guard
+                    let fileURLs = try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil),
+                    !fileURLs.isEmpty
+                else { continue }
+                
+                for fileURL in fileURLs {
+                    if let data = try? Data(contentsOf: fileURL) {
+                        self.saveCapturedImage(data: data)
                     }
-                    try await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url)
-                } catch {
-                    print("Error processing locked camera capture: \(error)")
+                }
+                
+                DispatchQueue.global(qos: .background).async {
+                    Task { try? await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url) }
                 }
             }
+            
+            self.loadFiles()
         }
         #endif
     }
