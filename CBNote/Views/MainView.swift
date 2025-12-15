@@ -103,6 +103,8 @@ struct MainView: View {
                         viewModel.checkLockedCameraCaptures()
                         viewModel.loadFiles()
                         refreshID = UUID()
+                        // To reduce View jitter
+                        try? await Task.sleep(nanoseconds: 1_000_000_000)
                     }
                     .onAppear {
                         viewModel.checkLockedCameraCaptures()
