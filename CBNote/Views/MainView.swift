@@ -152,7 +152,7 @@ struct MainView: View {
                                 Text("Sort By")
                             }
                         } label: {
-                            Label("Option", systemImage: "ellipsis")
+                            Label("Options", systemImage: "ellipsis")
                         }
                     }
                     ToolbarItemGroup(placement: .keyboard) {
