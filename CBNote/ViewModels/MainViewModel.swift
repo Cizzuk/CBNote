@@ -202,20 +202,22 @@ class MainViewModel: ObservableObject {
     }
 
     func copyFile(at url: URL) {
-        if FileTypes.isEditableText(url) {
-            if let text = try? String(contentsOf: url, encoding: .utf8) {
-                UIPasteboard.general.string = text
+        DispatchQueue.global(qos: .utility).async {
+            if FileTypes.isEditableText(url) {
+                if let text = try? String(contentsOf: url, encoding: .utf8) {
+                    UIPasteboard.general.string = text
+                }
+            } else if FileTypes.isPreviewableImage(url) {
+                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                    UIPasteboard.general.image = image
+                }
+            } else {
+                if let fileData = try? Data(contentsOf: url) {
+                    UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
+                }
             }
-        } else if FileTypes.isPreviewableImage(url) {
-            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                UIPasteboard.general.image = image
-            }
-        } else {
-            if let fileData = try? Data(contentsOf: url) {
-                UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
-            }
+            self.lastPasteboardChangeCount = UIPasteboard.general.changeCount
         }
-        lastPasteboardChangeCount = UIPasteboard.general.changeCount
     }
     
     func deleteFile(at url: URL) {
