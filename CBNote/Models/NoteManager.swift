@@ -205,7 +205,9 @@ class NoteManager: ObservableObject {
     }
     
     private func savePinnedFiles() {
-        let filenames = pinnedFiles.map { $0.lastPathComponent }
-        UserDefaults.standard.set(filenames, forKey: documentDir.pinnedKey)
+        DispatchQueue.global(qos: .background).async {
+            let filenames = self.pinnedFiles.map { $0.lastPathComponent }
+            UserDefaults.standard.set(filenames, forKey: self.documentDir.pinnedKey)
+        }
     }
 }
