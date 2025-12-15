@@ -116,6 +116,7 @@ class MainViewModel: ObservableObject {
 
     func createNewNote() {
         noteManager.createNewNote()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
     
     func addAndPaste(suppressError: Bool = false) async {
@@ -187,6 +188,7 @@ class MainViewModel: ObservableObject {
         if handled {
             lastPasteboardChangeCount = currentChangeCount
             loadFiles()
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
         } else if !suppressError {
             showPasteError = true
             UINotificationFeedbackGenerator().notificationOccurred(.error)
