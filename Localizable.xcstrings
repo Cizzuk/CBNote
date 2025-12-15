@@ -42,12 +42,12 @@
         }
       }
     },
-    "Auto Paste when Opening" : {
+    "Ascending" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "起動時に自動で貼り付け"
+            "value" : "昇順"
           }
         }
       }
@@ -92,13 +92,23 @@
         }
       }
     },
+    "Camera Control Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールからの起動時"
+          }
+        }
+      }
+    },
     "Camera is not available in the Simulator" : {
       "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カメラはSimulatorでは利用できません"
+            "value" : "カメラはシミュレーターでは利用できません"
           }
         }
       }
@@ -113,21 +123,24 @@
         }
       }
     },
+    "Cannot connect to iPhone." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneに接続できませんでした。"
+          }
+        }
+      }
+    },
     "CaptureIntent" : {
       "shouldTranslate" : false
     },
     "CBNote" : {
       "shouldTranslate" : false
     },
-    "Choose action when launching from the Lock Screen." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ロック画面で開いた時の動作を決めます。"
-          }
-        }
-      }
+    "Cizzuk" : {
+      "shouldTranslate" : false
     },
     "Close" : {
       "localizations" : {
@@ -135,6 +148,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "閉じる"
+          }
+        }
+      }
+    },
+    "Collapsed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "折りたたまれています"
+          }
+        }
+      }
+    },
+    "Companion app is not installed on iPhone." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンパニオンアプリがiPhoneにインストールされていません"
+          }
+        }
+      }
+    },
+    "Connection is not activated." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続が有効になっていません。"
           }
         }
       }
@@ -149,12 +192,12 @@
         }
       }
     },
-    "Could not load file or unsupported file type." : {
+    "Date" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイルを読み込めないか、サポートされていないファイル形式です。"
+            "value" : "日付"
           }
         }
       }
@@ -165,6 +208,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除"
+          }
+        }
+      }
+    },
+    "Descending" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降順"
+          }
+        }
+      }
+    },
+    "Developer" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発者"
           }
         }
       }
@@ -189,12 +252,32 @@
         }
       }
     },
+    "Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー"
+          }
+        }
+      }
+    },
     "Even when setting something other than %@, the camera will temporarily launch in the background." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "「%@」以外を設定した場合でも、カメラが一時的にバックグラウンドで起動します。"
+          }
+        }
+      }
+    },
+    "Expanded" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開かれています"
           }
         }
       }
@@ -209,12 +292,32 @@
         }
       }
     },
-    "File is empty" : {
+    "Failed to load image." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイルは空です"
+            "value" : "画像の読み込みに失敗しました"
+          }
+        }
+      }
+    },
+    "File Name Format" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル名のフォーマット"
+          }
+        }
+      }
+    },
+    "File Not Found" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルが見つかりません"
           }
         }
       }
@@ -239,6 +342,39 @@
         }
       }
     },
+    "Folder Not Found" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダが見つかりません"
+          }
+        }
+      }
+    },
+    "for \"%@\"." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対象: \"%@\""
+          }
+        }
+      }
+    },
+    "iCloud Drive" : {
+      "shouldTranslate" : false
+    },
+    "iPhone needs to be unlocked after reboot." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneを再起動した後に、ロックを解除する必要があります。"
+          }
+        }
+      }
+    },
     "Launch Camera" : {
       "localizations" : {
         "ja" : {
@@ -259,6 +395,16 @@
         }
       }
     },
+    "License" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライセンス"
+          }
+        }
+      }
+    },
     "Locked Camera Action" : {
       "localizations" : {
         "ja" : {
@@ -271,6 +417,16 @@
     },
     "MIT License\n\nCopyright (c) 2025 Cizzuk\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE." : {
       "shouldTranslate" : false
+    },
+    "Name" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
+        }
+      }
     },
     "New Name" : {
       "localizations" : {
@@ -292,12 +448,22 @@
         }
       }
     },
-    "No notes yet. Add notes from your iPhone first." : {
+    "No locations available." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ノートがまだありません。iPhoneで追加してください。"
+            "value" : "利用可能な場所がありません。"
+          }
+        }
+      }
+    },
+    "No notes found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノートがありません。"
           }
         }
       }
@@ -312,12 +478,122 @@
         }
       }
     },
+    "No Results" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果なし"
+          }
+        }
+      }
+    },
     "No valid content found in clipboard to paste." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "利用可能なコンテンツがクリップボードにありません。"
+          }
+        }
+      }
+    },
+    "Note is empty" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空のノート"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "On My Apple TV" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このApple TV内"
+          }
+        }
+      }
+    },
+    "On My Apple Vision" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このApple Vision内"
+          }
+        }
+      }
+    },
+    "On My CarPlay" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このCarPlay内"
+          }
+        }
+      }
+    },
+    "On My Device" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイス内"
+          }
+        }
+      }
+    },
+    "On My iPad" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPad内"
+          }
+        }
+      }
+    },
+    "On My iPhone" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhone内"
+          }
+        }
+      }
+    },
+    "On My Mac" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMac内"
+          }
+        }
+      }
+    },
+    "Open App" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開く"
           }
         }
       }
@@ -338,6 +614,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CBNoteを開く"
+          }
+        }
+      }
+    },
+    "Option" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オプション"
           }
         }
       }
@@ -372,6 +658,26 @@
         }
       }
     },
+    "Pin" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留め"
+          }
+        }
+      }
+    },
+    "Pinned Notes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めされたノート"
+          }
+        }
+      }
+    },
     "Please allow camera access to take photos." : {
       "localizations" : {
         "ja" : {
@@ -402,17 +708,7 @@
         }
       }
     },
-    "Recommended to set \"Paste from Other Apps\" to \"Allow\" in the Settings." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定で「他のAppからペースト」を「許可」にすることをおすすめします。"
-          }
-        }
-      }
-    },
-    "Refresh" : {
+    "Reload" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -452,12 +748,32 @@
         }
       }
     },
-    "Retry" : {
+    "Sample: %@" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再試行"
+            "value" : "ファイル名の例: %@"
+          }
+        }
+      }
+    },
+    "Search Notes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノートを検索"
+          }
+        }
+      }
+    },
+    "Set the behavior when you start the CBNote camera from the lock screen." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ロック画面からCBNoteのカメラを起動したときの動作を設定します。"
           }
         }
       }
@@ -472,12 +788,32 @@
         }
       }
     },
+    "Settings..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定…"
+          }
+        }
+      }
+    },
     "Share" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "共有"
+          }
+        }
+      }
+    },
+    "Sort By" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "並び順"
           }
         }
       }
@@ -532,6 +868,36 @@
         }
       }
     },
+    "Unpin" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めを解除"
+          }
+        }
+      }
+    },
+    "Unsupported file type." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないファイル形式です。"
+          }
+        }
+      }
+    },
+    "Use date format patterns to customize file names." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日付フォーマットを使用してファイル名をカスタマイズします。"
+          }
+        }
+      }
+    },
     "Version" : {
       "localizations" : {
         "ja" : {
@@ -542,12 +908,12 @@
         }
       }
     },
-    "When Launching with Camera Control" : {
+    "When App Opening" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カメラコントロールから起動した時の動作"
+            "value" : "アプリが開かれた時"
           }
         }
       }
@@ -561,6 +927,9 @@
           }
         }
       }
+    },
+    "yyyy-MM-dd-HH-mm-ss" : {
+      "shouldTranslate" : false
     }
   },
   "version" : "1.1"

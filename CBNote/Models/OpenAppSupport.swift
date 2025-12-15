@@ -18,7 +18,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
     case openAppOnly = "Open App Only"
 
     var id: String { rawValue }
-    var localizedName: String.LocalizationValue {
+    var localizedName: LocalizedStringResource {
         switch self {
         case .launchCamera:
             return "Launch Camera"

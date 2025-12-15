@@ -24,8 +24,24 @@ struct FileTypes {
         return previewableImage.contains(url.pathExtension.lowercased())
     }
     
-    static func isCopiableToClipboard(_ url: URL) -> Bool {
-        return isEditableText(url) || isPreviewableImage(url)
+    static func shouldMonospaceFont(_ url: URL) -> Bool {
+        guard let type = UTType(filenameExtension: url.pathExtension) else {
+            return false
+        }
+        
+        // Check UTType
+        let trueTypes: [UTType] = [.sourceCode, .script, .xml, .json, .css, .html, .swiftSource]
+        if trueTypes.contains(where: { type.conforms(to: $0) }) {
+            return true
+        }
+        
+        // Check Extensions
+        let trueExts: [String] = ["md", "markdown", "csv", "log", "tex", "yml", "yaml", "toml"]
+        if trueExts.contains(url.pathExtension.lowercased()) {
+            return true
+        }
+        
+        return false
     }
     
     static func name(for url: URL) -> String {
@@ -46,7 +62,7 @@ struct FileTypes {
         }
         
         guard let type = UTType(filenameExtension: url.pathExtension) else {
-            return "doc"
+            return "document"
         }
         
         // Media
@@ -81,7 +97,7 @@ struct FileTypes {
         } else if type.conforms(to: .presentation) {
             return "chart.bar.doc.horizontal"
         } else if type.conforms(to: .pdf) {
-            return "doc.richtext"
+            return "richtext.page"
         } else if type.conforms(to: .database) {
             return "server.rack"
         } else if type.conforms(to: .calendarEvent) {
@@ -97,11 +113,11 @@ struct FileTypes {
             
         // Text
         } else if type.conforms(to: .text) {
-            return "doc.text"
+            return "text.document"
         } else if type.conforms(to: .plainText) {
-            return "doc.plaintext"
+            return "text.page"
         } else if type.conforms(to: .rtf) {
-            return "doc.richtext"
+            return "richtext.page"
         } else if type.conforms(to: .font) {
             return "textformat"
             
@@ -134,8 +150,28 @@ struct FileTypes {
             return "arrowshape.turn.up.left"
         } else if type.conforms(to: .symbolicLink) {
             return "arrowshape.turn.up.left"
-        } else {
-            return "doc"
         }
+        
+        return "document"
+    }
+    
+    static func systemImageQuestionmark(for url: URL) -> String {
+        if url.hasDirectoryPath {
+            return "questionmark.folder"
+        }
+        
+        guard let type = UTType(filenameExtension: url.pathExtension) else {
+            return "questionmark.square"
+        }
+        
+        if type.conforms(to: .text) {
+            return "questionmark.text.page"
+        } else if type.conforms(to: .plainText) {
+            return "questionmark.text.page"
+        } else if type.conforms(to: .rtf) {
+            return "questionmark.text.page"
+        }
+        
+        return "questionmark.square"
     }
 }

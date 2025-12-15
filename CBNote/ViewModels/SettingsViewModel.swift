@@ -7,6 +7,7 @@
 
 import AppIntents
 import Combine
+import UIKit
 
 class SettingsViewModel: ObservableObject {
     @Published var autoPasteWhenOpening: Bool = UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
@@ -21,6 +22,14 @@ class SettingsViewModel: ObservableObject {
         }
     }
         
+    @Published var nameFormat: String = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss" {
+        didSet {
+            if nameFormat.isEmpty {
+                nameFormat = "yyyy-MM-dd-HH-mm-ss"
+            }
+            UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
+        }
+    }
     
     @Published var cameraControlAction: OpenAppOption = {
         if let rawValue = UserDefaults.standard.string(forKey: "cameraControlAction"),

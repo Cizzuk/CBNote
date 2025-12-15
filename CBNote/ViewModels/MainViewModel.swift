@@ -11,41 +11,144 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 class MainViewModel: ObservableObject {
-    @Published var files: [URL] = []
+    @Published var pinnedFiles: [URL] = []
+    @Published var unpinnedFiles: [URL] = []
+    
+    @Published var searchQuery = ""
+    
     @Published var showPasteError = false
-    @Published var showCamera = false
     @Published var showDummyCamera = false
-    @Published var showSettings = false
+    @Published var showCamera_sheet = false
+    @Published var showCamera_popover = false
+    @Published var showSettings_sheet = false
+    @Published var showSettings_popover = false
     
     @Published var renamingURL: URL?
     @Published var newName = ""
     @Published var isRenaming = false
     
+    @Published var documentDir: DocumentDir = .onDevice
+    @Published var sortKey: SortKey = .name
+    @Published var sortDirection: SortDirection = .descending
+    
+    let noteManager = NoteManager()
+    
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
-
+    
     init() {
-        NoteManager.shared.$files
-            .assign(to: \.files, on: self)
+        Publishers.CombineLatest(noteManager.$pinnedFiles, $searchQuery)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] files, query in
+                self?.pinnedFiles = self?.filterFiles(files, query: query) ?? []
+            }
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest(noteManager.$unpinnedFiles, $searchQuery)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] files, query in
+                self?.unpinnedFiles = self?.filterFiles(files, query: query) ?? []
+            }
+            .store(in: &cancellables)
+        
+        noteManager.$documentDir
+            .sink { [weak self] dir in
+                self?.documentDir = dir
+                UserDefaults.standard.set(dir.rawValue, forKey: "documentDir")
+            }
+            .store(in: &cancellables)
+        
+        if !documentDir.isAvailable {
+            noteManager.setDocumentDir(type: .defaultDir)
+        }
+            
+        noteManager.$sortKey
+            .sink { [weak self] key in
+                self?.sortKey = key
+                UserDefaults.standard.set(key.rawValue, forKey: "sortKey")
+            }
+            .store(in: &cancellables)
+            
+        noteManager.$sortDirection
+            .sink { [weak self] direction in
+                self?.sortDirection = direction
+                UserDefaults.standard.set(direction.rawValue, forKey: "sortDirection")
+            }
             .store(in: &cancellables)
     }
 
-    func loadFiles() {
-        NoteManager.shared.loadFiles()
+    private func filterFiles(_ files: [URL], query: String) -> [URL] {
+        guard !query.isEmpty else { return files }
+        
+        return files.filter { url in
+            // File name search
+            if url.lastPathComponent.localizedCaseInsensitiveContains(query) {
+                return true
+            }
+            
+            // File content search
+            if FileTypes.isEditableText(url) {
+                if let content = try? String(contentsOf: url, encoding: .utf8),
+                   content.localizedCaseInsensitiveContains(query) {
+                    return true
+                }
+            }
+            
+            return false
+        }
     }
 
-    func addItem() {
-        let fileURL = NoteManager.shared.createFileURL(fileExtension: "txt")
+    func loadFiles() {
+        noteManager.loadFiles()
+    }
+    
+    func setDocumentDir(type: DocumentDir) {
+        noteManager.setDocumentDir(type: type)
+    }
+    
+    func toggleSort(key: SortKey) {
+        var newDirection = sortDirection
+        if sortKey == key {
+            newDirection = sortDirection == .descending ? .ascending : .descending
+        } else {
+            newDirection = .descending
+        }
+        noteManager.setSort(key: key, direction: newDirection)
+    }
+    
+    func showCamera(_ show: Bool) {
+        // Prevent multiple modals
+        guard !isAnyModalShown() else { return }
         
-        do {
-            try "".write(to: fileURL, atomically: true, encoding: .utf8)
-            loadFiles()
-        } catch {
-            print("Error creating file: \(error)")
+        let device = UIDevice.current.userInterfaceIdiom
+        if device == .phone {
+            showCamera_popover = show
+        } else {
+            showCamera_sheet = show
         }
     }
     
-    func addAndPaste(suppressError: Bool = false) {
+    func showSettings(_ show: Bool) {
+        // Prevent multiple modals
+        guard !isAnyModalShown() else { return }
+        
+        let device = UIDevice.current.userInterfaceIdiom
+        if device == .phone {
+            showSettings_popover = show
+        } else {
+            showSettings_sheet = show
+        }
+    }
+    
+    func isAnyModalShown() -> Bool {
+        return showCamera_popover || showCamera_sheet || showSettings_popover || showSettings_sheet
+    }
+
+    func createNewNote() {
+        noteManager.createNewNote()
+    }
+    
+    func addAndPaste(suppressError: Bool = false) async {
         let currentChangeCount = UIPasteboard.general.changeCount
         if suppressError && currentChangeCount == lastPasteboardChangeCount {
             return
@@ -79,7 +182,7 @@ class MainViewModel: ObservableObject {
             }
             
             if let text = textContent {
-                let destURL = NoteManager.shared.createFileURL(fileExtension: "txt")
+                guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
                 try? text.write(to: destURL, atomically: true, encoding: .utf8)
                 handled = true
                 continue
@@ -90,7 +193,7 @@ class MainViewModel: ObservableObject {
                let data = getData(for: UTType.fileURL.identifier),
                let url = URL(dataRepresentation: data, relativeTo: nil) {
                 
-                let destURL = NoteManager.shared.createFileURL(fileExtension: url.pathExtension)
+                guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
                 if let fileData = try? Data(contentsOf: url) {
                     try? fileData.write(to: destURL)
                     handled = true
@@ -104,7 +207,7 @@ class MainViewModel: ObservableObject {
                       let data = getData(for: typeIdentifier) else { continue }
                 
                 let ext = type.preferredFilenameExtension ?? ""
-                let destURL = NoteManager.shared.createFileURL(fileExtension: ext)
+                guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
                 try? data.write(to: destURL)
                 handled = true
                 break
@@ -122,7 +225,7 @@ class MainViewModel: ObservableObject {
     
     func checkAutoPaste() {
         if UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
-            addAndPaste(suppressError: true)
+            Task { await addAndPaste(suppressError: true) }
         }
     }
 
@@ -136,28 +239,32 @@ class MainViewModel: ObservableObject {
                 UIPasteboard.general.image = image
             }
         } else {
-            UIPasteboard.general.url = url
+            if let fileData = try? Data(contentsOf: url) {
+                UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
+            }
         }
         lastPasteboardChangeCount = UIPasteboard.general.changeCount
     }
     
     func deleteFile(at url: URL) {
-        NoteManager.shared.deleteFile(at: url)
-    }
-    
-    // Handler for swipe/context menu delete action
-    func deleteFile(offsets: IndexSet) {
-        offsets.map { files[$0] }.forEach(deleteFile)
+        noteManager.deleteFile(at: url)
     }
     
     func renameFile() {
         guard let url = renamingURL else { return }
-        NoteManager.shared.renameFile(at: url, newName: newName)
+        noteManager.renameFile(at: url, newName: newName)
+    }
+    
+    func isFilePinned(_ url: URL) -> Bool {
+        noteManager.isPinned(url)
+    }
+    
+    func pinUnpinFile(at url: URL) {
+        noteManager.togglePin(for: url)
     }
     
     func isValidFileName(_ name: String) -> Bool {
-        let invalidCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>:")
-        return name.rangeOfCharacter(from: invalidCharacters) == nil && !name.isEmpty
+        noteManager.isValidFileName(name)
     }
     
     func startRenaming(url: URL) {
@@ -167,19 +274,13 @@ class MainViewModel: ObservableObject {
     }
     
     // Handler for camera capture
-    func saveImage(data: Data) {
-        let fileURL = NoteManager.shared.createFileURL(fileExtension: "jpeg")
-        
-        do {
-            try data.write(to: fileURL)
-            loadFiles()
-        } catch {
-            print("Error saving camera image: \(error)")
-        }
+    func saveCapturedImage(data: Data) {
+        noteManager.saveCapturedImage(data: data)
     }
     
     // Handler for locked camera captures
     func checkLockedCameraCaptures() {
+        #if !targetEnvironment(macCatalyst)
         Task {
             let urls = LockedCameraCaptureManager.shared.sessionContentURLs
             for url in urls {
@@ -188,7 +289,7 @@ class MainViewModel: ObservableObject {
                     for fileURL in fileURLs {
                         if let data = try? Data(contentsOf: fileURL) {
                             await MainActor.run {
-                                saveImage(data: data)
+                                saveCapturedImage(data: data)
                             }
                         }
                     }
@@ -198,6 +299,7 @@ class MainViewModel: ObservableObject {
                 }
             }
         }
+        #endif
     }
     
     // Handler for launch from camera control
@@ -211,29 +313,29 @@ class MainViewModel: ObservableObject {
         if action != .launchCamera && UIApplication.shared.applicationState != .active {
             showDummyCamera = true
             
-            // Kill the dummy camera after 1s.
-            // In the test, system killed the app when it was below 0.8s.
-            // For safety, the dummy will be killed in 1s.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            // Kill the dummy camera after 2s.
+            // In the test, system killed the app when it was below 0.8 - 1s.
+            // For safety, the dummy will be killed in 2s.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.showDummyCamera = false
             }
         }
     }
     
     func openApp(with action: OpenAppOption) {
-        showSettings = false
+        showSettings(false)
         showDummyCamera = false
         switch action {
         case .launchCamera:
-            showCamera = true
+            showCamera(true)
         case .pasteFromClipboard:
-            showCamera = false
-            addAndPaste()
+            showCamera(false)
+            Task { await addAndPaste() }
         case .addNewNote:
-            showCamera = false
-            addItem()
+            showCamera(false)
+            createNewNote()
         case .openAppOnly:
-            showCamera = false
+            showCamera(false)
         }
     }
 }

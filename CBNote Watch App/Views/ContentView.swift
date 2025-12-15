@@ -8,55 +8,47 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = WatchViewModel()
+    @StateObject private var model = WatchConnectionModel.shared
     
     var body: some View {
         NavigationStack {
             Group {
-                if let error = viewModel.errorMessage {
-                    VStack {
-                        Label(error, systemImage: "exclamationmark.triangle")
-                        Button("Retry") {
-                            viewModel.loadFiles()
-                        }
-                    }
-                } else if viewModel.isLoading {
+                if model.isLoading && model.directories.isEmpty {
                     ProgressView()
-                } else if viewModel.files.isEmpty {
-                    Text("No notes yet. Add notes from your iPhone first.")
-                        .multilineTextAlignment(.center)
-                } else {
-                    List(viewModel.files) { file in
-                        NavigationLink(value: file) {
-                            VStack(alignment: .leading) {
-                                if let preview = file.preview {
-                                    Text(preview)
-                                        .lineLimit(2)
-                                        .truncationMode(.tail)
-                                    Divider()
-                                }
-                                Label(file.name, systemImage: FileTypes.systemImage(for: file.url))
-                                    .font(.caption)
-                            }
+                } else if model.directories.isEmpty {
+                    VStack {
+                        Text("No locations available.")
+                        Button("Reload") {
+                            model.fetchDirectories()
                         }
                     }
-                    .navigationDestination(for: WatchViewModel.FileItem.self) { file in
-                        FileDetailView(viewModel: viewModel, file: file)
+                } else {
+                    List(model.directories) { dir in
+                        NavigationLink(destination: FileListView(name: dir.name, directoryId: dir.id)) {
+                            Label(dir.name, systemImage: dir.systemImage)
+                        }
                     }
                 }
             }
             .navigationTitle("CBNote")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: viewModel.loadFiles) {
-                        Label("Refresh", systemImage: "arrow.clockwise")
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: { model.fetchDirectories() }) {
+                        Label("Reload", systemImage: "arrow.clockwise")
                     }
+                    .disabled(model.isLoading)
                 }
             }
+            .alert(isPresented: $model.showError) {
+                Alert(title: Text("Error"),
+                      message: Text(model.errorMessage ?? "Unknown error"),
+                      dismissButton: .default(Text("OK"))
+                )
+            }
         }
-        .onAppear() {
-            viewModel.loadFiles()
+        .onAppear {
+            model.fetchDirectories()
         }
     }
 }
+

@@ -63,7 +63,7 @@ class Camera: NSObject, ObservableObject {
     
     private func setupSession() {
         session.beginConfiguration()
-        session.sessionPreset = .photo
+        defer { session.commitConfiguration() }
         
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
@@ -72,23 +72,12 @@ class Camera: NSObject, ObservableObject {
             session.sessionPreset = .photo
         }
         
-        // Setup default input
-        if let backCamera = backCameraDiscoverySession.devices.first {
-            setupInput(for: backCamera)
-        } else if let frontCamera = frontCameraDiscoverySession.devices.first {
-            setupInput(for: frontCamera)
-        } else if let externalCamera = externalCameraDiscoverySession.devices.first {
-            setupInput(for: externalCamera)
-        }
-        
         if session.canAddOutput(output) {
             session.addOutput(output)
         }
         
-        session.commitConfiguration()
-        
-        DispatchQueue.global(qos: .background).async {
-            self.session.startRunning()
+        if let defaultDevice = AVCaptureDevice.default(for: .video) {
+            self.setupInput(for: defaultDevice)
         }
     }
     
@@ -96,6 +85,7 @@ class Camera: NSObject, ObservableObject {
     private func setupInput(for device: AVCaptureDevice) {
         do {
             let newInput = try AVCaptureDeviceInput(device: device)
+            
             if let currentInput = input {
                 session.removeInput(currentInput)
             }
@@ -121,9 +111,12 @@ class Camera: NSObject, ObservableObject {
             let sessionQueue = DispatchSerialQueue(label: "cameraControlSessionQueue")
             session.setControlsDelegate(controlsDelegate, queue: sessionQueue)
             
-            if session.canAddInput(newInput) {
-                session.addInput(newInput)
-                input = newInput
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
+                if session.canAddInput(newInput) {
+                    session.addInput(newInput)
+                    input = newInput
+                }
             }
         } catch {
             print("Error setting up input: \(error)")
@@ -257,7 +250,7 @@ class Camera: NSObject, ObservableObject {
     }
     
     func startSession() {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             if !self.session.isRunning {
                 self.session.startRunning()
             }
@@ -286,7 +279,7 @@ extension Camera: AVCapturePhotoCaptureDelegate {
         
         guard let data = photo.fileDataRepresentation() else { return }
         
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInitiated).async {
             self.onPhotoCaptured?(data)
         }
     }

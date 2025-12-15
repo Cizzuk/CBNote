@@ -7,6 +7,7 @@
 
 import AVKit
 import SwiftUI
+import UIKit
 
 struct CameraView: View {
     @StateObject private var viewModel = CameraViewModel()
@@ -101,6 +102,9 @@ struct CameraView: View {
                 updateAlertMessage()
             }
             .onAppear {
+                #if !EXTENSION
+                UIApplication.shared.isIdleTimerDisabled = true
+                #endif
                 viewModel.startSession()
                 viewModel.onPhotoCaptured = { data in
                     onSave(data)
@@ -111,6 +115,9 @@ struct CameraView: View {
                 updateAlertMessage()
             }
             .onDisappear {
+                #if !EXTENSION
+                UIApplication.shared.isIdleTimerDisabled = false
+                #endif
                 viewModel.stopSession()
             }
         }
