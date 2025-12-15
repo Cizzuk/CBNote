@@ -128,6 +128,7 @@ struct SettingsView: View {
                         let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
                         let currentBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
                         Label("Version", systemImage: "info.circle")
+                            .foregroundColor(.primary)
                         Spacer()
                         Text("\(currentVersion ?? "Unknown") (\(currentBuild ?? "Unknown"))")
                             .foregroundColor(.secondary)
@@ -136,6 +137,7 @@ struct SettingsView: View {
                     .accessibilityElement(children: .combine)
                     HStack {
                         Label("Developer", systemImage: "hammer")
+                            .foregroundColor(.primary)
                         Spacer()
                         Link(destination:URL(string: "https://cizzuk.net/")!, label: {
                             Text("Cizzuk")
