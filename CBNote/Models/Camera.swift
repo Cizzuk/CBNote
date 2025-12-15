@@ -258,9 +258,10 @@ class Camera: NSObject, ObservableObject {
     }
 
     func stopSession() {
-        DispatchQueue.global(qos: .background).async {
-            if self.session.isRunning {
-                self.session.stopRunning()
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            if session.isRunning {
+                session.stopRunning()
             }
         }
     }
