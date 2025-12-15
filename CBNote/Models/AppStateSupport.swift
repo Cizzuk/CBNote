@@ -31,7 +31,11 @@ struct TrueDevice {
     
     static let isCamControlAvailable: Bool = {
         #if canImport(AVFoundation)
-        return AVCaptureSession().supportsControls
+            #if targetEnvironment(simulator)
+            return true
+            #else
+            return AVCaptureSession().supportsControls
+            #endif
         #else
         return false
         #endif
