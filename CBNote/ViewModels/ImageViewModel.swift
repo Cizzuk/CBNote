@@ -18,7 +18,7 @@ class ImageViewModel: ObservableObject {
     }
     
     func loadImage() {
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             // Read file content
             if let data = try? Data(contentsOf: self.url),
                let image = UIImage(data: data) {

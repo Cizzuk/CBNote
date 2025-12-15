@@ -44,26 +44,20 @@ class NoteManager: ObservableObject {
     }
     
     func loadFiles() {
-        do {
-            guard let documentsURL = documentDir.directory else {
-                files = []
-                pinnedFiles = []
-                unpinnedFiles = []
-                return
-            }
-            
-            let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
-            
-            // Sort & Filter
-            files = sortFiles(fileURLs)
-            pinnedFiles = files.filter { isPinned($0) }
-            unpinnedFiles = files.filter { !isPinned($0) }
-        } catch {
-            print("Error loading files: \(error)")
+        guard let documentsURL = documentDir.directory,
+              let fileURLs = try? FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
+        else {
             files = []
             pinnedFiles = []
             unpinnedFiles = []
+            print("Error loading files from directory: \(documentDir.rawValue)")
+            return
         }
+        
+        // Sort & Filter
+        files = sortFiles(fileURLs)
+        pinnedFiles = files.filter { self.isPinned($0) }
+        unpinnedFiles = files.filter { !self.isPinned($0) }
     }
     
     func setDocumentDir(type: DocumentDir) {
@@ -113,57 +107,61 @@ class NoteManager: ObservableObject {
         return fileURL
     }
     
-    func createNewNote() {
-        guard let fileURL = createFileURL(fileExtension: "txt") else { return }
+    func createNewNote() -> URL? {
+        guard let fileURL = createFileURL(fileExtension: "txt") else { return nil }
         do {
             try "".write(to: fileURL, atomically: true, encoding: .utf8)
             loadFiles()
+            return fileURL
         } catch {
             print("Error creating file: \(error)")
         }
+        return nil
     }
     
-    func saveCapturedImage(data: Data) {
-        guard let fileURL = createFileURL(fileExtension: "jpeg") else { return }
+    func saveCapturedImage(data: Data) -> URL? {
+        guard let fileURL = self.createFileURL(fileExtension: "jpeg") else { return nil }
         do {
             try data.write(to: fileURL)
-            loadFiles()
+            self.loadFiles()
+            return fileURL
         } catch {
-            print("Error saving camera image: \(error)")
+            print("Error saving captured image: \(error)")
         }
+        return nil
     }
     
     func deleteFile(at url: URL) {
-        do {
-            try FileManager.default.removeItem(at: url)
-            if isPinned(url) {
-                togglePin(for: url)
+        DispatchQueue.global(qos: .utility).async {
+            do { try FileManager.default.removeItem(at: url) }
+            catch { print("Error deleting file: \(error)") }
+                
+            if self.isPinned(url) {
+                self.togglePin(for: url)
             }
-            loadFiles()
-        } catch {
-            print("Error deleting file: \(error)")
+            
+            self.loadFiles()
         }
     }
     
     func renameFile(at url: URL, newName: String) {
-        let folder = url.deletingLastPathComponent()
-        let newURL = folder.appendingPathComponent(newName)
-        
-        let wasPinned = isPinned(url)
-        
-        do {
-            try FileManager.default.moveItem(at: url, to: newURL)
+        DispatchQueue.global(qos: .userInitiated).async {
+            let folder = url.deletingLastPathComponent()
+            let newURL = folder.appendingPathComponent(newName)
+            let wasPinned = self.isPinned(url)
             
-            // Re pin
-            if wasPinned {
-                pinnedFiles.removeAll { $0.path == url.path }
-                pinnedFiles.append(newURL)
-                savePinnedFiles()
-            }
+            do {
+                try FileManager.default.moveItem(at: url, to: newURL)
+                
+                // Re pin
+                if wasPinned {
+                    self.pinnedFiles.removeAll { $0.path == url.path }
+                    self.pinnedFiles.append(newURL)
+                    self.savePinnedFiles()
+                }
+            } catch { print("Error renaming file: \(error)") }
             
-            loadFiles()
-        } catch {
-            print("Error renaming file: \(error)")
+            self.loadFiles()
         }
     }
     
@@ -205,7 +203,9 @@ class NoteManager: ObservableObject {
     }
     
     private func savePinnedFiles() {
-        let filenames = pinnedFiles.map { $0.lastPathComponent }
-        UserDefaults.standard.set(filenames, forKey: documentDir.pinnedKey)
+        DispatchQueue.global(qos: .background).async {
+            let filenames = self.pinnedFiles.map { $0.lastPathComponent }
+            UserDefaults.standard.set(filenames, forKey: self.documentDir.pinnedKey)
+        }
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 import QuickLook
 
 struct MainView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
@@ -21,89 +22,163 @@ struct MainView: View {
             }
             
             NavigationStack {
-                List {
-                    // Empty State
-                    if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
-                        Section {} footer: {
-                            if viewModel.searchQuery.isEmpty {
-                                Text("No notes yet. Tap the + button to add a new note.")
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                            } else {
-                                VStack {
-                                    Label("No Results", systemImage: "magnifyingglass")
+                ScrollViewReader { proxy in
+                    List {
+                        // Empty State
+                        if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
+                            Section {} footer: {
+                                if viewModel.searchQuery.isEmpty {
+                                    Text("No notes yet. Tap the + button to add a new note.")
                                         .frame(maxWidth: .infinity, alignment: .center)
-                                        .font(.headline)
-                                    Spacer()
-                                    Text("for \"\(viewModel.searchQuery)\".")
-                                        .frame(maxWidth: .infinity, alignment: .center)
-                                        .font(.caption)
+                                } else {
+                                    VStack {
+                                        Label("No Results", systemImage: "magnifyingglass")
+                                            .frame(maxWidth: .infinity, alignment: .center)
+                                            .font(.headline)
+                                        Spacer()
+                                        Text("for \"\(viewModel.searchQuery)\".")
+                                            .frame(maxWidth: .infinity, alignment: .center)
+                                            .font(.caption)
+                                    }
                                 }
                             }
                         }
-                    }
-                    
-                    // Pinned Files
-                    if !viewModel.pinnedFiles.isEmpty {
-                        Section {
-                            if isExpandPinnedSection {
-                                ForEach(viewModel.pinnedFiles, id: \.self) { url in
-                                    fileRow(url: url, onPreview: { previewURL = url })
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button(action: { viewModel.pinUnpinFile(at: url) }) {
-                                                if viewModel.isFilePinned(url) {
-                                                    Label("Unpin", systemImage: "pin.slash")
-                                                } else {
-                                                    Label("Pin", systemImage: "pin")
+                        
+                        // Pinned Files
+                        if !viewModel.pinnedFiles.isEmpty {
+                            Section {
+                                if isExpandPinnedSection {
+                                    ForEach(viewModel.pinnedFiles, id: \.self) { url in
+                                        fileRow(url: url, onPreview: { previewURL = url })
+                                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                                Button(action: { viewModel.pinUnpinFile(at: url) }) {
+                                                    if viewModel.isFilePinned(url) {
+                                                        Label("Unpin", systemImage: "pin.slash")
+                                                    } else {
+                                                        Label("Pin", systemImage: "pin")
+                                                    }
                                                 }
+                                                .tint(.yellow)
                                             }
-                                            .tint(.yellow)
+                                    }
+                                }
+                            } header: {
+                                Button {
+                                    withAnimation {
+                                        isExpandPinnedSection.toggle()
+                                    }
+                                } label: {
+                                    HStack {
+                                        Label("Pinned Notes", systemImage: "pin.fill")
+                                        Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
+                                    }
+                                }
+                                .foregroundColor(.secondary)
+                                .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
+                            }
+                        }
+                        
+                        // Unpinned Files
+                        Section {
+                            ForEach(viewModel.unpinnedFiles, id: \.self) { url in
+                                fileRow(url: url, onPreview: { previewURL = url })
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            viewModel.deleteFile(at: url)
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
                                         }
-                                }
+                                        Button(action: { viewModel.startRenaming(url: url) }) {
+                                            Label("Rename", systemImage: "pencil")
+                                        }
+                                    }
                             }
-                        } header: {
-                            Button {
-                                withAnimation {
-                                    isExpandPinnedSection.toggle()
-                                }
-                            } label: {
-                                HStack {
-                                    Label("Pinned Notes", systemImage: "pin.fill")
-                                    Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
-                                }
-                            }
-                            .foregroundColor(.secondary)
-                            .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
+                        }
+                        
+                        // MARK: - End of List
+                    }
+                    .animation(.default, value: viewModel.pinnedFiles)
+                    .animation(.default, value: viewModel.unpinnedFiles)
+                    .refreshable {
+                        viewModel.checkLockedCameraCaptures()
+                        viewModel.loadFiles()
+                        refreshID = UUID()
+                        // To reduce View jitter
+                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    }
+                    .onAppear {
+                        viewModel.checkLockedCameraCaptures()
+                        viewModel.checkAutoPaste()
+                        viewModel.loadFiles()
+                    }
+                    .onChange(of: scenePhase) {
+                        if scenePhase == .active {
+                            viewModel.checkLockedCameraCaptures()
+                            viewModel.checkAutoPaste()
+                            viewModel.loadFiles()
                         }
                     }
-                    
-                    // Unpinned Files
-                    Section {
-                        ForEach(viewModel.unpinnedFiles, id: \.self) { url in
-                            fileRow(url: url, onPreview: { previewURL = url })
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        viewModel.deleteFile(at: url)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                    Button(action: { viewModel.startRenaming(url: url) }) {
-                                        Label("Rename", systemImage: "pencil")
-                                    }
-                                }
+                    .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
+                        viewModel.handleCameraControlAction()
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
+                        if let option = action.object as? OpenAppOption {
+                            viewModel.openApp(with: option)
                         }
                     }
-                    
-                    // MARK: - End of List
+                    .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
+                        if let shortcut = action.object as? CustomKeyboardShortcut {
+                            switch shortcut {
+                            case .openSettings:
+                                viewModel.showSettings = true
+                            case .reloadFiles:
+                                viewModel.checkLockedCameraCaptures()
+                                viewModel.loadFiles()
+                                refreshID = UUID()
+                            case .addNewNote:
+                                viewModel.createNewNote()
+                            case .pasteFromClipboard:
+                                viewModel.addAndPaste()
+                            }
+                        }
+                    }
+                    .fullScreenCover(isPresented: $viewModel.showCamera) {
+                        CameraView { data in
+                            viewModel.saveCapturedImage(data: data)
+                        }
+                    }
+                    .sheet(isPresented: $viewModel.showSettings) {
+                        SettingsView()
+                    }
+                    .alert("Rename", isPresented: $viewModel.isRenaming) {
+                        TextField("New Name", text: $viewModel.newName)
+                        Button("Cancel", role: .cancel) {}
+                        Button("Rename", role: .confirm) {
+                            viewModel.renameFile()
+                        }
+                        .disabled(!viewModel.isValidFileName(viewModel.newName))
+                    }
+                    .onChange(of: viewModel.unpinnedFiles) {
+                        guard let scrollPos = viewModel.newFileURLToScroll else { return }
+                        DispatchQueue.global(qos: .userInteractive).async {
+                            withAnimation {
+                                proxy.scrollTo("\(scrollPos.absoluteString)-\(refreshID)")
+                            }
+                            DispatchQueue.main.async {
+                                self.viewModel.newFileURLToScroll = nil
+                            }
+                        }
+                    }
                 }
-                .animation(.default, value: viewModel.pinnedFiles)
-                .animation(.default, value: viewModel.unpinnedFiles)
+                .quickLookPreview($previewURL)
+                .scrollDismissesKeyboard(.interactively)
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         Button(action: { viewModel.showCamera = true }) {
                             Label("Camera", systemImage: "camera")
                         }
-                        Button(action: { Task { await viewModel.addAndPaste() } }) {
+                        Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
                         .popover(isPresented: $viewModel.showPasteError) {
@@ -152,7 +227,7 @@ struct MainView: View {
                                 Text("Sort By")
                             }
                         } label: {
-                            Label("Option", systemImage: "ellipsis")
+                            Label("Options", systemImage: "ellipsis")
                         }
                     }
                     ToolbarItemGroup(placement: .keyboard) {
@@ -164,64 +239,7 @@ struct MainView: View {
                         }
                     }
                 }
-                .refreshable {
-                    viewModel.checkLockedCameraCaptures()
-                    viewModel.loadFiles()
-                    refreshID = UUID()
-                }
-                .onAppear {
-                    viewModel.checkLockedCameraCaptures()
-                    viewModel.checkAutoPaste()
-                    viewModel.loadFiles()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                    viewModel.checkLockedCameraCaptures()
-                    viewModel.checkAutoPaste()
-                    viewModel.loadFiles()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
-                    viewModel.handleCameraControlAction()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
-                    if let option = action.object as? OpenAppOption {
-                        viewModel.openApp(with: option)
-                    }
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
-                    if let shortcut = action.object as? CustomKeyboardShortcut {
-                        switch shortcut {
-                        case .openSettings:
-                            viewModel.showSettings = true
-                        case .reloadFiles:
-                            viewModel.checkLockedCameraCaptures()
-                            viewModel.loadFiles()
-                            refreshID = UUID()
-                        case .addNewNote:
-                            viewModel.createNewNote()
-                        case .pasteFromClipboard:
-                            Task { await viewModel.addAndPaste() }
-                        }
-                    }
-                }
-                .fullScreenCover(isPresented: $viewModel.showCamera) {
-                    CameraView { data in
-                        viewModel.saveCapturedImage(data: data)
-                    }
-                }
-                .sheet(isPresented: $viewModel.showSettings) {
-                    SettingsView()
-                }
-                .alert("Rename", isPresented: $viewModel.isRenaming) {
-                    TextField("New Name", text: $viewModel.newName)
-                    Button("Cancel", role: .cancel) {}
-                    Button("Rename", role: .confirm) {
-                        viewModel.renameFile()
-                    }
-                    .disabled(!viewModel.isValidFileName(viewModel.newName))
-                }
-                .quickLookPreview($previewURL)
             }
-            .scrollDismissesKeyboard(.interactively)
         }
     }
     

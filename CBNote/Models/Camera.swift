@@ -111,7 +111,7 @@ class Camera: NSObject, ObservableObject {
             let sessionQueue = DispatchSerialQueue(label: "cameraControlSessionQueue")
             session.setControlsDelegate(controlsDelegate, queue: sessionQueue)
             
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let self = self else { return }
                 if session.canAddInput(newInput) {
                     session.addInput(newInput)
@@ -214,24 +214,21 @@ class Camera: NSObject, ObservableObject {
     func focus(at point: CGPoint) {
         guard let device = input?.device else { return }
         
-        do {
-            try device.lockForConfiguration()
-            
-            if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
-                device.focusPointOfInterest = point
-                device.focusMode = .autoFocus
-            }
-            
-            if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.autoExpose) {
-                device.exposurePointOfInterest = point
-                device.exposureMode = .autoExpose
-            }
-            
-            device.isSubjectAreaChangeMonitoringEnabled = true
-            device.unlockForConfiguration()
-        } catch {
-            print("Error focusing: \(error)")
+        do { try device.lockForConfiguration() }
+        catch { return }
+        
+        if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
+            device.focusPointOfInterest = point
+            device.focusMode = .autoFocus
         }
+        
+        if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.autoExpose) {
+            device.exposurePointOfInterest = point
+            device.exposureMode = .autoExpose
+        }
+        
+        device.isSubjectAreaChangeMonitoringEnabled = true
+        device.unlockForConfiguration()
     }
     
     // Update rotation angle based on device orientation
@@ -250,7 +247,7 @@ class Camera: NSObject, ObservableObject {
     }
     
     func startSession() {
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             if !self.session.isRunning {
                 self.session.startRunning()
             }
@@ -280,7 +277,7 @@ extension Camera: AVCapturePhotoCaptureDelegate {
         
         guard let data = photo.fileDataRepresentation() else { return }
         
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             self.onPhotoCaptured?(data)
         }
     }
