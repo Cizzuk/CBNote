@@ -101,7 +101,6 @@ enum DocumentDir: String, CaseIterable {
                let url = FileManager.default.url(forUbiquityContainerIdentifier: nil) {
                 return url.appendingPathComponent("Documents")
             } else {
-                print("iCloud container not available")
                 return nil
             }
         }
