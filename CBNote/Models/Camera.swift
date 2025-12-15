@@ -63,42 +63,29 @@ class Camera: NSObject, ObservableObject {
     
     private func setupSession() {
         session.beginConfiguration()
-        session.sessionPreset = .photo
+        defer { session.commitConfiguration() }
         
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
             session.sessionPreset = .high
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.setupDefaultInput()
-            }
         default:
             session.sessionPreset = .photo
-            DispatchQueue.main.async {
-                self.setupDefaultInput()
-            }
         }
         
         if session.canAddOutput(output) {
             session.addOutput(output)
         }
         
-        session.commitConfiguration()
+        if let defaultDevice = AVCaptureDevice.default(for: .video) {
+            self.setupInput(for: defaultDevice)
+        }
         
         DispatchQueue.global(qos: .userInitiated).async {
             self.session.startRunning()
         }
     }
     
-    private func setupDefaultInput() {
-        if let backCamera = self.backCameraDiscoverySession.devices.first {
-            self.setupInput(for: backCamera)
-        } else if let frontCamera = self.frontCameraDiscoverySession.devices.first {
-            self.setupInput(for: frontCamera)
-        } else if let externalCamera = self.externalCameraDiscoverySession.devices.first {
-            self.setupInput(for: externalCamera)
-        }
     }
-    
     // Setup new camera or lens input
     private func setupInput(for device: AVCaptureDevice) {
         do {
