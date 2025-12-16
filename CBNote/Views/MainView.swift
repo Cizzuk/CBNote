@@ -21,227 +21,225 @@ struct MainView: View {
                 DummyCameraView()
             }
             
-            NavigationStack {
-                ScrollViewReader { proxy in
-                    List {
-                        // Empty State
-                        if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
-                            Section {} footer: {
-                                if viewModel.searchQuery.isEmpty {
-                                    Text("No notes yet. Tap the + button to add a new note.")
+            NavigationStack { GeometryReader { ScrollViewReader { proxy in
+                List {
+                    // Empty State
+                    if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
+                        Section {} footer: {
+                            if viewModel.searchQuery.isEmpty {
+                                Text("No notes yet. Tap the + button to add a new note.")
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            } else {
+                                VStack {
+                                    Label("No Results", systemImage: "magnifyingglass")
                                         .frame(maxWidth: .infinity, alignment: .center)
-                                } else {
-                                    VStack {
-                                        Label("No Results", systemImage: "magnifyingglass")
-                                            .frame(maxWidth: .infinity, alignment: .center)
-                                            .font(.headline)
-                                        Spacer()
-                                        Text("for \"\(viewModel.searchQuery)\".")
-                                            .frame(maxWidth: .infinity, alignment: .center)
-                                            .font(.caption)
-                                    }
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("for \"\(viewModel.searchQuery)\".")
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .font(.caption)
                                 }
                             }
                         }
-                        
-                        // Pinned Files
-                        if !viewModel.pinnedFiles.isEmpty {
-                            Section {
-                                if isExpandPinnedSection {
-                                    ForEach(viewModel.pinnedFiles, id: \.self) { url in
-                                        fileRow(url: url, onPreview: { previewURL = url })
-                                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                                Button(action: { viewModel.pinUnpinFile(at: url) }) {
-                                                    if viewModel.isFilePinned(url) {
-                                                        Label("Unpin", systemImage: "pin.slash")
-                                                    } else {
-                                                        Label("Pin", systemImage: "pin")
-                                                    }
-                                                }
-                                                .tint(.yellow)
-                                            }
-                                    }
-                                }
-                            } header: {
-                                Button {
-                                    withAnimation {
-                                        isExpandPinnedSection.toggle()
-                                    }
-                                } label: {
-                                    HStack {
-                                        Label("Pinned Notes", systemImage: "pin.fill")
-                                        Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
-                                    }
-                                }
-                                .foregroundColor(.secondary)
-                                .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
-                            }
-                        }
-                        
-                        // Unpinned Files
+                    }
+                    
+                    // Pinned Files
+                    if !viewModel.pinnedFiles.isEmpty {
                         Section {
-                            ForEach(viewModel.unpinnedFiles, id: \.self) { url in
-                                fileRow(url: url, onPreview: { previewURL = url })
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            viewModel.deleteFile(at: url)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
+                            if isExpandPinnedSection {
+                                ForEach(viewModel.pinnedFiles, id: \.self) { url in
+                                    fileRow(url: url, onPreview: { previewURL = url })
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button(action: { viewModel.pinUnpinFile(at: url) }) {
+                                                if viewModel.isFilePinned(url) {
+                                                    Label("Unpin", systemImage: "pin.slash")
+                                                } else {
+                                                    Label("Pin", systemImage: "pin")
+                                                }
+                                            }
+                                            .tint(.yellow)
                                         }
-                                        Button(action: { viewModel.startRenaming(url: url) }) {
-                                            Label("Rename", systemImage: "pencil")
-                                        }
-                                    }
+                                }
                             }
+                        } header: {
+                            Button {
+                                withAnimation {
+                                    isExpandPinnedSection.toggle()
+                                }
+                            } label: {
+                                HStack {
+                                    Label("Pinned Notes", systemImage: "pin.fill")
+                                    Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
+                                }
+                            }
+                            .foregroundColor(.secondary)
+                            .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
                         }
-                        
-                        // MARK: - End of List
                     }
-                    .frame(maxWidth: 800)
-                    .animation(.default, value: viewModel.pinnedFiles)
-                    .animation(.default, value: viewModel.unpinnedFiles)
-                    .refreshable {
-                        viewModel.checkLockedCameraCaptures()
-                        viewModel.loadFiles()
-                        refreshID = UUID()
-                        // To reduce View jitter
-                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    
+                    // Unpinned Files
+                    Section {
+                        ForEach(viewModel.unpinnedFiles, id: \.self) { url in
+                            fileRow(url: url, onPreview: { previewURL = url })
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        viewModel.deleteFile(at: url)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    Button(action: { viewModel.startRenaming(url: url) }) {
+                                        Label("Rename", systemImage: "pencil")
+                                    }
+                                }
+                        }
                     }
-                    .onAppear {
+                    
+                    // MARK: - End of List
+                }
+                .animation(.default, value: viewModel.pinnedFiles)
+                .animation(.default, value: viewModel.unpinnedFiles)
+                .refreshable {
+                    viewModel.checkLockedCameraCaptures()
+                    viewModel.loadFiles()
+                    refreshID = UUID()
+                    // To reduce View jitter
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                }
+                .onAppear {
+                    viewModel.checkLockedCameraCaptures()
+                    viewModel.checkAutoPaste()
+                    viewModel.loadFiles()
+                }
+                .onChange(of: scenePhase) {
+                    if scenePhase == .active {
                         viewModel.checkLockedCameraCaptures()
                         viewModel.checkAutoPaste()
                         viewModel.loadFiles()
                     }
-                    .onChange(of: scenePhase) {
-                        if scenePhase == .active {
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
+                    viewModel.handleCameraControlAction()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
+                    if let option = action.object as? OpenAppOption {
+                        viewModel.openApp(with: option)
+                    }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
+                    if let shortcut = action.object as? CustomKeyboardShortcut {
+                        switch shortcut {
+                        case .openSettings:
+                            viewModel.showSettings = true
+                        case .reloadFiles:
                             viewModel.checkLockedCameraCaptures()
-                            viewModel.checkAutoPaste()
                             viewModel.loadFiles()
-                        }
-                    }
-                    .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
-                        viewModel.handleCameraControlAction()
-                    }
-                    .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
-                        if let option = action.object as? OpenAppOption {
-                            viewModel.openApp(with: option)
-                        }
-                    }
-                    .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
-                        if let shortcut = action.object as? CustomKeyboardShortcut {
-                            switch shortcut {
-                            case .openSettings:
-                                viewModel.showSettings = true
-                            case .reloadFiles:
-                                viewModel.checkLockedCameraCaptures()
-                                viewModel.loadFiles()
-                                refreshID = UUID()
-                            case .addNewNote:
-                                viewModel.createNewNote()
-                            case .pasteFromClipboard:
-                                viewModel.addAndPaste()
-                            }
-                        }
-                    }
-                    .fullScreenCover(isPresented: $viewModel.showCamera) {
-                        CameraView { data in
-                            viewModel.saveCapturedImage(data: data)
-                        }
-                    }
-                    .sheet(isPresented: $viewModel.showSettings) {
-                        SettingsView()
-                    }
-                    .alert("Rename", isPresented: $viewModel.isRenaming) {
-                        TextField("New Name", text: $viewModel.newName)
-                        Button("Cancel", role: .cancel) {}
-                        Button("Rename", role: .confirm) {
-                            viewModel.renameFile()
-                        }
-                        .disabled(!viewModel.isValidFileName(viewModel.newName))
-                    }
-                    .onChange(of: viewModel.unpinnedFiles) {
-                        guard let scrollPos = viewModel.newFileURLToScroll else { return }
-                        DispatchQueue.global(qos: .userInteractive).async {
-                            withAnimation {
-                                proxy.scrollTo("\(scrollPos.absoluteString)-\(refreshID)")
-                            }
-                            DispatchQueue.main.async {
-                                self.viewModel.newFileURLToScroll = nil
-                            }
+                            refreshID = UUID()
+                        case .addNewNote:
+                            viewModel.createNewNote()
+                        case .pasteFromClipboard:
+                            viewModel.addAndPaste()
                         }
                     }
                 }
-                .quickLookPreview($previewURL)
-                .scrollDismissesKeyboard(.interactively)
-                .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
-                .toolbar {
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button(action: { viewModel.showCamera = true }) {
-                            Label("Camera", systemImage: "camera")
-                        }
-                        Button(action: { viewModel.addAndPaste() }) {
-                            Label("Paste", systemImage: "document.on.clipboard")
-                        }
-                        .popover(isPresented: $viewModel.showPasteError) {
-                            Text("No valid content found in clipboard to paste.")
-                                .frame(width: 250)
-                                .padding()
-                                .presentationCompactAdaptation(.popover)
-                        }
-                        Button(action: viewModel.createNewNote) {
-                            Label("Add New Note", systemImage: "plus")
-                        }
+                .fullScreenCover(isPresented: $viewModel.showCamera) {
+                    CameraView { data in
+                        viewModel.saveCapturedImage(data: data)
                     }
-                    ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Button(action: { viewModel.showSettings = true }) {
-                            Label("Settings", systemImage: "gearshape")
-                        }
-                        Menu {
-                            // iCloud/On-Device
-                            Section {
-                                ForEach(DocumentDir.availableDirs, id: \.self) { type in
-                                    Button(action: { viewModel.setDocumentDir(type: type) }) {
-                                        HStack {
-                                            if viewModel.documentDir == type {
-                                                Image(systemName: "checkmark")
-                                            }
-                                            Text(type.localizedName)
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            Divider()
-                            
-                            // Sort
-                            Section {
-                                ForEach(SortKey.allCases, id: \.self) { key in
-                                    Button(action: { viewModel.toggleSort(key: key) }) {
-                                        HStack {
-                                            if viewModel.sortKey == key {
-                                                Image(systemName: viewModel.sortDirection == .descending ? "chevron.down" : "chevron.up")
-                                            }
-                                            Text(key.localizedName)
-                                        }
-                                    }
-                                }
-                            } header: {
-                                Text("Sort By")
-                            }
-                        } label: {
-                            Label("Options", systemImage: "ellipsis")
-                        }
+                }
+                .sheet(isPresented: $viewModel.showSettings) {
+                    SettingsView()
+                }
+                .alert("Rename", isPresented: $viewModel.isRenaming) {
+                    TextField("New Name", text: $viewModel.newName)
+                    Button("Cancel", role: .cancel) {}
+                    Button("Rename", role: .confirm) {
+                        viewModel.renameFile()
                     }
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button {
-                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                        } label: {
-                            Label("Done", systemImage: "checkmark")
+                    .disabled(!viewModel.isValidFileName(viewModel.newName))
+                }
+                .onChange(of: viewModel.unpinnedFiles) {
+                    guard let scrollPos = viewModel.newFileURLToScroll else { return }
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        withAnimation {
+                            proxy.scrollTo("\(scrollPos.absoluteString)-\(refreshID)")
+                        }
+                        DispatchQueue.main.async {
+                            self.viewModel.newFileURLToScroll = nil
                         }
                     }
                 }
             }
+            .safeAreaPadding(.horizontal, $0.size.width > 1000 ? ($0.size.width - 1000) / 2 : 0)
+            .quickLookPreview($previewURL)
+            .scrollDismissesKeyboard(.interactively)
+            .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: { viewModel.showCamera = true }) {
+                        Label("Camera", systemImage: "camera")
+                    }
+                    Button(action: { viewModel.addAndPaste() }) {
+                        Label("Paste", systemImage: "document.on.clipboard")
+                    }
+                    .popover(isPresented: $viewModel.showPasteError) {
+                        Text("No valid content found in clipboard to paste.")
+                            .frame(width: 250)
+                            .padding()
+                            .presentationCompactAdaptation(.popover)
+                    }
+                    Button(action: viewModel.createNewNote) {
+                        Label("Add New Note", systemImage: "plus")
+                    }
+                }
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    Button(action: { viewModel.showSettings = true }) {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                    Menu {
+                        // iCloud/On-Device
+                        Section {
+                            ForEach(DocumentDir.availableDirs, id: \.self) { type in
+                                Button(action: { viewModel.setDocumentDir(type: type) }) {
+                                    HStack {
+                                        if viewModel.documentDir == type {
+                                            Image(systemName: "checkmark")
+                                        }
+                                        Text(type.localizedName)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Divider()
+                        
+                        // Sort
+                        Section {
+                            ForEach(SortKey.allCases, id: \.self) { key in
+                                Button(action: { viewModel.toggleSort(key: key) }) {
+                                    HStack {
+                                        if viewModel.sortKey == key {
+                                            Image(systemName: viewModel.sortDirection == .descending ? "chevron.down" : "chevron.up")
+                                        }
+                                        Text(key.localizedName)
+                                    }
+                                }
+                            }
+                        } header: {
+                            Text("Sort By")
+                        }
+                    } label: {
+                        Label("Options", systemImage: "ellipsis")
+                    }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button {
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    } label: {
+                        Label("Done", systemImage: "checkmark")
+                    }
+                }
+            } } }
         }
     }
     
