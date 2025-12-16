@@ -10,8 +10,8 @@ import SwiftUI
 import UIKit
 
 struct CameraView: View {
-    @StateObject private var viewModel = CameraViewModel()
     @Environment(\.dismiss) var dismiss
+    @StateObject private var viewModel = CameraViewModel()
     
     var isLockedMode: Bool = false
     var onSave: (Data) -> Void
@@ -56,16 +56,16 @@ struct CameraView: View {
                     ZStack {
                         Circle()
                             .glassEffect()
-                            .frame(width: 72, height: 72)
                         Button(action: { viewModel.takePhoto() }) {
                             Circle()
+                                .inset(by: 8)
                                 .fill(.white)
-                                .frame(width: 60, height: 60)
                         }
                         .accessibilityLabel("Take Photo")
+                        .buttonStyle(.plain)
                         .disabled(viewModel.cameraPermission != .authorized)
-                        .opacity(viewModel.cameraPermission == .authorized ? 1.0 : 0.5)
                     }
+                    .frame(width: 80, height: 80)
                     .padding(.bottom, 20)
                 }
             }
@@ -115,6 +115,7 @@ struct CameraView: View {
                 #endif
                 viewModel.stopSession()
             }
+            .accessibilityAction(.magicTap) { viewModel.takePhoto() }
             .accessibilityAction(.escape) { dismiss() }
         }
     }
