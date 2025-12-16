@@ -143,12 +143,14 @@ struct SettingsView: View {
                             Text("Cizzuk")
                         })
                     }
-                    Link(destination:URL(string: "https://i.cizzuk.net/privacy/")!, label: {
-                        Label("Privacy Policy", systemImage: "hand.raised")
-                    })
                     Link(destination:URL(string: "https://github.com/Cizzuk/CBNote")!, label: {
                         Label("Source", systemImage: "ladybug")
                     })
+                    Link(destination:URL(string: "https://i.cizzuk.net/privacy/")!, label: {
+                        Label("Privacy Policy", systemImage: "hand.raised")
+                    })
+                } header: {
+                    Text("CBNote")
                 }
                 
                 Section {} header: {
