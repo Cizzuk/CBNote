@@ -169,7 +169,7 @@ struct MainView: View {
                     }
                 }
             }
-            .safeAreaPadding(.horizontal, $0.size.width > 1000 ? ($0.size.width - 1000) / 2 : 0)
+            .safeAreaPadding(.horizontal, $0.size.width > 800 ? ($0.size.width - 800) / 2 : 0)
             .quickLookPreview($previewURL)
             .scrollDismissesKeyboard(.interactively)
             .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
