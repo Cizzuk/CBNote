@@ -72,16 +72,6 @@
         }
       }
     },
-    "Camera access is might not be granted." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラへのアクセスが許可されていない可能性があります。"
-          }
-        }
-      }
-    },
     "Camera access is restricted." : {
       "localizations" : {
         "ja" : {
@@ -108,6 +98,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キャンセル"
+          }
+        }
+      }
+    },
+    "Cannot access the camera." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラにアクセスできません。"
           }
         }
       }

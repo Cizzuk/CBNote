@@ -136,7 +136,7 @@ struct CameraView: View {
         case .restricted:
             alertMessage = "Camera access is restricted."
         default:
-            alertMessage = "Camera access is might not be granted."
+            alertMessage = "Cannot access the camera."
         }
     }
 }
