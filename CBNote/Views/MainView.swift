@@ -10,6 +10,7 @@ import QuickLook
 
 struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
@@ -71,7 +72,12 @@ struct MainView: View {
                                     } label: {
                                         HStack {
                                             Label("Pinned Notes", systemImage: "pin.fill")
-                                            Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
+                                            if accessibilityReduceMotion {
+                                                Image(systemName: isExpandPinnedSection ? "chevron.down" : "chevron.forward")
+                                            } else {
+                                                Image(systemName: "chevron.down")
+                                                    .rotationEffect(.degrees(isExpandPinnedSection ? 0 : -90))
+                                            }
                                         }
                                     }
                                     .foregroundColor(.secondary)
