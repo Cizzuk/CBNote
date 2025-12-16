@@ -65,7 +65,7 @@ struct MainView: View {
                                     }
                                 } header: {
                                     Button {
-                                        withAnimation {
+                                        withAnimation(.easeOut) {
                                             isExpandPinnedSection.toggle()
                                         }
                                     } label: {
@@ -97,8 +97,8 @@ struct MainView: View {
                             }
                         } // List
                         // MARK: - List Config
-                        .animation(.default, value: viewModel.pinnedFiles)
-                        .animation(.default, value: viewModel.unpinnedFiles)
+                        .animation(.easeOut, value: viewModel.pinnedFiles)
+                        .animation(.easeOut, value: viewModel.unpinnedFiles)
                         .refreshable {
                             viewModel.checkLockedCameraCaptures()
                             viewModel.loadFiles()
@@ -111,7 +111,7 @@ struct MainView: View {
                         .onChange(of: viewModel.unpinnedFiles) {
                             guard let scrollPos = viewModel.newFileURLToScroll else { return }
                             DispatchQueue.global(qos: .userInteractive).async {
-                                withAnimation {
+                                withAnimation(.easeOut) {
                                     proxy.scrollTo("\(scrollPos.absoluteString)-\(refreshID)")
                                 }
                                 DispatchQueue.main.async {
