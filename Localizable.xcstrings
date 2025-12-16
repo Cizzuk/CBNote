@@ -32,16 +32,6 @@
         }
       }
     },
-    "Add New Note on CBNote" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CBNoteで新規ノートを追加"
-          }
-        }
-      }
-    },
     "Ascending" : {
       "localizations" : {
         "ja" : {
@@ -98,17 +88,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カメラコントロールからの起動時"
-          }
-        }
-      }
-    },
-    "Camera is not available in the Simulator" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラはシミュレーターでは利用できません"
           }
         }
       }
@@ -644,16 +623,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップボードから貼り付け"
-          }
-        }
-      }
-    },
-    "Paste from Clipboard on CBNote" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CBNoteでクリップボードから貼り付け"
           }
         }
       }

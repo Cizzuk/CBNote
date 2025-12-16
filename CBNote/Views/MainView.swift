@@ -97,6 +97,7 @@ struct MainView: View {
                         
                         // MARK: - End of List
                     }
+                    .frame(maxWidth: 800)
                     .animation(.default, value: viewModel.pinnedFiles)
                     .animation(.default, value: viewModel.unpinnedFiles)
                     .refreshable {
@@ -183,6 +184,7 @@ struct MainView: View {
                         }
                         .popover(isPresented: $viewModel.showPasteError) {
                             Text("No valid content found in clipboard to paste.")
+                                .frame(width: 250)
                                 .padding()
                                 .presentationCompactAdaptation(.popover)
                         }
