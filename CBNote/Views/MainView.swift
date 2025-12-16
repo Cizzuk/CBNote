@@ -97,6 +97,7 @@ struct MainView: View {
                         
                         // MARK: - End of List
                     }
+                    .frame(maxWidth: 800)
                     .animation(.default, value: viewModel.pinnedFiles)
                     .animation(.default, value: viewModel.unpinnedFiles)
                     .refreshable {
