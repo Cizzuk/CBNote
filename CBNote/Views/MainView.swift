@@ -160,6 +160,8 @@ struct MainView: View {
                                         }
                                     }
                                 }
+                            } header: {
+                                Text("Location")
                             }
                             Divider()
                             // Sort

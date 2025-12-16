@@ -384,6 +384,16 @@
         }
       }
     },
+    "Location" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "場所"
+          }
+        }
+      }
+    },
     "Locked Camera Action" : {
       "localizations" : {
         "ja" : {
