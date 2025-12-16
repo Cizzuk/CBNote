@@ -26,6 +26,7 @@ struct FileRow: View {
                 Button(action: onPreview) {
                     ImageView(url: url)
                 }
+                .accessibility(addTraits: [.isImage, .isButton])
                 .accessibilityLabel(FileTypes.name(for: url))
             } else {
                 Button(action: onPreview) {
