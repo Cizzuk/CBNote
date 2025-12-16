@@ -38,7 +38,7 @@ struct FileRow: View {
             HStack {
                 Text(url.lastPathComponent)
                     .lineLimit(1)
-                    .truncationMode(.tail)
+                    .truncationMode(.middle)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
