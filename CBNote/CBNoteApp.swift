@@ -17,6 +17,13 @@ struct CBNoteApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
+            #if targetEnvironment(macCatalyst)
+            .onAppear {
+                (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
+                    .titlebar?
+                    .titleVisibility = .hidden
+            }
+            #endif
         }
         .commands {
             CommandGroup(replacing: .appSettings) {
