@@ -184,6 +184,7 @@ struct MainView: View {
                         }
                         .popover(isPresented: $viewModel.showPasteError) {
                             Text("No valid content found in clipboard to paste.")
+                                .frame(width: 250)
                                 .padding()
                                 .presentationCompactAdaptation(.popover)
                         }
