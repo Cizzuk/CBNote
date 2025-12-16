@@ -22,12 +22,6 @@ struct CameraView: View {
             ZStack {
                 Color.black.ignoresSafeArea()
                 
-                #if targetEnvironment(simulator)
-                Text("Camera is not available in the Simulator")
-                    .foregroundColor(.white)
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                #else
                 if viewModel.cameraPermission == .authorized {
                     CameraPreview(session: viewModel.session) { point in
                         viewModel.focus(at: point)
@@ -40,7 +34,6 @@ struct CameraView: View {
                         }
                     }
                 }
-                #endif
                 
                 VStack {
                     Spacer()
