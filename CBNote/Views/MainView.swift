@@ -159,6 +159,7 @@ struct MainView: View {
                                             Text(type.localizedName)
                                         }
                                     }
+                                    .accessibility(addTraits: viewModel.documentDir == type ? [.isSelected] : [])
                                 }
                             } header: {
                                 Text("Location")
@@ -175,6 +176,8 @@ struct MainView: View {
                                             Text(key.localizedName)
                                         }
                                     }
+                                    .accessibility(addTraits: viewModel.sortKey == key ? [.isSelected] : [])
+                                    .accessibilityHint(viewModel.sortKey == key ? "Currently sorted in \(viewModel.sortDirection.localizedName) order." : "")
                                 }
                             } header: {
                                 Text("Sort By")

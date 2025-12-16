@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -167,6 +177,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー"
+          }
+        }
+      }
+    },
+    "Currently sorted in %@ order." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在、%@で並べられています。"
           }
         }
       }
