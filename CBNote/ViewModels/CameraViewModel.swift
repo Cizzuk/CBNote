@@ -49,10 +49,6 @@ class CameraViewModel: ObservableObject {
         camera.$cameraPermission
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)
-        
-        camera.$photoLibraryPermission
-            .sink { [weak self] _ in self?.objectWillChange.send() }
-            .store(in: &cancellables)
     }
     
     func switchCamera() {

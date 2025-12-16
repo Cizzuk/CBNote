@@ -89,6 +89,7 @@ struct CameraView: View {
                     Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
                         viewModel.switchCamera()
                     }
+                    .disabled(viewModel.cameraPermission != .authorized)
                 }
             } // toolbar
             .accessibilityAction(.escape) { dismiss() }
