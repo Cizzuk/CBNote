@@ -79,15 +79,17 @@ struct CameraView: View {
                 }
                 
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button("Toggle Flash", systemImage: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash") {
-                        viewModel.toggleFlash()
-                    }
-                    .accessibilityValue(viewModel.isFlashOn ? "Flash is On" : "Flash is Off")
-                    Button("Switch Lens", systemImage: "camera.aperture") {
-                        viewModel.switchLens()
-                    }
-                    Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
-                        viewModel.switchCamera()
+                    Group {
+                        Button("Toggle Flash", systemImage: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash") {
+                            viewModel.toggleFlash()
+                        }
+                        .accessibilityValue(viewModel.isFlashOn ? "Flash is On" : "Flash is Off")
+                        Button("Switch Lens", systemImage: "camera.aperture") {
+                            viewModel.switchLens()
+                        }
+                        Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
+                            viewModel.switchCamera()
+                        }
                     }
                     .disabled(viewModel.cameraPermission != .authorized)
                 }
