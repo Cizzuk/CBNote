@@ -90,33 +90,33 @@ struct CameraView: View {
                         viewModel.switchCamera()
                     }
                 }
-            }
-            .onChange(of: viewModel.cameraPermission) {
-                updateAlertMessage()
-            }
-            .onAppear {
-                #if !EXTENSION
-                UIApplication.shared.isIdleTimerDisabled = true
-                #endif
-                viewModel.startSession()
-                viewModel.onPhotoCaptured = { data in
-                    onSave(data)
-                    if !viewModel.remainCameraAfterCapture {
-                        DispatchQueue.main.async {
-                            dismiss()
-                        }
+            } // toolbar
+            .accessibilityAction(.escape) { dismiss() }
+        } // NavigationStack
+        .accessibilityAction(.magicTap) { viewModel.takePhoto() }
+        .onChange(of: viewModel.cameraPermission) {
+            updateAlertMessage()
+        }
+        .onAppear {
+            #if !EXTENSION
+            UIApplication.shared.isIdleTimerDisabled = true
+            #endif
+            viewModel.startSession()
+            viewModel.onPhotoCaptured = { data in
+                onSave(data)
+                if !viewModel.remainCameraAfterCapture {
+                    DispatchQueue.main.async {
+                        dismiss()
                     }
                 }
-                updateAlertMessage()
             }
-            .onDisappear {
-                #if !EXTENSION
-                UIApplication.shared.isIdleTimerDisabled = false
-                #endif
-                viewModel.stopSession()
-            }
-            .accessibilityAction(.magicTap) { viewModel.takePhoto() }
-            .accessibilityAction(.escape) { dismiss() }
+            updateAlertMessage()
+        }
+        .onDisappear {
+            #if !EXTENSION
+            UIApplication.shared.isIdleTimerDisabled = false
+            #endif
+            viewModel.stopSession()
         }
     }
     
