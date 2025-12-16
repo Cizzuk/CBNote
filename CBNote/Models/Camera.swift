@@ -13,7 +13,6 @@ class Camera: NSObject, ObservableObject {
     @Published var session = AVCaptureSession()
     @Published var isFlashOn = false
     @Published var cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
-    @Published var photoLibraryPermission = PHPhotoLibrary.authorizationStatus(for: .addOnly)
     
     private let output = AVCapturePhotoOutput()
     private var input: AVCaptureDeviceInput?

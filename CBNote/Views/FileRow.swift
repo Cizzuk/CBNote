@@ -26,6 +26,7 @@ struct FileRow: View {
                 Button(action: onPreview) {
                     ImageView(url: url)
                 }
+                .accessibility(addTraits: [.isImage, .isButton])
                 .accessibilityLabel(FileTypes.name(for: url))
             } else {
                 Button(action: onPreview) {
@@ -37,7 +38,7 @@ struct FileRow: View {
             HStack {
                 Text(url.lastPathComponent)
                     .lineLimit(1)
-                    .truncationMode(.tail)
+                    .truncationMode(.middle)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

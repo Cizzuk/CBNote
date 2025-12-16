@@ -10,8 +10,8 @@ import SwiftUI
 import UIKit
 
 struct CameraView: View {
-    @StateObject private var viewModel = CameraViewModel()
     @Environment(\.dismiss) var dismiss
+    @StateObject private var viewModel = CameraViewModel()
     
     var isLockedMode: Bool = false
     var onSave: (Data) -> Void
@@ -56,16 +56,16 @@ struct CameraView: View {
                     ZStack {
                         Circle()
                             .glassEffect()
-                            .frame(width: 72, height: 72)
                         Button(action: { viewModel.takePhoto() }) {
                             Circle()
+                                .inset(by: 8)
                                 .fill(.white)
-                                .frame(width: 60, height: 60)
                         }
                         .accessibilityLabel("Take Photo")
+                        .buttonStyle(.plain)
                         .disabled(viewModel.cameraPermission != .authorized)
-                        .opacity(viewModel.cameraPermission == .authorized ? 1.0 : 0.5)
                     }
+                    .frame(width: 80, height: 80)
                     .padding(.bottom, 20)
                 }
             }
@@ -79,43 +79,47 @@ struct CameraView: View {
                 }
                 
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button("Toggle Flash", systemImage: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash") {
-                        viewModel.toggleFlash()
-                    }
-                    .accessibilityValue(viewModel.isFlashOn ? "Flash is On" : "Flash is Off")
-                    Button("Switch Lens", systemImage: "camera.aperture") {
-                        viewModel.switchLens()
-                    }
-                    Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
-                        viewModel.switchCamera()
-                    }
-                }
-            }
-            .onChange(of: viewModel.cameraPermission) {
-                updateAlertMessage()
-            }
-            .onAppear {
-                #if !EXTENSION
-                UIApplication.shared.isIdleTimerDisabled = true
-                #endif
-                viewModel.startSession()
-                viewModel.onPhotoCaptured = { data in
-                    onSave(data)
-                    if !viewModel.remainCameraAfterCapture {
-                        DispatchQueue.main.async {
-                            dismiss()
+                    Group {
+                        Button("Toggle Flash", systemImage: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash") {
+                            viewModel.toggleFlash()
+                        }
+                        .accessibilityValue(viewModel.isFlashOn ? "Flash is On" : "Flash is Off")
+                        Button("Switch Lens", systemImage: "camera.aperture") {
+                            viewModel.switchLens()
+                        }
+                        Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
+                            viewModel.switchCamera()
                         }
                     }
+                    .disabled(viewModel.cameraPermission != .authorized)
                 }
-                updateAlertMessage()
-            }
-            .onDisappear {
-                #if !EXTENSION
-                UIApplication.shared.isIdleTimerDisabled = false
-                #endif
-                viewModel.stopSession()
-            }
+            } // toolbar
             .accessibilityAction(.escape) { dismiss() }
+        } // NavigationStack
+        .accessibilityAction(.magicTap) { viewModel.takePhoto() }
+        .onChange(of: viewModel.cameraPermission) {
+            updateAlertMessage()
+        }
+        .onAppear {
+            #if !EXTENSION
+            UIApplication.shared.isIdleTimerDisabled = true
+            #endif
+            viewModel.startSession()
+            viewModel.onPhotoCaptured = { data in
+                onSave(data)
+                if !viewModel.remainCameraAfterCapture {
+                    DispatchQueue.main.async {
+                        dismiss()
+                    }
+                }
+            }
+            updateAlertMessage()
+        }
+        .onDisappear {
+            #if !EXTENSION
+            UIApplication.shared.isIdleTimerDisabled = false
+            #endif
+            viewModel.stopSession()
         }
     }
     
@@ -135,7 +139,7 @@ struct CameraView: View {
         case .restricted:
             alertMessage = "Camera access is restricted."
         default:
-            alertMessage = "Camera access is might not be granted."
+            alertMessage = "Cannot access the camera."
         }
     }
 }
