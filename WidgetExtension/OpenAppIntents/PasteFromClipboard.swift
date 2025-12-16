@@ -11,7 +11,7 @@ import SwiftUI
 
 struct OpenAppPasteFromClipboardControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppPasteFromClipboardControl"
-    static let title: LocalizedStringResource = "Paste from Clipboard on CBNote"
+    static let title: LocalizedStringResource = "Paste from Clipboard"
     
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppPasteFromClipboardControl.kind) {
@@ -24,7 +24,7 @@ struct OpenAppPasteFromClipboardControl: ControlWidget {
 }
 
 struct OpenAppPasteFromClipboardIntent: AppIntent {
-    static let title: LocalizedStringResource = "Paste from Clipboard on CBNote"
+    static let title: LocalizedStringResource = "Paste from Clipboard"
     
     static var openAppWhenRun = true
     static var isDiscoverable = true

@@ -32,16 +32,6 @@
         }
       }
     },
-    "Add New Note on CBNote" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CBNoteで新規ノートを追加"
-          }
-        }
-      }
-    },
     "Ascending" : {
       "localizations" : {
         "ja" : {
@@ -644,16 +634,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップボードから貼り付け"
-          }
-        }
-      }
-    },
-    "Paste from Clipboard on CBNote" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CBNoteでクリップボードから貼り付け"
           }
         }
       }

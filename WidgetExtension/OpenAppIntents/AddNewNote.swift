@@ -11,7 +11,7 @@ import SwiftUI
 
 struct OpenAppAddNewNoteControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppAddNewNoteControl"
-    static let title: LocalizedStringResource = "Add New Note on CBNote"
+    static let title: LocalizedStringResource = "Add New Note"
     
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppAddNewNoteControl.kind) {
@@ -24,7 +24,7 @@ struct OpenAppAddNewNoteControl: ControlWidget {
 }
 
 struct OpenAppAddNewNoteIntent: AppIntent {
-    static let title: LocalizedStringResource = "Add New Note on CBNote"
+    static let title: LocalizedStringResource = "Add New Note"
     
     static var openAppWhenRun = true
     static var isDiscoverable = true
