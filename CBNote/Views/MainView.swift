@@ -138,12 +138,18 @@ struct MainView: View {
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
+                        #if targetEnvironment(macCatalyst)
+                        .alert("No valid content found in clipboard to paste.", isPresented: $viewModel.showPasteError) {
+                            Button("OK", role: .cancel) {}
+                        }
+                        #else
                         .popover(isPresented: $viewModel.showPasteError) {
                             Text("No valid content found in clipboard to paste.")
                                 .frame(width: 250)
                                 .padding()
                                 .presentationCompactAdaptation(.popover)
                         }
+                        #endif
                         Button(action: viewModel.createNewNote) {
                             Label("Add New Note", systemImage: "plus")
                         }
