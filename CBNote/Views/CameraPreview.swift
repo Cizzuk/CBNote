@@ -5,6 +5,8 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
+#if !targetEnvironment(macCatalyst)
+
 import AVFoundation
 import SwiftUI
 
@@ -117,3 +119,5 @@ struct CameraPreview: UIViewControllerRepresentable {
         }
     }
 }
+
+#endif

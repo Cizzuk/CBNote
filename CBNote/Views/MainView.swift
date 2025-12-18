@@ -20,9 +20,11 @@ struct MainView: View {
         NavigationStack {
             GeometryReader { geo in
                 ZStack {
+                    #if !targetEnvironment(macCatalyst)
                     if viewModel.showDummyCamera {
                         DummyCameraView()
                     }
+                    #endif
                     
                     ScrollViewReader { proxy in
                         List {
@@ -210,11 +212,13 @@ struct MainView: View {
                     }
                 } // toolbar
                 .quickLookPreview($previewURL)
+                #if !targetEnvironment(macCatalyst)
                 .fullScreenCover(isPresented: $viewModel.showCamera) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
                     }
                 }
+                #endif
                 .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
                 }

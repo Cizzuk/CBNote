@@ -5,6 +5,8 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
+#if !targetEnvironment(macCatalyst)
+
 import AVKit
 import SwiftUI
 
@@ -34,3 +36,5 @@ struct DummyCameraView: View {
         func updateUIView(_ uiView: UIView, context: Context) { }
     }
 }
+
+#endif
