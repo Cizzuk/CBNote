@@ -5,6 +5,8 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
+#if !targetEnvironment(macCatalyst)
+
 import AVKit
 import SwiftUI
 import UIKit
@@ -143,3 +145,5 @@ struct CameraView: View {
         }
     }
 }
+
+#endif
