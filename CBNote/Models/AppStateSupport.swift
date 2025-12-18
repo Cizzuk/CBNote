@@ -36,8 +36,31 @@ struct TrueDevice {
             #else
             return AVCaptureSession().supportsControls
             #endif
+        
         #else
         return false
+        
+        #endif
+    }()
+    
+    // Simply hide the camera features (not strictly)
+    static let isCameraAvailable: Bool = {
+        #if targetEnvironment(macCatalyst)
+        return false
+        
+        #else
+        if userInterfaceIdiom == .mac {
+            return false
+        } else if userInterfaceIdiom == .vision {
+            return false
+        }
+        
+        if AVCaptureDevice.authorizationStatus(for: .video) == .restricted {
+            return false
+        }
+        
+        return true
+        
         #endif
     }()
 }
