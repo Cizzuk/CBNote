@@ -18,22 +18,6 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
-                    if cameraAccessStatus == .notDetermined {
-                        Button("Request Camera Access") {
-                            AVCaptureDevice.requestAccess(for: .video) { _ in
-                                cameraAccessStatus = AVCaptureDevice.authorizationStatus(for: .video)
-                            }
-                        }
-                    }
-                } footer: {
-                    if cameraAccessStatus == .denied {
-                        Text("Camera access is denied. Please grant permission in Settings.")
-                    } else if cameraAccessStatus == .restricted {
-                        Text("Camera access is restricted.")
-                    }
-                }
-                
-                Section {
                     Toggle("Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
                     if TrueDevice.isCamControlAvailable {
                         Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
@@ -51,20 +35,29 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section {
-                    Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
-                    if TrueDevice.isCamControlAvailable {
-                        Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
-                            ForEach(CaptureContext.LaunchAction.allCases) { action in
-                                Text(action.localizedName).tag(action)
+                if TrueDevice.isCameraAvailable {
+                    Section {
+                        if cameraAccessStatus == .notDetermined {
+                            Button("Request Camera Access") {
+                                AVCaptureDevice.requestAccess(for: .video) { _ in
+                                    cameraAccessStatus = AVCaptureDevice.authorizationStatus(for: .video)
+                                }
                             }
                         }
-                    }
-                } header: {
-                    Text("Camera")
-                } footer: {
-                    if TrueDevice.isCamControlAvailable {
-                        Text("Set the behavior when you start the CBNote camera from the lock screen.")
+                        Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
+                        if TrueDevice.isCamControlAvailable {
+                            Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
+                                ForEach(CaptureContext.LaunchAction.allCases) { action in
+                                    Text(action.localizedName).tag(action)
+                                }
+                            }
+                        }
+                    } header: {
+                        Text("Camera")
+                    } footer: {
+                        if TrueDevice.isCamControlAvailable {
+                            Text("Set the behavior when you start the CBNote camera from the lock screen.")
+                        }
                     }
                 }
                 

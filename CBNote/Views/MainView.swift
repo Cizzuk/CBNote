@@ -132,8 +132,10 @@ struct MainView: View {
                 .toolbar {
                     // Top Right
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button(action: { viewModel.showCamera = true }) {
-                            Label("Camera", systemImage: "camera")
+                        if TrueDevice.isCameraAvailable {
+                            Button(action: { viewModel.showCamera = true }) {
+                                Label("Camera", systemImage: "camera")
+                            }
                         }
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
