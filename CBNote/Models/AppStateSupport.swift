@@ -29,20 +29,6 @@ struct TrueDevice {
         #endif
     }()
     
-    static let isCamControlAvailable: Bool = {
-        #if canImport(AVFoundation)
-            #if targetEnvironment(simulator)
-            return true
-            #else
-            return AVCaptureSession().supportsControls
-            #endif
-        
-        #else
-        return false
-        
-        #endif
-    }()
-    
     // Simply hide the camera features (not strictly)
     static let isCameraAvailable: Bool = {
         #if targetEnvironment(macCatalyst)
@@ -60,6 +46,24 @@ struct TrueDevice {
         }
         
         return true
+        
+        #endif
+    }()
+    
+    static let isCamControlAvailable: Bool = {
+        if !isCameraAvailable {
+            return false
+        }
+        
+        #if canImport(AVFoundation)
+            #if targetEnvironment(simulator)
+            return true
+            #else
+            return AVCaptureSession().supportsControls
+            #endif
+        
+        #else
+        return false
         
         #endif
     }()
