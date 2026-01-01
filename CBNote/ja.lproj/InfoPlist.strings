@@ -1,0 +1,10 @@
+/* 
+  InfoPlist.strings
+  CBNote
+
+  Created by Cizzuk on 2026/01/01.
+  
+*/
+
+NSCameraUsageDescription = "ノートに撮影した写真を保存するためにカメラを使用します。";
+NSPhotoLibraryAddUsageDescription = "ノートの写真をフォトライブラリに保存します。";
