@@ -11,6 +11,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 class MainViewModel: ObservableObject {
+    @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
+    
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
     
@@ -18,7 +20,6 @@ class MainViewModel: ObservableObject {
     @Published var newFileURLToScroll: URL?
     
     @Published var showPasteError = false
-    @Published var showDummyCamera = false
     @Published var showCamera = false
     @Published var showSettings = false
     
@@ -109,7 +110,7 @@ class MainViewModel: ObservableObject {
             checkAutoPaste()
             loadFiles()
         } else if scenePhase == .background {
-            showDummyCamera = false
+            dummyCamera = nil
         }
     }
 
@@ -335,20 +336,26 @@ class MainViewModel: ObservableObject {
         
         // Launch a dummy camera to avoid being killed by the system.
         if action != .launchCamera && UIApplication.shared.applicationState != .active {
-            showDummyCamera = true
+            // Create new DummyCamera
+            // Update nonce to disable old kill tasks
+            let newNonce = UUID()
+            dummyCamera = (newNonce, DummyCameraView())
             
             // Kill the dummy camera after 2s.
             // In the test, system killed the app when it was below 0.8 - 1s.
             // For safety, the dummy will be killed in 2s.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.showDummyCamera = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                guard let self = self else { return }
+                // Check if nonce is not updated
+                if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
+                    dummyCamera = nil
+                }
             }
         }
     }
     
     func openApp(with action: OpenAppOption) {
         showSettings = false
-        showDummyCamera = false
         switch action {
         case .launchCamera:
             showCamera = true

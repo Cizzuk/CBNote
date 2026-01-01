@@ -21,8 +21,8 @@ struct MainView: View {
             GeometryReader { geo in
                 ZStack {
                     #if !targetEnvironment(macCatalyst)
-                    if viewModel.showDummyCamera {
-                        DummyCameraView()
+                    if let dummyCameraView = viewModel.dummyCamera?.view {
+                        dummyCameraView
                     }
                     #endif
                     
