@@ -37,4 +37,16 @@ struct DummyCameraView: View {
     }
 }
 
+#else
+
+// MARK: - Mac Catalyst Fall Back
+
+import SwiftUI
+
+struct DummyCameraView: View {
+    var body: some View {
+        EmptyView()
+    }
+}
+
 #endif

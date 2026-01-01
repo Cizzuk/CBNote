@@ -20,11 +20,9 @@ struct MainView: View {
         NavigationStack {
             GeometryReader { geo in
                 ZStack {
-                    #if !targetEnvironment(macCatalyst)
                     if let dummyCameraView = viewModel.dummyCamera?.view {
                         dummyCameraView
                     }
-                    #endif
                     
                     ScrollViewReader { proxy in
                         List {
