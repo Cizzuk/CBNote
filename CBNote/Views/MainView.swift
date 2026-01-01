@@ -231,18 +231,8 @@ struct MainView: View {
                     .disabled(!viewModel.isValidFileName(viewModel.newName))
                 }
                 // MARK: - Events
-                .onAppear {
-                    viewModel.checkLockedCameraCaptures()
-                    viewModel.checkAutoPaste()
-                    viewModel.loadFiles()
-                }
-                .onChange(of: scenePhase) {
-                    if scenePhase == .active {
-                        viewModel.checkLockedCameraCaptures()
-                        viewModel.checkAutoPaste()
-                        viewModel.loadFiles()
-                    }
-                }
+                .onAppear { viewModel.onAppear() }
+                .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()

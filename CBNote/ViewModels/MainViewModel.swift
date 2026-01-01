@@ -96,6 +96,22 @@ class MainViewModel: ObservableObject {
             return false
         }
     }
+    
+    func onAppear() {
+        checkLockedCameraCaptures()
+        checkAutoPaste()
+        loadFiles()
+    }
+
+    func onChange(scenePhase: ScenePhase) {
+        if scenePhase == .active {
+            checkLockedCameraCaptures()
+            checkAutoPaste()
+            loadFiles()
+        } else if scenePhase == .background {
+            showDummyCamera = false
+        }
+    }
 
     func loadFiles() {
         noteManager.loadFiles()
