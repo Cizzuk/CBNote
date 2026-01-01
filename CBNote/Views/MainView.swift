@@ -20,11 +20,9 @@ struct MainView: View {
         NavigationStack {
             GeometryReader { geo in
                 ZStack {
-                    #if !targetEnvironment(macCatalyst)
-                    if viewModel.showDummyCamera {
-                        DummyCameraView()
+                    if let dummyCameraView = viewModel.dummyCamera?.view {
+                        dummyCameraView
                     }
-                    #endif
                     
                     ScrollViewReader { proxy in
                         List {
@@ -231,18 +229,8 @@ struct MainView: View {
                     .disabled(!viewModel.isValidFileName(viewModel.newName))
                 }
                 // MARK: - Events
-                .onAppear {
-                    viewModel.checkLockedCameraCaptures()
-                    viewModel.checkAutoPaste()
-                    viewModel.loadFiles()
-                }
-                .onChange(of: scenePhase) {
-                    if scenePhase == .active {
-                        viewModel.checkLockedCameraCaptures()
-                        viewModel.checkAutoPaste()
-                        viewModel.loadFiles()
-                    }
-                }
+                .onAppear { viewModel.onAppear() }
+                .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()

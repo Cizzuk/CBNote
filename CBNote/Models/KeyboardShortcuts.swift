@@ -17,4 +17,3 @@ enum CustomKeyboardShortcut: String {
     case pasteFromClipboard
     case addNewNote
 }
-

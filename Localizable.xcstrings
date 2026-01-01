@@ -129,7 +129,20 @@
       "shouldTranslate" : false
     },
     "Cizzuk" : {
-      "shouldTranslate" : false
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cizzuk"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cizzuk"
+          }
+        }
+      }
     },
     "Close" : {
       "localizations" : {

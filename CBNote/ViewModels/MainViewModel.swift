@@ -11,6 +11,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 class MainViewModel: ObservableObject {
+    @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
+    
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
     
@@ -18,7 +20,6 @@ class MainViewModel: ObservableObject {
     @Published var newFileURLToScroll: URL?
     
     @Published var showPasteError = false
-    @Published var showDummyCamera = false
     @Published var showCamera = false
     @Published var showSettings = false
     
@@ -96,6 +97,22 @@ class MainViewModel: ObservableObject {
             return false
         }
     }
+    
+    func onAppear() {
+        checkLockedCameraCaptures()
+        checkAutoPaste()
+        loadFiles()
+    }
+
+    func onChange(scenePhase: ScenePhase) {
+        if scenePhase == .active {
+            checkLockedCameraCaptures()
+            checkAutoPaste()
+            loadFiles()
+        } else if scenePhase == .background {
+            dummyCamera = nil
+        }
+    }
 
     func loadFiles() {
         noteManager.loadFiles()
@@ -156,10 +173,24 @@ class MainViewModel: ObservableObject {
                 if let matchedType = textTypes.first(where: { item.keys.contains($0) }),
                    let data = getData(for: matchedType) {
                     textContent = String(data: data, encoding: .utf8)
+                    
                 } else if item.keys.contains(UTType.url.identifier),
-                          let data = getData(for: UTType.url.identifier),
-                          let url = URL(dataRepresentation: data, relativeTo: nil) {
-                    textContent = url.absoluteString
+                          let data = getData(for: UTType.url.identifier) {
+                    // This URL is maybe bplist, so need to convert to string
+                    // Parse to [Any]
+                    if let dict = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [Any] {
+                        // Find URL
+                        for entry in dict {
+                            // Try parse as String
+                            if let urlString = entry as? String,
+                               // Try convert to URL
+                               let url = URL(string: urlString) {
+                                // Use absoluteString as text content
+                                textContent = url.absoluteString
+                                break
+                            }
+                        }
+                    }
                 }
                 
                 if let text = textContent {
@@ -319,20 +350,26 @@ class MainViewModel: ObservableObject {
         
         // Launch a dummy camera to avoid being killed by the system.
         if action != .launchCamera && UIApplication.shared.applicationState != .active {
-            showDummyCamera = true
+            // Create new DummyCamera
+            // Update nonce to disable old kill tasks
+            let newNonce = UUID()
+            dummyCamera = (newNonce, DummyCameraView())
             
             // Kill the dummy camera after 2s.
             // In the test, system killed the app when it was below 0.8 - 1s.
             // For safety, the dummy will be killed in 2s.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.showDummyCamera = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                guard let self = self else { return }
+                // Check if nonce is not updated
+                if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
+                    dummyCamera = nil
+                }
             }
         }
     }
     
     func openApp(with action: OpenAppOption) {
         showSettings = false
-        showDummyCamera = false
         switch action {
         case .launchCamera:
             showCamera = true
