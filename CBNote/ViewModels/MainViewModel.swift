@@ -173,10 +173,24 @@ class MainViewModel: ObservableObject {
                 if let matchedType = textTypes.first(where: { item.keys.contains($0) }),
                    let data = getData(for: matchedType) {
                     textContent = String(data: data, encoding: .utf8)
+                    
                 } else if item.keys.contains(UTType.url.identifier),
-                          let data = getData(for: UTType.url.identifier),
-                          let url = URL(dataRepresentation: data, relativeTo: nil) {
-                    textContent = url.absoluteString
+                          let data = getData(for: UTType.url.identifier) {
+                    // This URL is maybe bplist, so need to convert to string
+                    // Parse to [Any]
+                    if let dict = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [Any] {
+                        // Find URL
+                        for entry in dict {
+                            // Try parse as String
+                            if let urlString = entry as? String,
+                               // Try convert to URL
+                               let url = URL(string: urlString) {
+                                // Use absoluteString as text content
+                                textContent = url.absoluteString
+                                break
+                            }
+                        }
+                    }
                 }
                 
                 if let text = textContent {
