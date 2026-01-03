@@ -124,12 +124,7 @@ enum DocumentDir: String, CaseIterable {
         case .onDevice:
             return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         case .iCloud:
-            if self.isAvailable,
-               let url = FileManager.default.url(forUbiquityContainerIdentifier: nil) {
-                return url.appendingPathComponent("Documents")
-            } else {
-                return nil
-            }
+            return iCloudSupport().directoryURL
         }
     }
     
@@ -138,7 +133,7 @@ enum DocumentDir: String, CaseIterable {
         case .onDevice:
             return true
         case .iCloud:
-            return FileManager.default.url(forUbiquityContainerIdentifier: nil) != nil
+            return iCloudSupport().isAvailable
         }
     }
     
