@@ -14,7 +14,6 @@ struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
-    @State private var refreshID = UUID() // Update this to force refresh file views
 
     var body: some View {
         NavigationStack {
@@ -106,9 +105,7 @@ struct MainView: View {
                         .animation(accessibilityReduceMotion ? nil : .easeOut, value: viewModel.pinnedFiles)
                         .animation(accessibilityReduceMotion ? nil : .easeOut, value: viewModel.unpinnedFiles)
                         .refreshable {
-                            viewModel.checkLockedCameraCaptures()
-                            viewModel.loadFiles()
-                            refreshID = UUID()
+                            viewModel.refreshFiles()
                             // To reduce View jitter
                             try? await Task.sleep(nanoseconds: 1_000_000_000)
                         }
@@ -118,7 +115,7 @@ struct MainView: View {
                             guard let scrollPos = viewModel.newFileURLToScroll else { return }
                             DispatchQueue.global(qos: .userInteractive).async {
                                 withAnimation(.easeOut) {
-                                    proxy.scrollTo("\(scrollPos.absoluteString)-\(refreshID)")
+                                    proxy.scrollTo("\(scrollPos.absoluteString)-\(viewModel.refreshID)")
                                 }
                                 DispatchQueue.main.async {
                                     self.viewModel.newFileURLToScroll = nil
@@ -244,18 +241,7 @@ struct MainView: View {
                 // Keyboard Shortcuts
                 .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
                     if let shortcut = action.object as? CustomKeyboardShortcut {
-                        switch shortcut {
-                        case .openSettings:
-                            viewModel.showSettings = true
-                        case .reloadFiles:
-                            viewModel.checkLockedCameraCaptures()
-                            viewModel.loadFiles()
-                            refreshID = UUID()
-                        case .addNewNote:
-                            viewModel.createNewNote()
-                        case .pasteFromClipboard:
-                            viewModel.addAndPaste()
-                        }
+                        viewModel.handleKeyboardShortcut(shortcut: shortcut)
                     }
                 }
             } // GeometryReader
@@ -265,7 +251,7 @@ struct MainView: View {
     // MARK: - File Row View
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
         FileRow(url: url, onPreview: onPreview)
-            .id("\(url.absoluteString)-\(refreshID)")
+            .id("\(url.absoluteString)-\(viewModel.refreshID)")
             .onDrag() {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
             }

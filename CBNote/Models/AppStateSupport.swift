@@ -124,7 +124,7 @@ enum DocumentDir: String, CaseIterable {
         case .onDevice:
             return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         case .iCloud:
-            return iCloudSupport().directoryURL
+            return iCloudSupport.shared.directoryURL
         }
     }
     
@@ -133,7 +133,7 @@ enum DocumentDir: String, CaseIterable {
         case .onDevice:
             return true
         case .iCloud:
-            return iCloudSupport().isAvailable
+            return iCloudSupport.shared.isAvailable
         }
     }
     

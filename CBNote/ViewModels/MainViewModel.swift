@@ -13,6 +13,8 @@ import UniformTypeIdentifiers
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
     
+    @Published var refreshID = UUID() // Update this to force refresh file views
+    
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
     
@@ -116,6 +118,12 @@ class MainViewModel: ObservableObject {
 
     func loadFiles() {
         noteManager.loadFiles()
+    }
+    
+    func refreshFiles() {
+        checkLockedCameraCaptures()
+        loadFiles()
+        refreshID = UUID()
     }
     
     func setDocumentDir(type: DocumentDir) {
@@ -340,6 +348,23 @@ class MainViewModel: ObservableObject {
         }
         #endif
     }
+    
+    // Handler for keyboard shortcuts
+    func handleKeyboardShortcut(shortcut: CustomKeyboardShortcut) {
+        switch shortcut {
+        case .openSettings:
+            showSettings = true
+        case .reloadFiles:
+            checkLockedCameraCaptures()
+            loadFiles()
+            refreshID = UUID()
+        case .addNewNote:
+            createNewNote()
+        case .pasteFromClipboard:
+            addAndPaste()
+        }
+    }
+    
     
     // Handler for launch from camera control
     func handleCameraControlAction() {

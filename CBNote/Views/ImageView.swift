@@ -21,20 +21,23 @@ struct ImageView: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
             } else if let uiImage = viewModel.uiImage {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .interpolation(shouldPixelate(uiImage) ? .none : .medium)
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity, maxHeight: maxHeight, alignment: .center)
-                    .cornerRadius(16)
-                    .onAppear {
-                        // Calculate max height from screen size
-                        if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                            maxHeight = window.screen.bounds.height * 0.8
-                        } else {
-                            maxHeight = .infinity
-                        }
+                ZStack {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .interpolation(shouldPixelate(uiImage) ? .none : .medium)
+                        .scaledToFit()
+                        .frame(alignment: .center)
+                        .cornerRadius(16)
+                }
+                .frame(maxWidth: .infinity, maxHeight: maxHeight)
+                .onAppear {
+                    // Calculate max height from screen size
+                    if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        maxHeight = window.screen.bounds.height * 0.8
+                    } else {
+                        maxHeight = .infinity
                     }
+                }
             } else {
                 AnyFileItem(url: viewModel.url)
             }

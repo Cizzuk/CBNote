@@ -8,6 +8,8 @@
 import Foundation
 
 class iCloudSupport {
+    static let shared = iCloudSupport()
+    
     var isAvailable: Bool {
         return FileManager.default.url(forUbiquityContainerIdentifier: nil) != nil
     }

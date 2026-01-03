@@ -28,7 +28,7 @@ class TextEditViewModel: ObservableObject {
         }
         
         // Load content
-        if iCloudSupport().isDownloaded(at: url) ?? false {
+        if iCloudSupport.shared.isDownloaded(at: url) ?? false {
             // Already downloaded, load in main thread
             if let content = try? String(contentsOf: self.url, encoding: .utf8) {
                 self.text = content

@@ -18,7 +18,7 @@ class ImageViewModel: ObservableObject {
     }
     
     func loadImage() {
-        if iCloudSupport().isDownloaded(at: url) ?? false {
+        if iCloudSupport.shared.isDownloaded(at: url) ?? false {
             // Already downloaded, load in main thread
             if let data = try? Data(contentsOf: self.url),
                let image = UIImage(data: data) {
