@@ -103,8 +103,8 @@ struct MainView: View {
                             }
                         } // List
                         // MARK: - List Config
-                        .animation(.easeOut, value: viewModel.pinnedFiles)
-                        .animation(.easeOut, value: viewModel.unpinnedFiles)
+                        .animation(accessibilityReduceMotion ? nil : .easeOut, value: viewModel.pinnedFiles)
+                        .animation(accessibilityReduceMotion ? nil : .easeOut, value: viewModel.unpinnedFiles)
                         .refreshable {
                             viewModel.checkLockedCameraCaptures()
                             viewModel.loadFiles()
