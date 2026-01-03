@@ -53,10 +53,21 @@ class TextEditViewModel: ObservableObject {
     }
     
     func saveText() {
-        do {
-            try text.write(to: url, atomically: true, encoding: .utf8)
-        } catch {
-            print("Error saving text: \(error)")
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+            guard let self = self else { return }
+            
+            do {
+                try text.write(to: url, atomically: true, encoding: .utf8)
+            } catch {
+                // Retry after 1s
+                DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + 1) {
+                    do {
+                        try self.text.write(to: self.url, atomically: true, encoding: .utf8)
+                    } catch {
+                        print("Failed to save text to \(self.url): \(error)")
+                    }
+                }
+            }
         }
     }
     
