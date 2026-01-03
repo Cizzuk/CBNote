@@ -86,6 +86,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .animation(.default, value: viewModel.cameraControlAction)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

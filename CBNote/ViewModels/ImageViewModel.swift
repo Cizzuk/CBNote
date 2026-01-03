@@ -18,18 +18,26 @@ class ImageViewModel: ObservableObject {
     }
     
     func loadImage() {
-        DispatchQueue.global(qos: .userInteractive).async {
-            // Read file content
+        if iCloudSupport().isDownloaded(at: url) ?? false {
+            // Already downloaded, load in main thread
             if let data = try? Data(contentsOf: self.url),
                let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.uiImage = image
-                }
+                self.uiImage = image
             }
+            self.isLoading = false
             
-            // Finish loading
-            DispatchQueue.main.async {
-                self.isLoading = false
+        } else {
+            // Not downloaded, load in background thread
+            DispatchQueue.global(qos: .userInteractive).async {
+                if let data = try? Data(contentsOf: self.url),
+                   let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.uiImage = image
+                    }
+                }
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                }
             }
         }
     }
