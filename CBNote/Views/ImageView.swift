@@ -39,6 +39,8 @@ struct ImageView: View {
                 AnyFileItem(url: viewModel.url)
             }
         }
+        .transition(.opacity)
+        .animation(.easeOut(duration: 0.3), value: viewModel.isLoading)
         .onAppear(perform: viewModel.loadImage)
     }
     
