@@ -60,6 +60,15 @@ class SettingsViewModel: ObservableObject {
     }
     
     // MARK: - Note List Settings
+    @Published var showImagePreview: Bool = {
+        let value = UserDefaults.standard.object(forKey: "showImagePreview")
+        return value == nil ? true : UserDefaults.standard.bool(forKey: "showImagePreview")
+    }() {
+        didSet {
+            UserDefaults.standard.set(showImagePreview, forKey: "showImagePreview")
+        }
+    }
+    
     @Published var showHiddenFiles: Bool = UserDefaults.standard.bool(forKey: "showHiddenFiles") {
         didSet {
             UserDefaults.standard.set(showHiddenFiles, forKey: "showHiddenFiles")

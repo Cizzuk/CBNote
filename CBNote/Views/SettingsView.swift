@@ -81,6 +81,7 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("Show Image Preview", isOn: $viewModel.showImagePreview)
                     Toggle("Show Hidden Files", isOn: $viewModel.showHiddenFiles)
                     Toggle("Enable Note List Animations", isOn: $viewModel.enableNoteListAnimations)
                 } header: {

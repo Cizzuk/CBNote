@@ -14,6 +14,7 @@ struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
+    @AppStorage("showImagePreview") private var showImagePreview: Bool = true
     @AppStorage("enableNoteListAnimations") private var enableNoteListAnimations: Bool = false
 
     var body: some View {
@@ -251,7 +252,7 @@ struct MainView: View {
     
     // MARK: - File Row View
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
-        FileRow(url: url, onPreview: onPreview)
+        FileRow(url: url, showImagePreview: showImagePreview, onPreview: onPreview)
             .id("\(url.absoluteString)-\(viewModel.refreshID)")
             .onDrag() {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
