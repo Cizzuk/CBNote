@@ -14,6 +14,7 @@ struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
+    @AppStorage("enableNoteListAnimations") private var enableNoteListAnimations: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -102,8 +103,8 @@ struct MainView: View {
                             }
                         } // List
                         // MARK: - List Config
-                        .animation(accessibilityReduceMotion ? nil : .easeOut, value: viewModel.pinnedFiles)
-                        .animation(accessibilityReduceMotion ? nil : .easeOut, value: viewModel.unpinnedFiles)
+                        .animation(enableNoteListAnimations ? .easeOut : nil, value: viewModel.pinnedFiles)
+                        .animation(enableNoteListAnimations ? .easeOut : nil, value: viewModel.unpinnedFiles)
                         .refreshable {
                             viewModel.refreshFiles()
                             // To reduce View jitter

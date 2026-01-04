@@ -19,35 +19,24 @@ class TextEditViewModel: ObservableObject {
     }
     
     func loadContent() {
-        // Check permissions
-        if !FileManager.default.isWritableFile(atPath: self.url.path) {
-            DispatchQueue.main.async {
-                self.isLoading = false
-            }
-            return
-        }
-        
-        // Load content
-        if iCloudSupport.shared.isDownloaded(at: url) ?? false {
-            // Already downloaded, load in main thread
-            if let content = try? String(contentsOf: self.url, encoding: .utf8) {
-                self.text = content
-                self.isFileEditable = true
-            }
-            self.isLoading = false
-            
-        } else {
-            // Not downloaded, load in background thread
-            DispatchQueue.global(qos: .userInteractive).async {
-                if let content = try? String(contentsOf: self.url, encoding: .utf8) {
-                    DispatchQueue.main.async {
-                        self.text = content
-                        self.isFileEditable = true
-                    }
-                }
+        DispatchQueue.global(qos: .userInteractive).async {
+            // Check permissions
+            if !FileManager.default.isWritableFile(atPath: self.url.path) {
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
+                return
+            }
+            
+            // Load content
+            if let content = try? String(contentsOf: self.url, encoding: .utf8) {
+                DispatchQueue.main.async {
+                    self.text = content
+                    self.isFileEditable = true
+                }
+            }
+            DispatchQueue.main.async {
+                self.isLoading = false
             }
         }
     }

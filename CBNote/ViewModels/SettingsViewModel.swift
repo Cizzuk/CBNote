@@ -10,24 +10,10 @@ import Combine
 import UIKit
 
 class SettingsViewModel: ObservableObject {
+    // MARK: - When App Opening
     @Published var autoPasteWhenOpening: Bool = UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
         didSet {
             UserDefaults.standard.set(autoPasteWhenOpening, forKey: "autoPasteWhenOpening")
-        }
-    }
-    
-    @Published var remainCameraAfterCapture: Bool = UserDefaults.standard.bool(forKey: "remainCameraAfterCapture") {
-        didSet {
-            UserDefaults.standard.set(remainCameraAfterCapture, forKey: "remainCameraAfterCapture")
-        }
-    }
-        
-    @Published var nameFormat: String = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss" {
-        didSet {
-            if nameFormat.isEmpty {
-                nameFormat = "yyyy-MM-dd-HH-mm-ss"
-            }
-            UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
         }
     }
     
@@ -40,6 +26,13 @@ class SettingsViewModel: ObservableObject {
     }() {
         didSet {
             UserDefaults.standard.set(cameraControlAction.rawValue, forKey: "cameraControlAction")
+        }
+    }
+    
+    // MARK: - Camera
+    @Published var remainCameraAfterCapture: Bool = UserDefaults.standard.bool(forKey: "remainCameraAfterCapture") {
+        didSet {
+            UserDefaults.standard.set(remainCameraAfterCapture, forKey: "remainCameraAfterCapture")
         }
     }
 
@@ -55,7 +48,25 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-
+    
+    // MARK: - File Name Format
+    @Published var nameFormat: String = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss" {
+        didSet {
+            if nameFormat.isEmpty {
+                nameFormat = "yyyy-MM-dd-HH-mm-ss"
+            }
+            UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
+        }
+    }
+    
+    // MARK: - Advanced Settings
+    @Published var enableNoteListAnimations: Bool = UserDefaults.standard.bool(forKey: "enableNoteListAnimations") {
+        didSet {
+            UserDefaults.standard.set(enableNoteListAnimations, forKey: "enableNoteListAnimations")
+        }
+    }
+    
+    // Initialize
     init() {
         Task {
             if let context = try? await CaptureIntent.appContext {
