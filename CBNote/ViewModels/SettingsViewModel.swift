@@ -49,16 +49,6 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
-    // MARK: - File Name Format
-    @Published var nameFormat: String = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss" {
-        didSet {
-            if nameFormat.isEmpty {
-                nameFormat = "yyyy-MM-dd-HH-mm-ss"
-            }
-            UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
-        }
-    }
-    
     // MARK: - Note List Settings
     @Published var showImagePreview: Bool = {
         let value = UserDefaults.standard.object(forKey: "showImagePreview")
@@ -78,6 +68,16 @@ class SettingsViewModel: ObservableObject {
     @Published var enableNoteListAnimations: Bool = UserDefaults.standard.bool(forKey: "enableNoteListAnimations") {
         didSet {
             UserDefaults.standard.set(enableNoteListAnimations, forKey: "enableNoteListAnimations")
+        }
+    }
+    
+    // MARK: - File Name Format
+    @Published var nameFormat: String = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss" {
+        didSet {
+            if nameFormat.isEmpty {
+                nameFormat = "yyyy-MM-dd-HH-mm-ss"
+            }
+            UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
         }
     }
     
