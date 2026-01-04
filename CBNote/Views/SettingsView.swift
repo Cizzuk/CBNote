@@ -81,6 +81,12 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("Enable Note List Animations", isOn: $viewModel.enableNoteListAnimations)
+                } footer: {
+                    Text("To avoid display issues, some animations in note list are disabled by default.")
+                }
+                
+                Section {
                     NavigationLink(destination: AboutView()) {
                         Text("About")
                     }
