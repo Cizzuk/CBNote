@@ -81,7 +81,10 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("Show Hidden Files", isOn: $viewModel.showHiddenFiles)
                     Toggle("Enable Note List Animations", isOn: $viewModel.enableNoteListAnimations)
+                } header: {
+                    Text("Note List")
                 } footer: {
                     Text("To avoid display issues, some animations in note list are disabled by default.")
                 }

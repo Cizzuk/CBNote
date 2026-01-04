@@ -59,7 +59,13 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Advanced Settings
+    // MARK: - Note List Settings
+    @Published var showHiddenFiles: Bool = UserDefaults.standard.bool(forKey: "showHiddenFiles") {
+        didSet {
+            UserDefaults.standard.set(showHiddenFiles, forKey: "showHiddenFiles")
+        }
+    }
+    
     @Published var enableNoteListAnimations: Bool = UserDefaults.standard.bool(forKey: "enableNoteListAnimations") {
         didSet {
             UserDefaults.standard.set(enableNoteListAnimations, forKey: "enableNoteListAnimations")
