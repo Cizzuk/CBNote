@@ -80,24 +80,35 @@ class MainViewModel: ObservableObject {
     }
 
     private func filterFiles(_ files: [URL], query: String) -> [URL] {
-        guard !query.isEmpty else { return files }
+        var filteredFiles = files
         
-        return files.filter { url in
-            // File name search
-            if url.lastPathComponent.localizedCaseInsensitiveContains(query) {
-                return true
-            }
-            
-            // File content search
-            if FileTypes.isEditableText(url) {
-                if let content = try? String(contentsOf: url, encoding: .utf8),
-                   content.localizedCaseInsensitiveContains(query) {
+        // Hidden file filter
+        let showHiddenFiles = UserDefaults.standard.bool(forKey: "showHiddenFiles")
+        if !showHiddenFiles {
+            filteredFiles = filteredFiles.filter { !$0.lastPathComponent.hasPrefix(".") }
+        }
+        
+        // Query filter
+        if !query.isEmpty {
+            filteredFiles = filteredFiles.filter { url in
+                // File name search
+                if url.lastPathComponent.localizedCaseInsensitiveContains(query) {
                     return true
                 }
+                
+                // File content search
+                if FileTypes.isEditableText(url) {
+                    if let content = try? String(contentsOf: url, encoding: .utf8),
+                       content.localizedCaseInsensitiveContains(query) {
+                        return true
+                    }
+                }
+                
+                return false
             }
-            
-            return false
         }
+
+        return filteredFiles
     }
     
     func onAppear() {

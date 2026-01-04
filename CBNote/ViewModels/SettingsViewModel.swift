@@ -49,6 +49,28 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Note List Settings
+    @Published var showImagePreview: Bool = {
+        let value = UserDefaults.standard.object(forKey: "showImagePreview")
+        return value == nil ? true : UserDefaults.standard.bool(forKey: "showImagePreview")
+    }() {
+        didSet {
+            UserDefaults.standard.set(showImagePreview, forKey: "showImagePreview")
+        }
+    }
+    
+    @Published var showHiddenFiles: Bool = UserDefaults.standard.bool(forKey: "showHiddenFiles") {
+        didSet {
+            UserDefaults.standard.set(showHiddenFiles, forKey: "showHiddenFiles")
+        }
+    }
+    
+    @Published var enableNoteListAnimations: Bool = UserDefaults.standard.bool(forKey: "enableNoteListAnimations") {
+        didSet {
+            UserDefaults.standard.set(enableNoteListAnimations, forKey: "enableNoteListAnimations")
+        }
+    }
+    
     // MARK: - File Name Format
     @Published var nameFormat: String = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss" {
         didSet {
@@ -56,13 +78,6 @@ class SettingsViewModel: ObservableObject {
                 nameFormat = "yyyy-MM-dd-HH-mm-ss"
             }
             UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
-        }
-    }
-    
-    // MARK: - Advanced Settings
-    @Published var enableNoteListAnimations: Bool = UserDefaults.standard.bool(forKey: "enableNoteListAnimations") {
-        didSet {
-            UserDefaults.standard.set(enableNoteListAnimations, forKey: "enableNoteListAnimations")
         }
     }
     

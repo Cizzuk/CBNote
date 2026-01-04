@@ -62,6 +62,16 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("Show Image Preview", isOn: $viewModel.showImagePreview)
+                    Toggle("Show Hidden Files", isOn: $viewModel.showHiddenFiles)
+                    Toggle("Enable Note List Animations", isOn: $viewModel.enableNoteListAnimations)
+                } header: {
+                    Text("Note List")
+                } footer: {
+                    Text("To avoid display issues, some animations in note list are disabled by default.")
+                }
+                
+                Section {
                     TextField("yyyy-MM-dd-HH-mm-ss", text: $viewModel.nameFormat)
                         .disableAutocorrection(true)
                         .textInputAutocapitalization(.never)
@@ -78,12 +88,6 @@ struct SettingsView: View {
                 }
                 .onAppear {
                     updateNameFormatSample()
-                }
-                
-                Section {
-                    Toggle("Enable Note List Animations", isOn: $viewModel.enableNoteListAnimations)
-                } footer: {
-                    Text("To avoid display issues, some animations in note list are disabled by default.")
                 }
                 
                 Section {
