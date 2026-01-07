@@ -29,7 +29,7 @@ struct SettingsView: View {
                 } header: {
                     Text("When App Opening")
                 } footer: {
-                    if viewModel.cameraControlAction != .launchCamera {
+                    if viewModel.cameraControlAction != .launchCamera && TrueDevice.isCamControlAvailable {
                         let actionName = OpenAppOption.launchCamera.localizedName
                         Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
                     }
