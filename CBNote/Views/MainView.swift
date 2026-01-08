@@ -5,8 +5,9 @@
 //  Created by Cizzuk on 2025/12/02.
 //
 
-import SwiftUI
 import QuickLook
+import SwiftUI
+import Translation
 
 struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
@@ -210,6 +211,7 @@ struct MainView: View {
                 } // toolbar
                 .quickLookPreview($previewURL)
                 #if !targetEnvironment(macCatalyst)
+                .translationPresentation(isPresented: $viewModel.showTranslation, text: viewModel.translationText)
                 .fullScreenCover(isPresented: $viewModel.showCamera) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
@@ -276,6 +278,21 @@ struct MainView: View {
                     }
                 }
                 Divider()
+                
+                #if !targetEnvironment(macCatalyst)
+                if FileTypes.isEditableText(url) {
+                    // Translate
+                    Button(action: { viewModel.translateFile(at: url) }) {
+                        Label("Translate", systemImage: "translate")
+                    }
+                    // Open in Browser
+                    Button(action: { viewModel.openInBrowser(at: url) }) {
+                        Label("Open in Browser", systemImage: "safari")
+                    }
+                    Divider()
+                }
+                #endif
+                
                 Button(action: { viewModel.copyFile(at: url) }) {
                     Label("Copy", systemImage: "document.on.document")
                 }
@@ -286,6 +303,7 @@ struct MainView: View {
                     Label("Quick Look", systemImage: "eye")
                 }
                 Divider()
+                
                 Button(action: { viewModel.startRenaming(at: url) }) {
                     Label("Rename", systemImage: "pencil")
                 }
