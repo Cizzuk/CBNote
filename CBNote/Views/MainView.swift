@@ -117,7 +117,7 @@ struct MainView: View {
                             guard let scrollPos = viewModel.newFileURLToScroll else { return }
                             DispatchQueue.global(qos: .userInteractive).async {
                                 withAnimation(.easeOut) {
-                                    proxy.scrollTo("\(scrollPos.absoluteString)-\(viewModel.refreshID)")
+                                    proxy.scrollTo("\(scrollPos.absoluteString)")
                                 }
                                 DispatchQueue.main.async {
                                     self.viewModel.newFileURLToScroll = nil
@@ -253,7 +253,7 @@ struct MainView: View {
     // MARK: - File Row View
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
         FileRow(url: url, showImagePreview: showImagePreview, onPreview: onPreview)
-            .id("\(url.absoluteString)-\(viewModel.refreshID)")
+            .id("\(url.absoluteString)")
             .onDrag() {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
             }

@@ -19,7 +19,7 @@ struct ImageView: View {
         Group {
             if viewModel.isLoading {
                 ProgressView()
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: maxHeight)
             } else if let uiImage = viewModel.uiImage {
                 ZStack {
                     Image(uiImage: uiImage)
@@ -43,8 +43,11 @@ struct ImageView: View {
             }
         }
         .transition(.opacity)
-        .animation(.easeOut(duration: 0.3), value: viewModel.isLoading)
+        .animation(.easeOut(duration: 0.3), value: viewModel.uiImage)
         .onAppear(perform: viewModel.loadImage)
+        .onReceive(NotificationCenter.default.publisher(for: .noteListRefreshAttempt)) { _ in
+            viewModel.loadImage()
+        }
     }
     
     private func shouldPixelate(_ image: UIImage) -> Bool {

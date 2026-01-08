@@ -10,10 +10,12 @@ import LockedCameraCapture
 import SwiftUI
 import UniformTypeIdentifiers
 
+extension Notification.Name {
+    static let noteListRefreshAttempt = Notification.Name("noteListRefreshAttempt")
+}
+
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
-    
-    @Published var refreshID = UUID() // Update this to force refresh file views
     
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -134,7 +136,7 @@ class MainViewModel: ObservableObject {
     func refreshFiles() {
         checkLockedCameraCaptures()
         loadFiles()
-        refreshID = UUID()
+        NotificationCenter.default.post(name: .noteListRefreshAttempt, object: nil)
     }
     
     func setDocumentDir(type: DocumentDir) {
@@ -366,9 +368,7 @@ class MainViewModel: ObservableObject {
         case .openSettings:
             showSettings = true
         case .reloadFiles:
-            checkLockedCameraCaptures()
-            loadFiles()
-            refreshID = UUID()
+            refreshFiles()
         case .addNewNote:
             createNewNote()
         case .pasteFromClipboard:
