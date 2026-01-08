@@ -19,7 +19,7 @@ struct ImageView: View {
         Group {
             if viewModel.isLoading {
                 ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: maxHeight)
+                    .frame(maxWidth: .infinity)
             } else if let uiImage = viewModel.uiImage {
                 ZStack {
                     Image(uiImage: uiImage)
@@ -43,7 +43,7 @@ struct ImageView: View {
             }
         }
         .transition(.opacity)
-        .animation(.easeOut(duration: 0.3), value: viewModel.uiImage)
+        .animation(.easeOut(duration: 0.3), value: viewModel.isLoading)
         .onAppear(perform: viewModel.loadImage)
         .onReceive(NotificationCenter.default.publisher(for: .noteListRefreshAttempt)) { _ in
             viewModel.loadImage()
