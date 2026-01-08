@@ -96,7 +96,7 @@ struct MainView: View {
                                             } label: {
                                                 Label("Delete", systemImage: "trash")
                                             }
-                                            Button(action: { viewModel.startRenaming(url: url) }) {
+                                            Button(action: { viewModel.startRenaming(at: url) }) {
                                                 Label("Rename", systemImage: "pencil")
                                             }
                                         }
@@ -286,7 +286,7 @@ struct MainView: View {
                     Label("Quick Look", systemImage: "eye")
                 }
                 Divider()
-                Button(action: { viewModel.startRenaming(url: url) }) {
+                Button(action: { viewModel.startRenaming(at: url) }) {
                     Label("Rename", systemImage: "pencil")
                 }
                 Button(role: .destructive) {

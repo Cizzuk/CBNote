@@ -290,15 +290,6 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    func deleteFile(at url: URL) {
-        noteManager.deleteFile(at: url)
-    }
-    
-    func renameFile() {
-        guard let url = renamingURL else { return }
-        noteManager.renameFile(at: url, newName: newName)
-    }
-    
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
@@ -311,10 +302,19 @@ class MainViewModel: ObservableObject {
         noteManager.isValidFileName(name)
     }
     
-    func startRenaming(url: URL) {
+    func startRenaming(at url: URL) {
         renamingURL = url
         newName = url.lastPathComponent
         isRenaming = true
+    }
+    
+    func renameFile() {
+        guard let url = renamingURL else { return }
+        noteManager.renameFile(at: url, newName: newName)
+    }
+    
+    func deleteFile(at url: URL) {
+        noteManager.deleteFile(at: url)
     }
     
     // Handler for camera capture
