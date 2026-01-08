@@ -128,6 +128,7 @@ class MainViewModel: ObservableObject {
             checkLockedCameraCaptures()
             checkAutoPaste()
             loadFiles()
+            refreshFiles()
         } else if scenePhase == .background {
             dummyCamera = nil
         }
