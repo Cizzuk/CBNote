@@ -329,13 +329,14 @@ class MainViewModel: ObservableObject {
     
     func openInBrowser(at url: URL) {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
-        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
         
+        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
         if let linkURL = URL(string: trimmedContent), UIApplication.shared.canOpenURL(linkURL) {
             // If valid URL, open directly
             UIApplication.shared.open(linkURL)
             
-        } else if let searchURL = URL(string: "x-web-search://?\(content)") {
+        } else if let encodedContent = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                  let searchURL = URL(string: "x-web-search://?\(encodedContent)") {
             // Search in Safari
             UIApplication.shared.open(searchURL)
         }
