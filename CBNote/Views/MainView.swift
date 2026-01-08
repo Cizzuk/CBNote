@@ -5,8 +5,9 @@
 //  Created by Cizzuk on 2025/12/02.
 //
 
-import SwiftUI
 import QuickLook
+import SwiftUI
+import Translation
 
 struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
@@ -96,7 +97,7 @@ struct MainView: View {
                                             } label: {
                                                 Label("Delete", systemImage: "trash")
                                             }
-                                            Button(action: { viewModel.startRenaming(url: url) }) {
+                                            Button(action: { viewModel.startRenaming(at: url) }) {
                                                 Label("Rename", systemImage: "pencil")
                                             }
                                         }
@@ -117,7 +118,7 @@ struct MainView: View {
                             guard let scrollPos = viewModel.newFileURLToScroll else { return }
                             DispatchQueue.global(qos: .userInteractive).async {
                                 withAnimation(.easeOut) {
-                                    proxy.scrollTo("\(scrollPos.absoluteString)-\(viewModel.refreshID)")
+                                    proxy.scrollTo("\(scrollPos.absoluteString)")
                                 }
                                 DispatchQueue.main.async {
                                     self.viewModel.newFileURLToScroll = nil
@@ -210,6 +211,7 @@ struct MainView: View {
                 } // toolbar
                 .quickLookPreview($previewURL)
                 #if !targetEnvironment(macCatalyst)
+                .translationPresentation(isPresented: $viewModel.showTranslation, text: viewModel.translationText)
                 .fullScreenCover(isPresented: $viewModel.showCamera) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
@@ -253,7 +255,7 @@ struct MainView: View {
     // MARK: - File Row View
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
         FileRow(url: url, showImagePreview: showImagePreview, onPreview: onPreview)
-            .id("\(url.absoluteString)-\(viewModel.refreshID)")
+            .id("\(url.absoluteString)")
             .onDrag() {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
             }
@@ -276,6 +278,21 @@ struct MainView: View {
                     }
                 }
                 Divider()
+                
+                #if !targetEnvironment(macCatalyst)
+                if FileTypes.isEditableText(url) {
+                    // Translate
+                    Button(action: { viewModel.translateFile(at: url) }) {
+                        Label("Translate", systemImage: "translate")
+                    }
+                    // Open in Browser
+                    Button(action: { viewModel.openInBrowser(at: url) }) {
+                        Label("Open in Browser", systemImage: "safari")
+                    }
+                    Divider()
+                }
+                #endif
+                
                 Button(action: { viewModel.copyFile(at: url) }) {
                     Label("Copy", systemImage: "document.on.document")
                 }
@@ -286,7 +303,8 @@ struct MainView: View {
                     Label("Quick Look", systemImage: "eye")
                 }
                 Divider()
-                Button(action: { viewModel.startRenaming(url: url) }) {
+                
+                Button(action: { viewModel.startRenaming(at: url) }) {
                     Label("Rename", systemImage: "pencil")
                 }
                 Button(role: .destructive) {

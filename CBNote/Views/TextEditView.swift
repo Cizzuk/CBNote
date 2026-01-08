@@ -32,5 +32,8 @@ struct TextEditView: View {
         .onAppear {
             viewModel.loadContent()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .noteListRefreshAttempt)) { _ in
+            viewModel.loadContent()
+        }
     }
 }

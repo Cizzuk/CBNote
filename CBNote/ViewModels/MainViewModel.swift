@@ -8,15 +8,22 @@
 import Combine
 import LockedCameraCapture
 import SwiftUI
+import Translation
 import UniformTypeIdentifiers
+
+extension Notification.Name {
+    static let noteListRefreshAttempt = Notification.Name("noteListRefreshAttempt")
+}
 
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
     
-    @Published var refreshID = UUID() // Update this to force refresh file views
-    
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
+    
+    @Published var documentDir: DocumentDir = .onDevice
+    @Published var sortKey: SortKey = .name
+    @Published var sortDirection: SortDirection = .descending
     
     @Published var searchQuery = ""
     @Published var newFileURLToScroll: URL?
@@ -29,9 +36,8 @@ class MainViewModel: ObservableObject {
     @Published var newName = ""
     @Published var isRenaming = false
     
-    @Published var documentDir: DocumentDir = .onDevice
-    @Published var sortKey: SortKey = .name
-    @Published var sortDirection: SortDirection = .descending
+    @Published var showTranslation = false
+    @Published var translationText = ""
     
     let noteManager = NoteManager()
     
@@ -45,7 +51,7 @@ class MainViewModel: ObservableObject {
                 self?.pinnedFiles = self?.filterFiles(files, query: query) ?? []
             }
             .store(in: &cancellables)
-
+        
         Publishers.CombineLatest(noteManager.$unpinnedFiles, $searchQuery)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] files, query in
@@ -63,14 +69,14 @@ class MainViewModel: ObservableObject {
         if !documentDir.isAvailable {
             noteManager.setDocumentDir(type: .defaultDir)
         }
-            
+        
         noteManager.$sortKey
             .sink { [weak self] key in
                 self?.sortKey = key
                 UserDefaults.standard.set(key.rawValue, forKey: "sortKey")
             }
             .store(in: &cancellables)
-            
+        
         noteManager.$sortDirection
             .sink { [weak self] direction in
                 self?.sortDirection = direction
@@ -78,7 +84,7 @@ class MainViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-
+    
     private func filterFiles(_ files: [URL], query: String) -> [URL] {
         var filteredFiles = files
         
@@ -107,7 +113,7 @@ class MainViewModel: ObservableObject {
                 return false
             }
         }
-
+        
         return filteredFiles
     }
     
@@ -116,7 +122,7 @@ class MainViewModel: ObservableObject {
         checkAutoPaste()
         loadFiles()
     }
-
+    
     func onChange(scenePhase: ScenePhase) {
         if scenePhase == .active {
             checkLockedCameraCaptures()
@@ -126,7 +132,7 @@ class MainViewModel: ObservableObject {
             dummyCamera = nil
         }
     }
-
+    
     func loadFiles() {
         noteManager.loadFiles()
     }
@@ -134,7 +140,7 @@ class MainViewModel: ObservableObject {
     func refreshFiles() {
         checkLockedCameraCaptures()
         loadFiles()
-        refreshID = UUID()
+        NotificationCenter.default.post(name: .noteListRefreshAttempt, object: nil)
     }
     
     func setDocumentDir(type: DocumentDir) {
@@ -150,7 +156,7 @@ class MainViewModel: ObservableObject {
         }
         noteManager.setSort(key: key, direction: newDirection)
     }
-
+    
     func createNewNote() {
         guard let newNoteURL = noteManager.createNewNote() else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
@@ -266,7 +272,7 @@ class MainViewModel: ObservableObject {
             addAndPaste(suppressError: true)
         }
     }
-
+    
     func copyFile(at url: URL) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
@@ -288,15 +294,6 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    func deleteFile(at url: URL) {
-        noteManager.deleteFile(at: url)
-    }
-    
-    func renameFile() {
-        guard let url = renamingURL else { return }
-        noteManager.renameFile(at: url, newName: newName)
-    }
-    
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
@@ -309,10 +306,40 @@ class MainViewModel: ObservableObject {
         noteManager.isValidFileName(name)
     }
     
-    func startRenaming(url: URL) {
+    func startRenaming(at url: URL) {
         renamingURL = url
         newName = url.lastPathComponent
         isRenaming = true
+    }
+    
+    func renameFile() {
+        guard let url = renamingURL else { return }
+        noteManager.renameFile(at: url, newName: newName)
+    }
+    
+    func deleteFile(at url: URL) {
+        noteManager.deleteFile(at: url)
+    }
+    
+    func translateFile(at url: URL) {
+        guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
+        translationText = content
+        showTranslation = true
+    }
+    
+    func openInBrowser(at url: URL) {
+        guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
+        
+        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let linkURL = URL(string: trimmedContent), UIApplication.shared.canOpenURL(linkURL) {
+            // If valid URL, open directly
+            UIApplication.shared.open(linkURL)
+            
+        } else if let encodedContent = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                  let searchURL = URL(string: "x-web-search://?\(encodedContent)") {
+            // Search in Safari
+            UIApplication.shared.open(searchURL)
+        }
     }
     
     // Handler for camera capture
@@ -366,9 +393,7 @@ class MainViewModel: ObservableObject {
         case .openSettings:
             showSettings = true
         case .reloadFiles:
-            checkLockedCameraCaptures()
-            loadFiles()
-            refreshID = UUID()
+            refreshFiles()
         case .addNewNote:
             createNewNote()
         case .pasteFromClipboard:

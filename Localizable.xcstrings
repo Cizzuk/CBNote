@@ -660,6 +660,16 @@
         }
       }
     },
+    "Open in Browser" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザで開く"
+          }
+        }
+      }
+    },
     "Options" : {
       "localizations" : {
         "ja" : {
@@ -926,6 +936,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フラッシュを切り替え"
+          }
+        }
+      }
+    },
+    "Translate" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳"
           }
         }
       }
