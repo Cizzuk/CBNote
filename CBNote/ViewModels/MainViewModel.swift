@@ -455,10 +455,12 @@ class MainViewModel: ObservableObject {
         case .openURL:
             if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
                let url = URL(string: urlString) {
+                // Handle CBNote URL scheme
                 if url.scheme == "cbnote" || url.scheme == "net.cizzuk.cbnote" {
                     CBNoteApp.handleURLScheme(url)
                     return
                 }
+                // Else open URL normally
                 UIApplication.shared.open(url)
             } else {
                 CBNoteApp.exitApp()
