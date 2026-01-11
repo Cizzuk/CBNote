@@ -461,6 +461,7 @@ class MainViewModel: ObservableObject {
                 }
                 UIApplication.shared.open(url)
             } else {
+                UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
                 exit(0)
             }
         }
