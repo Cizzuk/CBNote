@@ -670,6 +670,16 @@
         }
       }
     },
+    "Open URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URLを開く"
+          }
+        }
+      }
+    },
     "Options" : {
       "localizations" : {
         "ja" : {
@@ -966,6 +976,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サポートされていないファイル形式です。"
+          }
+        }
+      }
+    },
+    "URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
           }
         }
       }
