@@ -15,14 +15,22 @@ struct CBNoteApp: App {
         _ = WatchConnectivityManager.shared
     }
     
+    static func backToHomeScreen() {
+        UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+    }
+    
+    static func exitApp() {
+        backToHomeScreen()
+        exit(0)
+    }
+    
     static func handleURLScheme(_ url: URL) {
         if url.host == "magicaction" {
             switch url.path {
             case "/home":
-                UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+                CBNoteApp.backToHomeScreen()
             case "/kill":
-                UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
-                exit(0)
+                CBNoteApp.exitApp()
             default:
                 break
             }
