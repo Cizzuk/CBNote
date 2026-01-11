@@ -16,6 +16,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
     case pasteFromClipboard = "Paste from Clipboard"
     case addNewNote = "Add New Note"
     case openAppOnly = "Open App Only"
+    case openURL = "Open URL"
 
     var id: String { rawValue }
     var localizedName: LocalizedStringResource {
@@ -28,6 +29,17 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
             return "Add New Note"
         case .openAppOnly:
             return "Open App Only"
+        case .openURL:
+            return "Open URL"
+        }
+    }
+    
+    var shoudOpenDummyCamera: Bool {
+        switch self {
+        case .launchCamera, .openURL:
+            return false
+        case .pasteFromClipboard, .addNewNote, .openAppOnly:
+            return true
         }
     }
 }

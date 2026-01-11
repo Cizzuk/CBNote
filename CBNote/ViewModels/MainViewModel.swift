@@ -17,6 +17,7 @@ extension Notification.Name {
 
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
+    @Published var showCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -129,6 +130,8 @@ class MainViewModel: ObservableObject {
             checkAutoPaste()
             loadFiles()
             refreshFiles()
+        } else if scenePhase == .inactive {
+            showCurtain = false
         } else if scenePhase == .background {
             dummyCamera = nil
         }
@@ -417,7 +420,7 @@ class MainViewModel: ObservableObject {
         openApp(with: action)
         
         // Launch a dummy camera to avoid being killed by the system.
-        if action != .launchCamera && UIApplication.shared.applicationState != .active {
+        if action.shoudOpenDummyCamera && UIApplication.shared.applicationState != .active {
             // Create new DummyCamera
             // Update nonce to disable old kill tasks
             let newNonce = UUID()
@@ -449,6 +452,17 @@ class MainViewModel: ObservableObject {
             createNewNote()
         case .openAppOnly:
             showCamera = false
+        case .openURL:
+            if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
+               let url = URL(string: urlString) {
+                if url.scheme == "cbnote" || url.scheme == "net.cizzuk.cbnote" {
+                    CBNoteApp.handleURLScheme(url)
+                    return
+                }
+                UIApplication.shared.open(url)
+            } else {
+                exit(0)
+            }
         }
     }
 }

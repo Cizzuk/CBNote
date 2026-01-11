@@ -29,6 +29,12 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    @Published var cameraControlActionOpenURL: String = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL") ?? "" {
+        didSet {
+            UserDefaults.standard.set(cameraControlActionOpenURL, forKey: "cameraControlActionOpenURL")
+        }
+    }
+    
     // MARK: - Camera
     @Published var remainCameraAfterCapture: Bool = UserDefaults.standard.bool(forKey: "remainCameraAfterCapture") {
         didSet {

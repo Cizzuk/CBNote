@@ -25,11 +25,19 @@ struct SettingsView: View {
                                 Text(action.localizedName).tag(action)
                             }
                         }
+                        if viewModel.cameraControlAction == .openURL {
+                            TextField("URL", text: $viewModel.cameraControlActionOpenURL, prompt: Text(verbatim: "shortcuts://run-shortcut?name=[name]"))
+                                .disableAutocorrection(true)
+                                .keyboardType(.URL)
+                                .textInputAutocapitalization(.never)
+                                .environment(\.layoutDirection, .leftToRight)
+                                .submitLabel(.done)
+                        }
                     }
                 } header: {
                     Text("When App Opening")
                 } footer: {
-                    if viewModel.cameraControlAction != .launchCamera && TrueDevice.isCamControlAvailable {
+                    if viewModel.cameraControlAction.shoudOpenDummyCamera && TrueDevice.isCamControlAvailable {
                         let actionName = OpenAppOption.launchCamera.localizedName
                         Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
                     }

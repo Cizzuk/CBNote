@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 @main
 struct CBNoteApp: App {
@@ -13,10 +14,27 @@ struct CBNoteApp: App {
         // Initialize Watch Connectivity Manager
         _ = WatchConnectivityManager.shared
     }
+    
+    static func handleURLScheme(_ url: URL) {
+        if url.host == "magicaction" {
+            switch url.path {
+            case "/home":
+                UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+            case "/kill":
+                UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+                exit(0)
+            default:
+                break
+            }
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
             MainView()
+                .onOpenURL { url in
+                    CBNoteApp.handleURLScheme(url)
+                }
             #if targetEnvironment(macCatalyst)
             .onAppear {
                 (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
