@@ -500,7 +500,7 @@ class MainViewModel: ObservableObject {
                 // Else open URL normally
                 UIApplication.shared.open(url)
             } else {
-                CBNoteApp.exitApp()
+                CBNoteApp.backToHomeScreen()
             }
         }
     }
