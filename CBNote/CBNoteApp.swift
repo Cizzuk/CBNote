@@ -8,8 +8,41 @@
 import SwiftUI
 import UIKit
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let config = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        config.delegateClass = SceneDelegate.self
+        return config
+    }
+}
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        let action: OpenAppOption?
+        switch shortcutItem.type {
+        case "net.cizzuk.cbnote.HomeShortcut.LaunchCamera":
+            action = .launchCamera
+        case "net.cizzuk.cbnote.HomeShortcut.PasteFromClipboard":
+            action = .pasteFromClipboard
+        case "net.cizzuk.cbnote.HomeShortcut.AddNewNote":
+            action = .addNewNote
+        default:
+            action = nil
+        }
+        
+        if let action {
+            NotificationCenter.default.post(name: .openAppIntentPerformed, object: action)
+            completionHandler(true)
+        } else {
+            completionHandler(false)
+        }
+    }
+}
+
 @main
 struct CBNoteApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     init() {
         // Initialize Watch Connectivity Manager
         _ = WatchConnectivityManager.shared
