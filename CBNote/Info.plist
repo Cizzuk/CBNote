@@ -31,6 +31,33 @@
 		<key>UISceneConfigurations</key>
 		<dict/>
 	</dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>camera</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>UIApplicationShortcutItems_LaunchCamera</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>net.cizzuk.cbnote.HomeShortcut.LaunchCamera</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>document.on.clipboard</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>UIApplicationShortcutItems_PasteFromClipboard</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>net.cizzuk.cbnote.HomeShortcut.PasteFromClipboard</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>square.and.pencil</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>UIApplicationShortcutItems_AddNewNote</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>net.cizzuk.cbnote.HomeShortcut.AddNewNote</string>
+		</dict>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 </dict>

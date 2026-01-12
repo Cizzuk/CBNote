@@ -17,6 +17,7 @@ extension Notification.Name {
 
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
+    @Published var showDummyCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -124,13 +125,18 @@ class MainViewModel: ObservableObject {
     }
     
     func onChange(scenePhase: ScenePhase) {
-        if scenePhase == .active {
+        switch scenePhase {
+        case .active:
             checkLockedCameraCaptures()
             checkAutoPaste()
             loadFiles()
             refreshFiles()
-        } else if scenePhase == .background {
+        case .inactive:
+            showDummyCurtain = false
+        case .background:
             dummyCamera = nil
+        @unknown default:
+            break
         }
     }
     
@@ -408,47 +414,110 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    // Handler for URL scheme
+    func handleOpenURL(url: URL, fromCameraControl: Bool = false) {
+        switch url.host {
+        case "magicaction":
+            switch url.pathComponents.dropFirst().first {
+            case "home":
+                CBNoteApp.backToHomeScreen()
+            case "kill":
+                CBNoteApp.exitApp()
+            default:
+                openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
+            }
+        case "open":
+            var action: OpenAppOption = .openAppOnly
+
+            switch url.pathComponents.dropFirst().first {
+            case "camera":
+                action = .launchCamera
+            case "paste":
+                action = .pasteFromClipboard
+            case "newnote":
+                action = .addNewNote
+            default:
+                break
+            }
+            
+            openApp(with: action, fromCameraControl: fromCameraControl)
+        default:
+            openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
+        }
+    }
     
     // Handler for launch from camera control
     func handleCameraControlAction() {
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
-        openApp(with: action)
+        openApp(with: action, fromCameraControl: true)
+    }
+    
+    // Launch a dummy camera to avoid being killed by the system.
+    func openDummyCamera() {
+        // Create new DummyCamera
+        // Update nonce to disable old kill tasks
+        let newNonce = UUID()
+        dummyCamera = (newNonce, DummyCameraView())
         
-        // Launch a dummy camera to avoid being killed by the system.
-        if action != .launchCamera && UIApplication.shared.applicationState != .active {
-            // Create new DummyCamera
-            // Update nonce to disable old kill tasks
-            let newNonce = UUID()
-            dummyCamera = (newNonce, DummyCameraView())
-            
-            // Kill the dummy camera after 2s.
-            // In the test, system killed the app when it was below 0.8 - 1s.
-            // For safety, the dummy will be killed in 2s.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                guard let self = self else { return }
-                // Check if nonce is not updated
-                if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
-                    dummyCamera = nil
-                }
+        // Kill the dummy camera after 2s.
+        // In the test, system killed the app when it was below 0.8 - 1s.
+        // For safety, the dummy will be killed in 2s.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            guard let self = self else { return }
+            // Check if nonce is not updated
+            if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
+                dummyCamera = nil
             }
         }
     }
     
-    func openApp(with action: OpenAppOption) {
-        showSettings = false
+    func openApp(with action: OpenAppOption, fromCameraControl: Bool = false) {
+        // Open Dummy Camera if needed
+        if action.shouldOpenDummyCamera && fromCameraControl && UIApplication.shared.applicationState != .active {
+            openDummyCamera()
+        }
+        
         switch action {
         case .launchCamera:
+            showSettings = false
             showCamera = true
         case .pasteFromClipboard:
+            showSettings = false
             showCamera = false
             addAndPaste()
         case .addNewNote:
+            showSettings = false
             showCamera = false
             createNewNote()
         case .openAppOnly:
+            showSettings = false
             showCamera = false
+        case .openURL:
+            if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
+               let url = URL(string: urlString) {
+                // Handle CBNote URL scheme
+                if url.scheme == "cbnote" || url.scheme == "net.cizzuk.cbnote" {
+                    handleOpenURL(url: url, fromCameraControl: fromCameraControl)
+                    return
+                }
+                
+                // Else open URL normally
+                // Show dummy curtain without animation
+                var transaction = Transaction(animation: .none)
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    showSettings = false
+                    showCamera = false
+                    showDummyCurtain = true
+                }
+                // Open URL
+                UIApplication.shared.open(url)
+            } else {
+                // Fallback
+                openDummyCamera()
+            }
         }
     }
 }

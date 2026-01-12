@@ -126,7 +126,7 @@ struct MainView: View {
                             }
                         }
                     } // ScrollViewReader
-                }
+                } // ZStack
                 // MARK: - View Config
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
@@ -236,7 +236,7 @@ struct MainView: View {
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()
                 }
-                // Opening from App Intents (Shortcuts, Control Center)
+                // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
                 .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
                     if let option = action.object as? OpenAppOption {
                         viewModel.openApp(with: option)
@@ -248,8 +248,14 @@ struct MainView: View {
                         viewModel.handleKeyboardShortcut(shortcut: shortcut)
                     }
                 }
+                .onOpenURL { url in
+                    viewModel.handleOpenURL(url: url)
+                }
             } // GeometryReader
         } // NavigationStack
+        // MARK: - Dummy Curtain
+        .opacity(viewModel.showDummyCurtain ? 0.0 : 1.0)
+        .fullScreenCover(isPresented: $viewModel.showDummyCurtain) { DummyCurtainView() }
     } // body
     
     // MARK: - File Row View
