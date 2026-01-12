@@ -412,21 +412,34 @@ class MainViewModel: ObservableObject {
     }
     
     // Handler for URL scheme
-    func handleOpenURL(url: URL) {
+    func handleOpenURL(url: URL, fromCameraControl: Bool = false) {
         switch url.host {
+        case "magicaction":
+            switch url.pathComponents.dropFirst().first {
+            case "home":
+                CBNoteApp.backToHomeScreen()
+            case "kill":
+                CBNoteApp.exitApp()
+            default:
+                openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
+            }
         case "open":
+            var action: OpenAppOption = .openAppOnly
+
             switch url.pathComponents.dropFirst().first {
             case "camera":
-                openApp(with: .launchCamera)
+                action = .launchCamera
             case "paste":
-                openApp(with: .pasteFromClipboard)
+                action = .pasteFromClipboard
             case "newnote":
-                openApp(with: .addNewNote)
+                action = .addNewNote
             default:
-                openApp(with: .openAppOnly)
+                break
             }
+            
+            openApp(with: action, fromCameraControl: fromCameraControl)
         default:
-            break
+            openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
         }
     }
     
@@ -435,30 +448,36 @@ class MainViewModel: ObservableObject {
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
-        openApp(with: action)
+        openApp(with: action, fromCameraControl: true)
+    }
+    
+    // Launch a dummy camera to avoid being killed by the system.
+    func openDummyCamera() {
+        // Create new DummyCamera
+        // Update nonce to disable old kill tasks
+        let newNonce = UUID()
+        dummyCamera = (newNonce, DummyCameraView())
         
-        // Launch a dummy camera to avoid being killed by the system.
-        if action.shoudOpenDummyCamera && UIApplication.shared.applicationState != .active {
-            // Create new DummyCamera
-            // Update nonce to disable old kill tasks
-            let newNonce = UUID()
-            dummyCamera = (newNonce, DummyCameraView())
-            
-            // Kill the dummy camera after 2s.
-            // In the test, system killed the app when it was below 0.8 - 1s.
-            // For safety, the dummy will be killed in 2s.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                guard let self = self else { return }
-                // Check if nonce is not updated
-                if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
-                    dummyCamera = nil
-                }
+        // Kill the dummy camera after 2s.
+        // In the test, system killed the app when it was below 0.8 - 1s.
+        // For safety, the dummy will be killed in 2s.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            guard let self = self else { return }
+            // Check if nonce is not updated
+            if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
+                dummyCamera = nil
             }
         }
     }
     
-    func openApp(with action: OpenAppOption) {
+    func openApp(with action: OpenAppOption, fromCameraControl: Bool = false) {
+        // Open Dummy Camera if needed
+        if action.shoudOpenDummyCamera && fromCameraControl && UIApplication.shared.applicationState != .active {
+            openDummyCamera()
+        }
+        
         showSettings = false
+        
         switch action {
         case .launchCamera:
             showCamera = true
@@ -475,7 +494,7 @@ class MainViewModel: ObservableObject {
                let url = URL(string: urlString) {
                 // Handle CBNote URL scheme
                 if url.scheme == "cbnote" || url.scheme == "net.cizzuk.cbnote" {
-                    CBNoteApp.handleURLScheme(url)
+                    handleOpenURL(url: url, fromCameraControl: fromCameraControl)
                     return
                 }
                 // Else open URL normally

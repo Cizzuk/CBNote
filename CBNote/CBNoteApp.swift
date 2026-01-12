@@ -23,33 +23,17 @@ struct CBNoteApp: App {
         backToHomeScreen()
         exit(0)
     }
-    
-    static func handleURLScheme(_ url: URL) {
-        if url.host == "magicaction" {
-            switch url.path {
-            case "/home":
-                CBNoteApp.backToHomeScreen()
-            case "/kill":
-                CBNoteApp.exitApp()
-            default:
-                break
-            }
-        }
-    }
 
     var body: some Scene {
         WindowGroup {
             MainView()
-                .onOpenURL { url in
-                    CBNoteApp.handleURLScheme(url)
+                #if targetEnvironment(macCatalyst)
+                .onAppear {
+                    (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
+                        .titlebar?
+                        .titleVisibility = .hidden
                 }
-            #if targetEnvironment(macCatalyst)
-            .onAppear {
-                (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
-                    .titlebar?
-                    .titleVisibility = .hidden
-            }
-            #endif
+                #endif
         }
         .commands {
             CommandGroup(replacing: .appSettings) {
