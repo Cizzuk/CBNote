@@ -515,7 +515,8 @@ class MainViewModel: ObservableObject {
                 // Open URL
                 UIApplication.shared.open(url)
             } else {
-                CBNoteApp.backToHomeScreen()
+                // Fallback
+                openDummyCamera()
             }
         }
     }
