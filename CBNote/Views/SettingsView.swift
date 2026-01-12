@@ -26,7 +26,7 @@ struct SettingsView: View {
                             }
                         }
                         if viewModel.cameraControlAction == .openURL {
-                            TextField("URL", text: $viewModel.cameraControlActionOpenURL, prompt: Text(verbatim: "shortcuts://run-shortcut?name=[name]"))
+                            TextField("URL", text: $viewModel.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
                                 .disableAutocorrection(true)
                                 .keyboardType(.URL)
                                 .textInputAutocapitalization(.never)
