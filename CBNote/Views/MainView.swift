@@ -126,7 +126,7 @@ struct MainView: View {
                             }
                         }
                     } // ScrollViewReader
-                }
+                } // ZStack
                 // MARK: - View Config
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
@@ -218,9 +218,6 @@ struct MainView: View {
                     }
                 }
                 #endif
-                .fullScreenCover(isPresented: $viewModel.showDummyCurtain) {
-                    DummyCurtainView()
-                }
                 .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
                 }
@@ -256,6 +253,9 @@ struct MainView: View {
                 }
             } // GeometryReader
         } // NavigationStack
+        // MARK: - Dummy Curtain
+        .opacity(viewModel.showDummyCurtain ? 0.0 : 1.0)
+        .fullScreenCover(isPresented: $viewModel.showDummyCurtain) { DummyCurtainView() }
     } // body
     
     // MARK: - File Row View
