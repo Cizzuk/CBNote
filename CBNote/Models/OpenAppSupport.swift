@@ -35,7 +35,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
         }
     }
     
-    var shoudOpenDummyCamera: Bool {
+    var shouldOpenDummyCamera: Bool {
         switch self {
         case .launchCamera, .openURL:
             return false

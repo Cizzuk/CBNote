@@ -475,7 +475,7 @@ class MainViewModel: ObservableObject {
     
     func openApp(with action: OpenAppOption, fromCameraControl: Bool = false) {
         // Open Dummy Camera if needed
-        if action.shoudOpenDummyCamera && fromCameraControl && UIApplication.shared.applicationState != .active {
+        if action.shouldOpenDummyCamera && fromCameraControl && UIApplication.shared.applicationState != .active {
             openDummyCamera()
         }
         
