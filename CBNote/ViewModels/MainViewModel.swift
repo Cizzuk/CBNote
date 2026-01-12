@@ -125,15 +125,18 @@ class MainViewModel: ObservableObject {
     }
     
     func onChange(scenePhase: ScenePhase) {
-        if scenePhase == .active {
+        switch scenePhase {
+        case .active:
             checkLockedCameraCaptures()
             checkAutoPaste()
             loadFiles()
             refreshFiles()
-        } else if scenePhase == .inactive {
+        case .inactive:
             showDummyCurtain = false
-        } else if scenePhase == .background {
+        case .background:
             dummyCamera = nil
+        @unknown default:
+            break
         }
     }
     
@@ -476,18 +479,20 @@ class MainViewModel: ObservableObject {
             openDummyCamera()
         }
         
-        showSettings = false
-        
         switch action {
         case .launchCamera:
+            showSettings = false
             showCamera = true
         case .pasteFromClipboard:
+            showSettings = false
             showCamera = false
             addAndPaste()
         case .addNewNote:
+            showSettings = false
             showCamera = false
             createNewNote()
         case .openAppOnly:
+            showSettings = false
             showCamera = false
         case .openURL:
             if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
@@ -503,6 +508,8 @@ class MainViewModel: ObservableObject {
                 var transaction = Transaction(animation: .none)
                 transaction.disablesAnimations = true
                 withTransaction(transaction) {
+                    showSettings = false
+                    showCamera = false
                     showDummyCurtain = true
                 }
                 // Open URL
