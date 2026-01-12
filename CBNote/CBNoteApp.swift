@@ -8,6 +8,7 @@
 import SwiftUI
 import UIKit
 
+// MARK: - App Delegate
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         let config = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
@@ -16,6 +17,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
+// MARK: - Scene Delegate
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         let action: OpenAppOption?
@@ -39,6 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+// MARK: - App Entry Point
 @main
 struct CBNoteApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -48,6 +51,7 @@ struct CBNoteApp: App {
         _ = WatchConnectivityManager.shared
     }
     
+    // Only to be used by user actions
     static func backToHomeScreen() {
         UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
     }
@@ -56,8 +60,9 @@ struct CBNoteApp: App {
         backToHomeScreen()
         exit(0)
     }
-
+    
     var body: some Scene {
+        // MARK: - Window Group
         WindowGroup {
             MainView()
                 #if targetEnvironment(macCatalyst)
