@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  CBNote
+
+  Created by Cizzuk on 2026/01/01.
+  
+*/
+
+UIApplicationShortcutItems_LaunchCamera = "Launch Camera";
+UIApplicationShortcutItems_PasteFromClipboard = "Paste from Clipboard";
+UIApplicationShortcutItems_AddNewNote = "Add New Note";
