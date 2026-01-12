@@ -218,6 +218,9 @@ struct MainView: View {
                     }
                 }
                 #endif
+                .fullScreenCover(isPresented: $viewModel.showDummyCurtain) {
+                    DummyCurtainView()
+                }
                 .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
                 }

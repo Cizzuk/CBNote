@@ -154,6 +154,16 @@
         }
       }
     },
+    "Close Curtain" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カーテンを閉じる"
+          }
+        }
+      }
+    },
     "Collapsed" : {
       "localizations" : {
         "ja" : {

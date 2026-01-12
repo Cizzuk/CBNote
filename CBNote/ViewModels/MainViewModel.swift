@@ -17,7 +17,7 @@ extension Notification.Name {
 
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
-    @Published var showCurtain: Bool = false
+    @Published var showDummyCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -131,7 +131,7 @@ class MainViewModel: ObservableObject {
             loadFiles()
             refreshFiles()
         } else if scenePhase == .inactive {
-            showCurtain = false
+            showDummyCurtain = false
         } else if scenePhase == .background {
             dummyCamera = nil
         }
@@ -497,7 +497,15 @@ class MainViewModel: ObservableObject {
                     handleOpenURL(url: url, fromCameraControl: fromCameraControl)
                     return
                 }
+                
                 // Else open URL normally
+                // Show dummy curtain without animation
+                var transaction = Transaction(animation: .none)
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    showDummyCurtain = true
+                }
+                // Open URL
                 UIApplication.shared.open(url)
             } else {
                 CBNoteApp.backToHomeScreen()
