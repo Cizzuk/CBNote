@@ -411,6 +411,24 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    // Handler for URL scheme
+    func handleOpenURL(url: URL) {
+        switch url.host {
+        case "open":
+            switch url.pathComponents.dropFirst().first {
+            case "camera":
+                openApp(with: .launchCamera)
+            case "paste":
+                openApp(with: .pasteFromClipboard)
+            case "newnote":
+                openApp(with: .addNewNote)
+            default:
+                openApp(with: .openAppOnly)
+            }
+        default:
+            break
+        }
+    }
     
     // Handler for launch from camera control
     func handleCameraControlAction() {

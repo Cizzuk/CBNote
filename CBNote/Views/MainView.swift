@@ -248,6 +248,9 @@ struct MainView: View {
                         viewModel.handleKeyboardShortcut(shortcut: shortcut)
                     }
                 }
+                .onOpenURL { url in
+                    viewModel.handleOpenURL(url: url)
+                }
             } // GeometryReader
         } // NavigationStack
     } // body

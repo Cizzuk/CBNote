@@ -19,6 +19,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
     case openURL = "Open URL"
 
     var id: String { rawValue }
+    
     var localizedName: LocalizedStringResource {
         switch self {
         case .launchCamera:
