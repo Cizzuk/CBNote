@@ -236,6 +236,10 @@ struct MainView: View {
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()
                 }
+                // Opening from Capture Extension
+                .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
+                    viewModel.handleCameraControlAction()
+                }
                 // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
                 .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
                     if let option = action.object as? OpenAppOption {
