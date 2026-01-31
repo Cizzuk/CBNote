@@ -448,6 +448,8 @@ class MainViewModel: ObservableObject {
     
     // Handler for launch from camera control
     func handleCameraControlAction() {
+        guard TrueDevice.isCamControlAvailable else { return }
+        
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
