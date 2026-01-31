@@ -87,7 +87,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カメラコントロールからの起動時"
+            "value" : "カメラコントロールアクション"
           }
         }
       }
@@ -806,6 +806,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カメラにアクセスする権限をリクエスト"
+          }
+        }
+      }
+    },
+    "Run Camera Control Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールアクションを実行"
           }
         }
       }
