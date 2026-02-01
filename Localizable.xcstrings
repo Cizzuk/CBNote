@@ -990,6 +990,16 @@
         }
       }
     },
+    "Unpin All" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのピン留めを解除"
+          }
+        }
+      }
+    },
     "Unsupported file type." : {
       "localizations" : {
         "ja" : {
