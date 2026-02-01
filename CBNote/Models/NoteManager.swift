@@ -202,6 +202,12 @@ class NoteManager: ObservableObject {
         savePinnedFiles()
     }
     
+    func unpinAll() {
+        pinnedFiles = []
+        unpinnedFiles = files
+        savePinnedFiles()
+    }
+    
     private func savePinnedFiles() {
         DispatchQueue.global(qos: .background).async {
             let filenames = self.pinnedFiles.map { $0.lastPathComponent }

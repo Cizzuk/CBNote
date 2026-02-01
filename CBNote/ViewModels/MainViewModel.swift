@@ -309,6 +309,10 @@ class MainViewModel: ObservableObject {
         noteManager.togglePin(for: url)
     }
     
+    func unpinAll() {
+        noteManager.unpinAll()
+    }
+    
     func isValidFileName(_ name: String) -> Bool {
         noteManager.isValidFileName(name)
     }
