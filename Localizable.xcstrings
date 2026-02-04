@@ -87,7 +87,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カメラコントロールからの起動時"
+            "value" : "カメラコントロールアクション"
           }
         }
       }
@@ -810,6 +810,16 @@
         }
       }
     },
+    "Run Camera Control Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールアクションを実行"
+          }
+        }
+      }
+    },
     "Sample: %@" : {
       "localizations" : {
         "ja" : {
@@ -976,6 +986,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留めを解除"
+          }
+        }
+      }
+    },
+    "Unpin All" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのピン留めを解除"
           }
         }
       }

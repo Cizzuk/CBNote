@@ -67,9 +67,9 @@ struct MainView: View {
                                         }
                                     }
                                 } header: {
-                                    Button {
-                                        withAnimation(.easeOut) {
-                                            isExpandPinnedSection.toggle()
+                                    Menu {
+                                        Button(action: { viewModel.unpinAll() }) {
+                                            Label("Unpin All", systemImage: "pin.slash")
                                         }
                                     } label: {
                                         HStack {
@@ -80,6 +80,16 @@ struct MainView: View {
                                                 Image(systemName: "chevron.down")
                                                     .rotationEffect(.degrees(isExpandPinnedSection ? 0 : -90))
                                             }
+                                        }
+                                        .onTapGesture {
+                                            // Make the entire header tappable
+                                            withAnimation(.easeOut) {
+                                                isExpandPinnedSection.toggle()
+                                            }
+                                        }
+                                    } primaryAction: {
+                                        withAnimation(.easeOut) {
+                                            isExpandPinnedSection.toggle()
                                         }
                                     }
                                     .foregroundColor(.secondary)
@@ -234,6 +244,10 @@ struct MainView: View {
                 .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
+                    viewModel.handleCameraControlAction()
+                }
+                // Opening from Capture Extension
+                .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
                     viewModel.handleCameraControlAction()
                 }
                 // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)

@@ -309,6 +309,10 @@ class MainViewModel: ObservableObject {
         noteManager.togglePin(for: url)
     }
     
+    func unpinAll() {
+        noteManager.unpinAll()
+    }
+    
     func isValidFileName(_ name: String) -> Bool {
         noteManager.isValidFileName(name)
     }
@@ -448,6 +452,8 @@ class MainViewModel: ObservableObject {
     
     // Handler for launch from camera control
     func handleCameraControlAction() {
+        guard TrueDevice.isCamControlAvailable else { return }
+        
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         

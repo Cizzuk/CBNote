@@ -12,6 +12,7 @@ struct CaptureContext: Codable {
     enum LaunchAction: String, Codable, CaseIterable, Identifiable {
         case launchCamera = "Launch Camera"
         case openApp = "Open App"
+        case runCameraControlAction = "Run Camera Control Action"
         case doNothing = "Do Nothing"
         
         var id: String { rawValue }
@@ -21,6 +22,8 @@ struct CaptureContext: Codable {
                 return "Launch Camera"
             case .openApp:
                 return "Open App"
+            case .runCameraControlAction:
+                return "Run Camera Control Action"
             case .doNothing:
                 return "Do Nothing"
             }

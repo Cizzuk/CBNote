@@ -36,7 +36,15 @@ struct ExtensionContentView: View {
                     Color.black
                         .ignoresSafeArea()
                         .task {
-                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension")
+                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension.openApp")
+                            try? await session.openApplication(for: activity)
+                            exit(0)
+                        }
+                case .runCameraControlAction:
+                    Color.black
+                        .ignoresSafeArea()
+                        .task {
+                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension.runCameraControlAction")
                             try? await session.openApplication(for: activity)
                             exit(0)
                         }
