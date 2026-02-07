@@ -361,6 +361,7 @@ class MainViewModel: ObservableObject {
     
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
+        #if !targetEnvironment(macCatalyst)
         guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
             if !suppress {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
@@ -373,6 +374,7 @@ class MainViewModel: ObservableObject {
                 self.newFileURLToScroll = newImageURL
             }
         }
+        #endif
     }
     
     // Handler for locked camera captures
