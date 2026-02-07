@@ -5,6 +5,8 @@
 //  Created by Cizzuk on 2026/01/12.
 //
 
+#if !targetEnvironment(macCatalyst)
+
 import SwiftUI
 
 struct DummyCurtainView: View {
@@ -21,3 +23,5 @@ struct DummyCurtainView: View {
         }
     }
 }
+
+#endif
