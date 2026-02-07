@@ -389,6 +389,7 @@ class MainViewModel: ObservableObject {
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
         #if !targetEnvironment(macCatalyst)
+        // Save as new note
         guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
             if !suppress {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
@@ -396,10 +397,16 @@ class MainViewModel: ObservableObject {
             return
         }
         
+        // Scroll
         if !suppress {
             DispatchQueue.main.async {
                 self.newFileURLToScroll = newImageURL
             }
+        }
+        
+        // Save to Photos if needed
+        if UserDefaults.standard.bool(forKey: "saveCapturedImageToPhotos") {
+            saveImageToPhotos(at: newImageURL)
         }
         #endif
     }
