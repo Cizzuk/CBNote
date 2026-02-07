@@ -7,6 +7,7 @@
 
 import Combine
 import LockedCameraCapture
+import Photos
 import SwiftUI
 import Translation
 import UniformTypeIdentifiers
@@ -374,12 +375,21 @@ class MainViewModel: ObservableObject {
     func saveImageToPhotos(at url: URL) {
         #if !targetEnvironment(macCatalyst)
         DispatchQueue.global(qos: .userInitiated).async {
-            if let data = try? Data(contentsOf: url),
-               let image = UIImage(data: data) {
-                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-            } else {
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else {
+                print("saveImageToPhotos: Unable to load image data")
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
+                return
             }
+            
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            }, completionHandler: { success, error in
+                if !success, let error = error {
+                    print("saveImageToPhotos: ", error)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
+            })
         }
         #endif
     }
