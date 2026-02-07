@@ -262,6 +262,7 @@ struct MainView: View {
                 // MARK: - Events
                 .onAppear { viewModel.onAppear() }
                 .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
+                #if !targetEnvironment(macCatalyst)
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()
@@ -270,6 +271,7 @@ struct MainView: View {
                 .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
                     viewModel.handleCameraControlAction()
                 }
+                #endif
                 // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
                 .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
                     if let option = action.object as? OpenAppOption {
@@ -288,8 +290,10 @@ struct MainView: View {
             } // GeometryReader
         } // NavigationStack
         // MARK: - Dummy Curtain
+        #if !targetEnvironment(macCatalyst)
         .opacity(viewModel.showDummyCurtain ? 0.0 : 1.0)
         .fullScreenCover(isPresented: $viewModel.showDummyCurtain) { DummyCurtainView() }
+        #endif
     } // body
     
     // MARK: - File Row View
