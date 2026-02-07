@@ -830,6 +830,26 @@
         }
       }
     },
+    "Save Captured Image to Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撮影後「写真」に保存する"
+          }
+        }
+      }
+    },
+    "Save to Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“写真”に保存"
+          }
+        }
+      }
+    },
     "Search Notes" : {
       "localizations" : {
         "ja" : {
