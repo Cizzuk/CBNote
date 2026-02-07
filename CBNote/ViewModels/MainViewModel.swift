@@ -363,6 +363,20 @@ class MainViewModel: ObservableObject {
         #endif
     }
     
+    func saveImageToPhotos(at url: URL) {
+        #if !targetEnvironment(macCatalyst)
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let data = try? Data(contentsOf: url),
+               let image = UIImage(data: data) {
+                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } else {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
+        #endif
+    }
+    
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
         #if !targetEnvironment(macCatalyst)

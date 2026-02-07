@@ -335,6 +335,14 @@ struct MainView: View {
                     }
                     Divider()
                 }
+                
+                if FileTypes.isPreviewableImage(url) {
+                    // Save to Photos
+                    Button(action: { viewModel.saveImageToPhotos(at: url) }) {
+                        Label("Save to Photos", systemImage: "photo.badge.arrow.down")
+                    }
+                    Divider()
+                }
                 #endif
                 
                 Button(action: { viewModel.copyFile(at: url) }) {
