@@ -377,7 +377,6 @@ class MainViewModel: ObservableObject {
             if let data = try? Data(contentsOf: url),
                let image = UIImage(data: data) {
                 UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
             } else {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
