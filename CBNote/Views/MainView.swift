@@ -13,10 +13,17 @@ struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
     @StateObject private var viewModel = MainViewModel()
+    
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
+    
     @AppStorage("showImagePreview") private var showImagePreview: Bool = true
     @AppStorage("enableNoteListAnimations") private var enableNoteListAnimations: Bool = false
+    
+    @Namespace private var ns_cameraView
+    private let id_openCameraButton = "openCameraButton"
+    @Namespace private var ns_settingsView
+    private let id_openSettingsButton = "openSettingsButton"
 
     var body: some View {
         NavigationStack {
@@ -146,6 +153,7 @@ struct MainView: View {
                             Button(action: { viewModel.showCamera = true }) {
                                 Label("Camera", systemImage: "camera")
                             }
+                            .matchedTransitionSource(id: id_openCameraButton, in: ns_cameraView)
                         }
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
@@ -171,6 +179,8 @@ struct MainView: View {
                         Button(action: { viewModel.showSettings = true }) {
                             Label("Settings", systemImage: "gearshape")
                         }
+                        .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
+                        
                         Menu {
                             // iCloud/On-Device
                             Section {
@@ -226,10 +236,20 @@ struct MainView: View {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
                     }
+                    .navigationTransition(.zoom(
+                        sourceID: id_openCameraButton,
+                        in: ns_cameraView
+                    ))
                 }
                 #endif
                 .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
+                        #if !targetEnvironment(macCatalyst)
+                        .navigationTransition(.zoom(
+                            sourceID: id_openSettingsButton,
+                            in: ns_settingsView
+                        ))
+                        #endif
                 }
                 .alert("Rename", isPresented: $viewModel.isRenaming) {
                     TextField("New Name", text: $viewModel.newName)
