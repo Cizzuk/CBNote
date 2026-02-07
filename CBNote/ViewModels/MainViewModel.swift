@@ -140,6 +140,8 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    // MARK: - NoteManager Actions
+    
     func loadFiles() {
         noteManager.loadFiles()
     }
@@ -164,16 +166,7 @@ class MainViewModel: ObservableObject {
         noteManager.setSort(key: key, direction: newDirection)
     }
     
-    func createNewNote() {
-        guard let newNoteURL = noteManager.createNewNote() else {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            return
-        }
-        
-        newFileURLToScroll = newNoteURL
-        
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-    }
+    // MARK: - Clipboard Management
     
     func addAndPaste(suppressError: Bool = false) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -301,6 +294,19 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Note Management
+    
+    func createNewNote() {
+        guard let newNoteURL = noteManager.createNewNote() else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        newFileURLToScroll = newNoteURL
+        
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+    
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
@@ -331,6 +337,8 @@ class MainViewModel: ObservableObject {
     func deleteFile(at url: URL) {
         noteManager.deleteFile(at: url)
     }
+    
+    // MARK: - Special Note Actions
     
     func translateFile(at url: URL) {
         #if !targetEnvironment(macCatalyst)
@@ -376,6 +384,8 @@ class MainViewModel: ObservableObject {
         }
         #endif
     }
+    
+    // MARK: - Handlers
     
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
