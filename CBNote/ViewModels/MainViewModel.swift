@@ -333,12 +333,15 @@ class MainViewModel: ObservableObject {
     }
     
     func translateFile(at url: URL) {
+        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         translationText = content
         showTranslation = true
+        #endif
     }
     
     func openInBrowser(at url: URL) {
+        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         
         // If content is a valid URL, open directly
@@ -357,6 +360,7 @@ class MainViewModel: ObservableObject {
            let searchURL = URL(string: "x-web-search://?\(encodedContent)") {
             UIApplication.shared.open(searchURL)
         }
+        #endif
     }
     
     // Handler for camera capture
@@ -454,12 +458,14 @@ class MainViewModel: ObservableObject {
     
     // Handler for launch from camera control
     func handleCameraControlAction() {
+        #if !targetEnvironment(macCatalyst)
         guard TrueDevice.isCamControlAvailable else { return }
         
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
         openApp(with: action, fromCameraControl: true)
+        #endif
     }
     
     // Launch a dummy camera to avoid being killed by the system.
