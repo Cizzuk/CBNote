@@ -52,8 +52,13 @@ struct SettingsView: View {
                                 }
                             }
                         }
+                        
                         Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
-                        Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
+                        
+                        if TrueDevice.isSaveToPhotosAvailable() {
+                            Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
+                        }
+                        
                         if TrueDevice.isCamControlAvailable {
                             Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
                                 ForEach(CaptureContext.LaunchAction.allCases) { action in

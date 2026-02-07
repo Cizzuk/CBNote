@@ -336,7 +336,7 @@ struct MainView: View {
                     Divider()
                 }
                 
-                if FileTypes.isPreviewableImage(url) {
+                if FileTypes.isPreviewableImage(url) && TrueDevice.isSaveToPhotosAvailable() {
                     // Save to Photos
                     Button(action: { viewModel.saveImageToPhotos(at: url) }) {
                         Label("Save to Photos", systemImage: "photo.badge.arrow.down")

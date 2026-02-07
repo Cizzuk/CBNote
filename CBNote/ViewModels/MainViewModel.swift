@@ -375,6 +375,12 @@ class MainViewModel: ObservableObject {
     func saveImageToPhotos(at url: URL) {
         #if !targetEnvironment(macCatalyst)
         DispatchQueue.global(qos: .userInitiated).async {
+            guard TrueDevice.isSaveToPhotosAvailable() else {
+                print("saveImageToPhotos: Save to Photos not available")
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                return
+            }
+            
             guard let data = try? Data(contentsOf: url),
                   let image = UIImage(data: data) else {
                 print("saveImageToPhotos: Unable to load image data")
@@ -382,6 +388,7 @@ class MainViewModel: ObservableObject {
                 return
             }
             
+            // Save
             PHPhotoLibrary.shared().performChanges({
                 PHAssetChangeRequest.creationRequestForAsset(from: image)
             }, completionHandler: { success, error in
