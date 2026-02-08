@@ -18,7 +18,7 @@ extension Notification.Name {
 
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
-    @Published var showDummyCurtain: Bool = false
+    @Published var showTmpCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -133,7 +133,7 @@ class MainViewModel: ObservableObject {
             loadFiles()
             refreshFiles()
         case .inactive:
-            showDummyCurtain = false
+            break
         case .background:
             dummyCamera = nil
         @unknown default:
@@ -565,14 +565,10 @@ class MainViewModel: ObservableObject {
                 }
                 
                 // Else open URL normally
-                // Show dummy curtain without animation
-                var transaction = Transaction(animation: .none)
-                transaction.disablesAnimations = true
-                withTransaction(transaction) {
-                    showSettings = false
-                    showCamera = false
-                    showDummyCurtain = true
-                }
+                // Show temporary screen curtain
+                showSettings = false
+                showCamera = false
+                showTmpCurtain = true
                 // Open URL
                 UIApplication.shared.open(url)
             } else {

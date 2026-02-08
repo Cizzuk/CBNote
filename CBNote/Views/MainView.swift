@@ -9,6 +9,10 @@ import QuickLook
 import SwiftUI
 import Translation
 
+#if !targetEnvironment(macCatalyst)
+import TemporaryScreenCurtain
+#endif
+
 struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
@@ -291,8 +295,7 @@ struct MainView: View {
         } // NavigationStack
         // MARK: - Dummy Curtain
         #if !targetEnvironment(macCatalyst)
-        .opacity(viewModel.showDummyCurtain ? 0.0 : 1.0)
-        .fullScreenCover(isPresented: $viewModel.showDummyCurtain) { DummyCurtainView() }
+        .temporaryScreenCurtain(isPresented: $viewModel.showTmpCurtain)
         #endif
     } // body
     
