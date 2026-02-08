@@ -293,7 +293,7 @@ struct MainView: View {
                 }
             } // GeometryReader
         } // NavigationStack
-        // MARK: - Dummy Curtain
+        // MARK: - Temporary Screen Curtain
         #if !targetEnvironment(macCatalyst)
         .temporaryScreenCurtain(isPresented: $viewModel.showTmpCurtain)
         #endif
