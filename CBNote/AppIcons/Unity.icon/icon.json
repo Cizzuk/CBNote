@@ -1,0 +1,42 @@
+{
+  "fill" : {
+    "solid" : "srgb:0.00000,0.00000,0.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "layers" : [
+        {
+          "fill" : "none",
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "unity.png",
+          "name" : "unity"
+        }
+      ],
+      "name" : "Cam",
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          -8
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.25
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

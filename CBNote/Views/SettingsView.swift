@@ -105,6 +105,12 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    NavigationLink(destination: ChangeIconView()) {
+                        Text("Change App Icon")
+                    }
+                }
+                
+                Section {
                     NavigationLink(destination: AboutView()) {
                         Text("About")
                     }
