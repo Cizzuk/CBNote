@@ -7,6 +7,7 @@
 
 import Combine
 import LockedCameraCapture
+import Photos
 import SwiftUI
 import Translation
 import UniformTypeIdentifiers
@@ -17,7 +18,7 @@ extension Notification.Name {
 
 class MainViewModel: ObservableObject {
     @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
-    @Published var showDummyCurtain: Bool = false
+    @Published var showTmpCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -132,13 +133,15 @@ class MainViewModel: ObservableObject {
             loadFiles()
             refreshFiles()
         case .inactive:
-            showDummyCurtain = false
+            break
         case .background:
             dummyCamera = nil
         @unknown default:
             break
         }
     }
+    
+    // MARK: - NoteManager Actions
     
     func loadFiles() {
         noteManager.loadFiles()
@@ -164,16 +167,7 @@ class MainViewModel: ObservableObject {
         noteManager.setSort(key: key, direction: newDirection)
     }
     
-    func createNewNote() {
-        guard let newNoteURL = noteManager.createNewNote() else {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            return
-        }
-        
-        newFileURLToScroll = newNoteURL
-        
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-    }
+    // MARK: - Clipboard Management
     
     func addAndPaste(suppressError: Bool = false) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -301,6 +295,19 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Note Management
+    
+    func createNewNote() {
+        guard let newNoteURL = noteManager.createNewNote() else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        newFileURLToScroll = newNoteURL
+        
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+    
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
@@ -332,13 +339,18 @@ class MainViewModel: ObservableObject {
         noteManager.deleteFile(at: url)
     }
     
+    // MARK: - Special Note Actions
+    
     func translateFile(at url: URL) {
+        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         translationText = content
         showTranslation = true
+        #endif
     }
     
     func openInBrowser(at url: URL) {
+        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         
         // If content is a valid URL, open directly
@@ -357,10 +369,44 @@ class MainViewModel: ObservableObject {
            let searchURL = URL(string: "x-web-search://?\(encodedContent)") {
             UIApplication.shared.open(searchURL)
         }
+        #endif
     }
+    
+    func saveImageToPhotos(at url: URL) {
+        #if !targetEnvironment(macCatalyst)
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard TrueDevice.isSaveToPhotosAvailable() else {
+                print("saveImageToPhotos: Save to Photos not available")
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                return
+            }
+            
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else {
+                print("saveImageToPhotos: Unable to load image data")
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                return
+            }
+            
+            // Save
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            }, completionHandler: { success, error in
+                if !success, let error = error {
+                    print("saveImageToPhotos: ", error)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
+            })
+        }
+        #endif
+    }
+    
+    // MARK: - Handlers
     
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
+        #if !targetEnvironment(macCatalyst)
+        // Save as new note
         guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
             if !suppress {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
@@ -368,11 +414,18 @@ class MainViewModel: ObservableObject {
             return
         }
         
+        // Scroll
         if !suppress {
             DispatchQueue.main.async {
                 self.newFileURLToScroll = newImageURL
             }
         }
+        
+        // Save to Photos if needed
+        if UserDefaults.standard.bool(forKey: "saveCapturedImageToPhotos") {
+            saveImageToPhotos(at: newImageURL)
+        }
+        #endif
     }
     
     // Handler for locked camera captures
@@ -452,12 +505,14 @@ class MainViewModel: ObservableObject {
     
     // Handler for launch from camera control
     func handleCameraControlAction() {
+        #if !targetEnvironment(macCatalyst)
         guard TrueDevice.isCamControlAvailable else { return }
         
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
         openApp(with: action, fromCameraControl: true)
+        #endif
     }
     
     // Launch a dummy camera to avoid being killed by the system.
@@ -510,14 +565,10 @@ class MainViewModel: ObservableObject {
                 }
                 
                 // Else open URL normally
-                // Show dummy curtain without animation
-                var transaction = Transaction(animation: .none)
-                transaction.disablesAnimations = true
-                withTransaction(transaction) {
-                    showSettings = false
-                    showCamera = false
-                    showDummyCurtain = true
-                }
+                // Show temporary screen curtain
+                showSettings = false
+                showCamera = false
+                showTmpCurtain = true
                 // Open URL
                 UIApplication.shared.open(url)
             } else {

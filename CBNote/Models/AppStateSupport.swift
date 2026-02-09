@@ -9,6 +9,7 @@
 import AVFoundation
 #endif
 import Foundation
+import Photos
 import UIKit
 
 // Return true device state
@@ -67,6 +68,27 @@ struct TrueDevice {
         
         #endif
     }()
+    
+    static func isSaveToPhotosAvailable() -> Bool {
+        #if targetEnvironment(macCatalyst)
+        return false
+        
+        #else
+        if userInterfaceIdiom == .mac {
+            return false
+        }
+        
+        switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
+        case .authorized, .notDetermined, .limited:
+            return true
+        case .denied, .restricted:
+            return false
+        @unknown default:
+            return false
+        }
+        
+        #endif
+    }
 }
 
 enum DocumentDir: String, CaseIterable {

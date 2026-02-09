@@ -52,7 +52,13 @@ struct SettingsView: View {
                                 }
                             }
                         }
+                        
                         Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
+                        
+                        if TrueDevice.isSaveToPhotosAvailable() {
+                            Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
+                        }
+                        
                         if TrueDevice.isCamControlAvailable {
                             Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
                                 ForEach(CaptureContext.LaunchAction.allCases) { action in
@@ -100,7 +106,14 @@ struct SettingsView: View {
                 
                 Section {
                     NavigationLink(destination: AboutView()) {
-                        Text("About")
+                        Label("About", systemImage: "info.circle")
+                            .foregroundColor(.primary)
+                    }
+                    if UIApplication.shared.supportsAlternateIcons {
+                        NavigationLink(destination: ChangeIconView()) {
+                            Label("Change App Icon", systemImage: "app.dashed")
+                                .foregroundColor(.primary)
+                        }
                     }
                 }
             }
@@ -108,7 +121,7 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button(action: { dismiss() }) {
                         Label("Close", systemImage: "xmark")
                     }

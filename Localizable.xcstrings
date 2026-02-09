@@ -128,6 +128,16 @@
     "CBNote" : {
       "shouldTranslate" : false
     },
+    "Change App Icon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイコンを変更"
+          }
+        }
+      }
+    },
     "Cizzuk" : {
       "localizations" : {
         "en" : {
@@ -155,6 +165,8 @@
       }
     },
     "Close Curtain" : {
+      "comment" : "TemporaryScreenCurtain",
+      "extractionState" : "manual",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -826,6 +838,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイル名の例: %@"
+          }
+        }
+      }
+    },
+    "Save Captured Image to Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撮影後「写真」に保存する"
+          }
+        }
+      }
+    },
+    "Save to Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“写真”に保存"
           }
         }
       }

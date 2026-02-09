@@ -41,6 +41,12 @@ class SettingsViewModel: ObservableObject {
             UserDefaults.standard.set(remainCameraAfterCapture, forKey: "remainCameraAfterCapture")
         }
     }
+    
+    @Published var saveCapturedImageToPhotos: Bool = UserDefaults.standard.bool(forKey: "saveCapturedImageToPhotos") {
+        didSet {
+            UserDefaults.standard.set(saveCapturedImageToPhotos, forKey: "saveCapturedImageToPhotos")
+        }
+    }
 
     @Published var captureLaunchAction: CaptureContext.LaunchAction = .launchCamera {
         didSet {

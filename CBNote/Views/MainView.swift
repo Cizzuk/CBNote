@@ -9,14 +9,25 @@ import QuickLook
 import SwiftUI
 import Translation
 
+#if !targetEnvironment(macCatalyst)
+import TemporaryScreenCurtain
+#endif
+
 struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
     @StateObject private var viewModel = MainViewModel()
+    
     @State private var previewURL: URL?
     @State private var isExpandPinnedSection = true
+    
     @AppStorage("showImagePreview") private var showImagePreview: Bool = true
     @AppStorage("enableNoteListAnimations") private var enableNoteListAnimations: Bool = false
+    
+    @Namespace private var ns_cameraView
+    private let id_openCameraButton = "openCameraButton"
+    @Namespace private var ns_settingsView
+    private let id_openSettingsButton = "openSettingsButton"
 
     var body: some View {
         NavigationStack {
@@ -141,11 +152,12 @@ struct MainView: View {
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
                     // Top Right
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
                         if TrueDevice.isCameraAvailable {
                             Button(action: { viewModel.showCamera = true }) {
                                 Label("Camera", systemImage: "camera")
                             }
+                            .matchedTransitionSource(id: id_openCameraButton, in: ns_cameraView)
                         }
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
@@ -167,10 +179,12 @@ struct MainView: View {
                         }
                     }
                     // Top Left
-                    ToolbarItemGroup(placement: .navigationBarLeading) {
+                    ToolbarItemGroup(placement: .topBarLeading) {
                         Button(action: { viewModel.showSettings = true }) {
                             Label("Settings", systemImage: "gearshape")
                         }
+                        .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
+                        
                         Menu {
                             // iCloud/On-Device
                             Section {
@@ -226,10 +240,20 @@ struct MainView: View {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
                     }
+                    .navigationTransition(.zoom(
+                        sourceID: id_openCameraButton,
+                        in: ns_cameraView
+                    ))
                 }
                 #endif
                 .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
+                        #if !targetEnvironment(macCatalyst)
+                        .navigationTransition(.zoom(
+                            sourceID: id_openSettingsButton,
+                            in: ns_settingsView
+                        ))
+                        #endif
                 }
                 .alert("Rename", isPresented: $viewModel.isRenaming) {
                     TextField("New Name", text: $viewModel.newName)
@@ -242,6 +266,7 @@ struct MainView: View {
                 // MARK: - Events
                 .onAppear { viewModel.onAppear() }
                 .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
+                #if !targetEnvironment(macCatalyst)
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()
@@ -250,6 +275,7 @@ struct MainView: View {
                 .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
                     viewModel.handleCameraControlAction()
                 }
+                #endif
                 // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
                 .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
                     if let option = action.object as? OpenAppOption {
@@ -267,9 +293,10 @@ struct MainView: View {
                 }
             } // GeometryReader
         } // NavigationStack
-        // MARK: - Dummy Curtain
-        .opacity(viewModel.showDummyCurtain ? 0.0 : 1.0)
-        .fullScreenCover(isPresented: $viewModel.showDummyCurtain) { DummyCurtainView() }
+        // MARK: - Temporary Screen Curtain
+        #if !targetEnvironment(macCatalyst)
+        .temporaryScreenCurtain(isPresented: $viewModel.showTmpCurtain)
+        #endif
     } // body
     
     // MARK: - File Row View
@@ -308,6 +335,14 @@ struct MainView: View {
                     // Open in Browser
                     Button(action: { viewModel.openInBrowser(at: url) }) {
                         Label("Open in Browser", systemImage: "safari")
+                    }
+                    Divider()
+                }
+                
+                if FileTypes.isPreviewableImage(url) && TrueDevice.isSaveToPhotosAvailable() {
+                    // Save to Photos
+                    Button(action: { viewModel.saveImageToPhotos(at: url) }) {
+                        Label("Save to Photos", systemImage: "photo.badge.arrow.down")
                     }
                     Divider()
                 }
