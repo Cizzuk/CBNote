@@ -106,11 +106,13 @@ struct SettingsView: View {
                 
                 Section {
                     NavigationLink(destination: AboutView()) {
-                        Text("About")
+                        Label("About", systemImage: "info.circle")
+                            .foregroundColor(.primary)
                     }
                     if UIApplication.shared.supportsAlternateIcons {
                         NavigationLink(destination: ChangeIconView()) {
-                            Text("Change App Icon")
+                            Label("Change App Icon", systemImage: "app.dashed")
+                                .foregroundColor(.primary)
                         }
                     }
                 }
