@@ -5,8 +5,6 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-#if !targetEnvironment(macCatalyst)
-
 import Combine
 import Photos
 import UIKit
@@ -297,5 +295,3 @@ class CaptureControlsDelegate: NSObject, AVCaptureSessionControlsDelegate {
     
     func sessionControlsDidBecomeInactive(_ session: AVCaptureSession) { }
 }
-
-#endif

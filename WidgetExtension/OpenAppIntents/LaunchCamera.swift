@@ -27,12 +27,7 @@ struct OpenAppLaunchCameraIntent: AppIntent {
     static let title: LocalizedStringResource = "Launch Camera on CBNote"
     
     static var openAppWhenRun = true
-    #if !targetEnvironment(macCatalyst)
     static var isDiscoverable = true
-    #else
-    // Hide on Mac Catalyst
-    static var isDiscoverable = false
-    #endif
 
     @MainActor
     func perform() async throws -> some OpensIntent {

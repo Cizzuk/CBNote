@@ -8,10 +8,7 @@
 import QuickLook
 import SwiftUI
 import Translation
-
-#if !targetEnvironment(macCatalyst)
 import TemporaryScreenCurtain
-#endif
 
 struct MainView: View {
     @Environment(\.scenePhase) private var scenePhase
@@ -163,18 +160,9 @@ struct MainView: View {
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
-                        #if targetEnvironment(macCatalyst)
                         .alert("No valid content found in clipboard to paste.", isPresented: $viewModel.showPasteError) {
                             Button("OK", role: .cancel) {}
                         }
-                        #else
-                        .popover(isPresented: $viewModel.showPasteError) {
-                            Text("No valid content found in clipboard to paste.")
-                                .frame(width: 250)
-                                .padding()
-                                .presentationCompactAdaptation(.popover)
-                        }
-                        #endif
                         
                         Button(action: { viewModel.createNewNote() }) {
                             Label("Add New Note", systemImage: "square.and.pencil")
@@ -244,6 +232,7 @@ struct MainView: View {
                 .quickLookPreview($previewURL)
                 #if !targetEnvironment(macCatalyst)
                 .translationPresentation(isPresented: $viewModel.showTranslation, text: viewModel.translationText)
+                #endif
                 .fullScreenCover(isPresented: $viewModel.showCamera) {
                     CameraView { data in
                         viewModel.saveCapturedImage(data: data)
@@ -253,15 +242,12 @@ struct MainView: View {
                         in: ns_cameraView
                     ))
                 }
-                #endif
                 .sheet(isPresented: $viewModel.showSettings) {
                     SettingsView()
-                        #if !targetEnvironment(macCatalyst)
                         .navigationTransition(.zoom(
                             sourceID: id_openSettingsButton,
                             in: ns_settingsView
                         ))
-                        #endif
                 }
                 .alert("Rename", isPresented: $viewModel.isRenaming) {
                     TextField("New Name", text: $viewModel.newName)
@@ -274,7 +260,6 @@ struct MainView: View {
                 // MARK: - Events
                 .onAppear { viewModel.onAppear() }
                 .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
-                #if !targetEnvironment(macCatalyst)
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     viewModel.handleCameraControlAction()
@@ -283,7 +268,6 @@ struct MainView: View {
                 .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
                     viewModel.handleCameraControlAction()
                 }
-                #endif
                 // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
                 .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
                     if let option = action.object as? OpenAppOption {
@@ -302,9 +286,7 @@ struct MainView: View {
             } // GeometryReader
         } // NavigationStack
         // MARK: - Temporary Screen Curtain
-        #if !targetEnvironment(macCatalyst)
         .temporaryScreenCurtain(isPresented: $viewModel.showTmpCurtain)
-        #endif
     } // body
     
     // MARK: - File Row View
@@ -334,12 +316,13 @@ struct MainView: View {
                 }
                 Divider()
                 
-                #if !targetEnvironment(macCatalyst)
                 if FileTypes.isEditableText(url) {
+                    #if !targetEnvironment(macCatalyst)
                     // Translate
                     Button(action: { viewModel.translateFile(at: url) }) {
                         Label("Translate", systemImage: "translate")
                     }
+                    #endif
                     // Open in Browser
                     Button(action: { viewModel.openInBrowser(at: url) }) {
                         Label("Open in Browser", systemImage: "safari")
@@ -354,7 +337,6 @@ struct MainView: View {
                     }
                     Divider()
                 }
-                #endif
                 
                 Button(action: { viewModel.copyFile(at: url) }) {
                     Label("Copy", systemImage: "document.on.document")

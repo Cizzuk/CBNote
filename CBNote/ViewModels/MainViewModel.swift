@@ -342,15 +342,12 @@ class MainViewModel: ObservableObject {
     // MARK: - Special Note Actions
     
     func translateFile(at url: URL) {
-        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         translationText = content
         showTranslation = true
-        #endif
     }
     
     func openInBrowser(at url: URL) {
-        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         
         // If content is a valid URL, open directly
@@ -365,15 +362,14 @@ class MainViewModel: ObservableObject {
         }
         
         // Otherwise, search in Safari
-        if let encodedContent = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-           let searchURL = URL(string: "x-web-search://?\(encodedContent)") {
-            UIApplication.shared.open(searchURL)
+        if let encodedQuery = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            if let searchURL = URL(string: "x-web-search://?\(encodedQuery)") {
+                UIApplication.shared.open(searchURL)
+            }
         }
-        #endif
     }
     
     func saveImageToPhotos(at url: URL) {
-        #if !targetEnvironment(macCatalyst)
         DispatchQueue.global(qos: .userInitiated).async {
             guard TrueDevice.isSaveToPhotosAvailable() else {
                 print("saveImageToPhotos: Save to Photos not available")
@@ -398,14 +394,12 @@ class MainViewModel: ObservableObject {
                 }
             })
         }
-        #endif
     }
     
     // MARK: - Handlers
     
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
-        #if !targetEnvironment(macCatalyst)
         // Save as new note
         guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
             if !suppress {
@@ -425,7 +419,6 @@ class MainViewModel: ObservableObject {
         if UserDefaults.standard.bool(forKey: "saveCapturedImageToPhotos") {
             saveImageToPhotos(at: newImageURL)
         }
-        #endif
     }
     
     // Handler for locked camera captures
@@ -505,14 +498,12 @@ class MainViewModel: ObservableObject {
     
     // Handler for launch from camera control
     func handleCameraControlAction() {
-        #if !targetEnvironment(macCatalyst)
         guard TrueDevice.isCamControlAvailable else { return }
         
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
         openApp(with: action, fromCameraControl: true)
-        #endif
     }
     
     // Launch a dummy camera to avoid being killed by the system.

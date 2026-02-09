@@ -32,13 +32,7 @@ struct TrueDevice {
     
     // Simply hide the camera features (not strictly)
     static let isCameraAvailable: Bool = {
-        #if targetEnvironment(macCatalyst)
-        return false
-        
-        #else
-        if userInterfaceIdiom == .mac {
-            return false
-        } else if userInterfaceIdiom == .vision {
+        if userInterfaceIdiom == .vision {
             return false
         }
         
@@ -47,8 +41,6 @@ struct TrueDevice {
         }
         
         return true
-        
-        #endif
     }()
     
     static let isCamControlAvailable: Bool = {

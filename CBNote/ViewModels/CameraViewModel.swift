@@ -5,8 +5,6 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-#if !targetEnvironment(macCatalyst)
-
 import Combine
 import Photos
 import SwiftUI
@@ -86,5 +84,3 @@ class CameraViewModel: ObservableObject {
         camera.stopSession()
     }
 }
-
-#endif
