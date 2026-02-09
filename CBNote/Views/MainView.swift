@@ -152,7 +152,7 @@ struct MainView: View {
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
                     // Top Right
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
                         if TrueDevice.isCameraAvailable {
                             Button(action: { viewModel.showCamera = true }) {
                                 Label("Camera", systemImage: "camera")
@@ -179,7 +179,7 @@ struct MainView: View {
                         }
                     }
                     // Top Left
-                    ToolbarItemGroup(placement: .navigationBarLeading) {
+                    ToolbarItemGroup(placement: .topBarLeading) {
                         Button(action: { viewModel.showSettings = true }) {
                             Label("Settings", systemImage: "gearshape")
                         }
