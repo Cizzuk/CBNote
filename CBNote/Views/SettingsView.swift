@@ -104,9 +104,11 @@ struct SettingsView: View {
                     updateNameFormatSample()
                 }
                 
-                Section {
-                    NavigationLink(destination: ChangeIconView()) {
-                        Text("Change App Icon")
+                if TrueDevice.isChangeAppIconAvailable {
+                    Section {
+                        NavigationLink(destination: ChangeIconView()) {
+                            Text("Change App Icon")
+                        }
                     }
                 }
                 

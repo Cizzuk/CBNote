@@ -89,6 +89,22 @@ struct TrueDevice {
         
         #endif
     }
+    
+    static let isChangeAppIconAvailable: Bool = {
+        #if targetEnvironment(macCatalyst)
+        return false
+        
+        #else
+        if userInterfaceIdiom == .mac {
+            return false
+        } else if userInterfaceIdiom == .vision {
+            return false
+        }
+        
+        return UIApplication.shared.supportsAlternateIcons
+        
+        #endif
+    }()
 }
 
 enum DocumentDir: String, CaseIterable {
