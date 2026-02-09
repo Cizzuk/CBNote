@@ -108,7 +108,7 @@ struct SettingsView: View {
                     NavigationLink(destination: AboutView()) {
                         Text("About")
                     }
-                    if TrueDevice.isChangeAppIconAvailable {
+                    if UIApplication.shared.supportsAlternateIcons {
                         NavigationLink(destination: ChangeIconView()) {
                             Text("Change App Icon")
                         }
