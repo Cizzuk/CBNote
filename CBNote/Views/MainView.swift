@@ -176,7 +176,7 @@ struct MainView: View {
                         }
                         #endif
                         
-                        Button(action: viewModel.createNewNote) {
+                        Button(action: { viewModel.createNewNote() }) {
                             Label("Add New Note", systemImage: "square.and.pencil")
                         }
                     }
