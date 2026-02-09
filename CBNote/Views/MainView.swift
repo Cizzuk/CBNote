@@ -151,7 +151,7 @@ struct MainView: View {
                 // MARK: - View Config
                 .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
                 .toolbar {
-                    // Top Right
+                    // MARK: Top Right
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         if TrueDevice.isCameraAvailable {
                             Button(action: { viewModel.showCamera = true }) {
@@ -159,6 +159,7 @@ struct MainView: View {
                             }
                             .matchedTransitionSource(id: id_openCameraButton, in: ns_cameraView)
                         }
+                        
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
@@ -174,18 +175,21 @@ struct MainView: View {
                                 .presentationCompactAdaptation(.popover)
                         }
                         #endif
+                        
                         Button(action: viewModel.createNewNote) {
-                            Label("Add New Note", systemImage: "plus")
+                            Label("Add New Note", systemImage: "square.and.pencil")
                         }
                     }
-                    // Top Left
-                    ToolbarItemGroup(placement: .topBarLeading) {
-                        Button(action: { viewModel.showSettings = true }) {
-                            Label("Settings", systemImage: "gearshape")
-                        }
-                        .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
-                        
+                    
+                    // MARK: Top Left
+                    ToolbarItem(placement: .topBarLeading) {
                         Menu {
+                            Button(action: { viewModel.showSettings = true }) {
+                                Label("App Settings", systemImage: "gearshape")
+                            }
+                            
+                            Divider()
+                            
                             // iCloud/On-Device
                             Section {
                                 ForEach(DocumentDir.availableDirs, id: \.self) { type in
@@ -202,7 +206,9 @@ struct MainView: View {
                             } header: {
                                 Text("Location")
                             }
+                            
                             Divider()
+                            
                             // Sort
                             Section {
                                 ForEach(SortKey.allCases, id: \.self) { key in
@@ -221,9 +227,11 @@ struct MainView: View {
                                 Text("Sort By")
                             }
                         } label: {
-                            Label("Options", systemImage: "ellipsis")
+                            Label("Settings", systemImage: "gearshape")
                         }
+                        .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
                     }
+                    
                     ToolbarItemGroup(placement: .keyboard) {
                         Spacer()
                         Button {
