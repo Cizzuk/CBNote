@@ -116,6 +116,11 @@ struct SettingsView: View {
                     NavigationLink(destination: AboutView()) {
                         Text("About")
                     }
+                    if TrueDevice.isChangeAppIconAvailable {
+                        NavigationLink(destination: ChangeIconView()) {
+                            Text("Change App Icon")
+                        }
+                    }
                 }
             }
             .animation(.default, value: viewModel.cameraControlAction)
