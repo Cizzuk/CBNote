@@ -42,6 +42,16 @@
         }
       }
     },
+    "App Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの設定"
+          }
+        }
+      }
+    },
     "Ascending" : {
       "localizations" : {
         "ja" : {
@@ -698,16 +708,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URLを開く"
-          }
-        }
-      }
-    },
-    "Options" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オプション"
           }
         }
       }
