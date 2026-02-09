@@ -93,6 +93,13 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Search Engine
+    @Published var searchEngine: String = UserDefaults.standard.string(forKey: "searchEngine") ?? "x-web-search://?%s" {
+        didSet {
+            UserDefaults.standard.set(searchEngine, forKey: "searchEngine")
+        }
+    }
+    
     // Initialize
     init() {
         Task {

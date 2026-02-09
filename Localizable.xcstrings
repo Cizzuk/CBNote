@@ -812,6 +812,16 @@
         }
       }
     },
+    "Replace query with %s." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリを%sで置き換えます。"
+          }
+        }
+      }
+    },
     "Request Camera Access" : {
       "localizations" : {
         "ja" : {
@@ -862,12 +872,32 @@
         }
       }
     },
+    "Search Engine" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索エンジン"
+          }
+        }
+      }
+    },
     "Search Notes" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ノートを検索"
+          }
+        }
+      }
+    },
+    "Set a search engine used for searching within notes." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノートで検索する時に使用する検索エンジンを設定します。"
           }
         }
       }

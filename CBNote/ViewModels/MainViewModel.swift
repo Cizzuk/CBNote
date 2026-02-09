@@ -363,7 +363,10 @@ class MainViewModel: ObservableObject {
         
         // Otherwise, search in Safari
         if let encodedQuery = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-            if let searchURL = URL(string: "x-web-search://?\(encodedQuery)") {
+            // Create Search URL
+            let searchEngine = UserDefaults.standard.string(forKey: "searchEngine") ?? "x-web-search://?%s"
+            let queryURLString = searchEngine.replacingOccurrences(of: "%s", with: encodedQuery)
+            if let searchURL = URL(string: queryURLString) {
                 UIApplication.shared.open(searchURL)
             }
         }

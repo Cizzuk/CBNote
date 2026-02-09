@@ -105,6 +105,22 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    TextField("URL", text: $viewModel.searchEngine, prompt: Text(verbatim: "x-web-search://?%s"))
+                        .disableAutocorrection(true)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .environment(\.layoutDirection, .leftToRight)
+                        .submitLabel(.done)
+                } header: {
+                    Text("Search Engine")
+                } footer: {
+                    VStack(alignment: .leading) {
+                        Text("Set a search engine used for searching within notes.")
+                        Text("Replace query with %s.")
+                    }
+                }
+                
+                Section {
                     NavigationLink(destination: AboutView()) {
                         Label("About", systemImage: "info.circle")
                             .foregroundColor(.primary)
