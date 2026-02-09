@@ -249,8 +249,8 @@ class Camera: NSObject, ObservableObject {
         DispatchQueue.global(qos: .userInteractive).async {
             if !self.session.isRunning {
                 self.session.startRunning()
-                self.updateRotationAngle()
             }
+            self.updateRotationAngle()
         }
     }
 
