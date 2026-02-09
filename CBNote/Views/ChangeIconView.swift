@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct ChangeIconView: View {
-    @Environment(\.dismiss) private var dismiss
-    
     var body: some View {
         List {
             Section {
