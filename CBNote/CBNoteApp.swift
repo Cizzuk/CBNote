@@ -106,7 +106,7 @@ struct CBNoteApp: App {
                         object: CustomKeyboardShortcut.addNewNote
                     )
                 } label: {
-                    Label("Add New Note", systemImage: "plus")
+                    Label("Add New Note", systemImage: "square.and.pencil")
                 }
                 .keyboardShortcut("N", modifiers: [.command])
 
