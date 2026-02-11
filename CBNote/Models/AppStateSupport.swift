@@ -81,6 +81,17 @@ struct TrueDevice {
         
         #endif
     }
+    
+    static let defaultSearchEngine: String = {
+        let defaultEngine: String
+        if let url = URL(string: "x-web-search://?test"),
+           UIApplication.shared.canOpenURL(url) {
+            defaultEngine = "x-web-search://?%s"
+        } else {
+            defaultEngine = "https://www.google.com/search?q=%s"
+        }
+        return defaultEngine
+    }()
 }
 
 enum DocumentDir: String, CaseIterable {

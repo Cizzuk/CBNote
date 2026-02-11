@@ -94,7 +94,8 @@ class SettingsViewModel: ObservableObject {
     }
     
     // MARK: - Search Engine
-    @Published var searchEngine: String = UserDefaults.standard.string(forKey: "searchEngine") ?? "x-web-search://?%s" {
+    @Published var searchEngine: String = UserDefaults.standard.string(forKey: "searchEngine") ?? TrueDevice.defaultSearchEngine
+    {
         didSet {
             UserDefaults.standard.set(searchEngine, forKey: "searchEngine")
         }
