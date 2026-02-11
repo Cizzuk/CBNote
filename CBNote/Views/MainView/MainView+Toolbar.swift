@@ -35,7 +35,6 @@ extension MainView {
                 Button(action: { viewModel.showCamera = true }) {
                     Label("Take Photo", systemImage: "camera")
                 }
-                .matchedTransitionSource(id: id_openCameraButton, in: ns_cameraView)
             }
             
             Button(action: {}) {

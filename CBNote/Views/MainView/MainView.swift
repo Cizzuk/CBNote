@@ -21,8 +21,6 @@ struct MainView: View {
     @AppStorage("showImagePreview") var showImagePreview: Bool = true
     @AppStorage("enableNoteListAnimations") var enableNoteListAnimations: Bool = false
     
-    @Namespace var ns_cameraView
-    let id_openCameraButton = "openCameraButton"
     @Namespace var ns_settingsView
     let id_openSettingsButton = "openSettingsButton"
 
@@ -47,10 +45,6 @@ struct MainView: View {
                 CameraView { data in
                     viewModel.saveCapturedImage(data: data)
                 }
-                .navigationTransition(.zoom(
-                    sourceID: id_openCameraButton,
-                    in: ns_cameraView
-                ))
             }
             .sheet(isPresented: $viewModel.showSettings) {
                 SettingsView()
