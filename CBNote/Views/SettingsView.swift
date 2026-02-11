@@ -105,7 +105,7 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    TextField("URL", text: $viewModel.searchEngine, prompt: Text(verbatim: "x-web-search://?%s"))
+                    TextField("URL", text: $viewModel.searchEngine, prompt: Text(verbatim: TrueDevice.defaultSearchEngine))
                         .disableAutocorrection(true)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
