@@ -150,6 +150,20 @@ struct MainView: View {
                 .toolbar {
                     // MARK: Top Right
                     ToolbarItemGroup(placement: .topBarTrailing) {
+                        Menu {
+                            Button(action: {}) {
+                                Label("Create Audio Note", systemImage: "waveform")
+                            }
+                            Button(action: {}) {
+                                Label("Import from Photos", systemImage: "photo")
+                            }
+                            Button(action: {}) {
+                                Label("Import from Files", systemImage: "document")
+                            }
+                        } label: {
+                            Label("More options", systemImage: "ellipsis")
+                        }
+                        
                         if TrueDevice.isCameraAvailable {
                             Button(action: { viewModel.showCamera = true }) {
                                 Label("Camera", systemImage: "camera")
