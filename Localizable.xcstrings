@@ -762,6 +762,16 @@
         }
       }
     },
+    "Paste Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペーストに失敗しました"
+          }
+        }
+      }
+    },
     "Paste from Clipboard" : {
       "localizations" : {
         "ja" : {
