@@ -174,8 +174,13 @@ struct MainView: View {
                         Button(action: { viewModel.addAndPaste() }) {
                             Label("Paste", systemImage: "document.on.clipboard")
                         }
-                        .alert("No valid content found in clipboard to paste.", isPresented: $viewModel.showPasteError) {
-                            Button("OK", role: .cancel) {}
+                        .confirmationDialog(
+                            "Paste Failed",
+                            isPresented: $viewModel.showPasteError
+                        ) {
+                            Button("OK", role: .close) {}
+                        } message: {
+                            Text("No valid content found in clipboard to paste.")
                         }
                         
                         Button(action: { viewModel.createNewNote() }) {
