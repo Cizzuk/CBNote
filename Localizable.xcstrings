@@ -226,6 +226,16 @@
         }
       }
     },
+    "Create Audio Note" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オーディオノートを作成"
+          }
+        }
+      }
+    },
     "Currently sorted in %@ order." : {
       "localizations" : {
         "ja" : {
@@ -419,6 +429,26 @@
     "iCloud Drive" : {
       "shouldTranslate" : false
     },
+    "Import from Files" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“ファイル”から追加"
+          }
+        }
+      }
+    },
+    "Import from Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“写真”から追加"
+          }
+        }
+      }
+    },
     "iPhone needs to be unlocked after reboot." : {
       "localizations" : {
         "ja" : {
@@ -481,6 +511,16 @@
     },
     "MIT License\n\nCopyright (c) 2025 Cizzuk\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE." : {
       "shouldTranslate" : false
+    },
+    "More options" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のオプション"
+          }
+        }
+      }
     },
     "Name" : {
       "localizations" : {
