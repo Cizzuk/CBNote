@@ -89,6 +89,7 @@ struct SettingsView: View {
                     TextField("yyyy-MM-dd-HH-mm-ss", text: $viewModel.nameFormat)
                         .disableAutocorrection(true)
                         .textInputAutocapitalization(.never)
+                        .submitLabel(.done)
                         .onChange(of: viewModel.nameFormat) {
                             updateNameFormatSample()
                         }
