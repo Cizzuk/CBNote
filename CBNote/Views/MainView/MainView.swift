@@ -70,7 +70,7 @@ struct MainView: View {
             }
             // Opening from Capture Extension
             .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
-                viewModel.handleCameraControlAction()
+                viewModel.handleCameraControlAction(shouldOpenDummyCamera: false)
             }
             // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
             .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in

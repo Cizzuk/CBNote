@@ -468,45 +468,20 @@ class MainViewModel: ObservableObject {
     }
     
     // Handler for URL scheme
-    func handleOpenURL(url: URL, fromCameraControl: Bool = false) {
-        switch url.host {
-        case "magicaction":
-            switch url.pathComponents.dropFirst().first {
-            case "home":
-                CBNoteApp.backToHomeScreen()
-            case "kill":
-                CBNoteApp.exitApp()
-            default:
-                openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
-            }
-        case "open":
-            var action: OpenAppOption = .openAppOnly
-
-            switch url.pathComponents.dropFirst().first {
-            case "camera":
-                action = .launchCamera
-            case "paste":
-                action = .pasteFromClipboard
-            case "newnote":
-                action = .addNewNote
-            default:
-                break
-            }
-            
-            openApp(with: action, fromCameraControl: fromCameraControl)
-        default:
-            openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
+    func handleOpenURL(url: URL) {
+        if let option = OpenAppOption.urlToOption(url) {
+            openApp(with: option)
         }
     }
     
     // Handler for launch from camera control
-    func handleCameraControlAction() {
+    func handleCameraControlAction(shouldOpenDummyCamera: Bool = true) {
         guard TrueDevice.isCamControlAvailable else { return }
         
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
-        openApp(with: action, fromCameraControl: true)
+        openApp(with: action, shouldOpenDummyCamera: shouldOpenDummyCamera)
     }
     
     // Launch a dummy camera to avoid being killed by the system.
@@ -528,9 +503,9 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    func openApp(with action: OpenAppOption, fromCameraControl: Bool = false) {
+    func openApp(with action: OpenAppOption, shouldOpenDummyCamera: Bool = false) {
         // Open Dummy Camera if needed
-        if action.shouldOpenDummyCamera && fromCameraControl && UIApplication.shared.applicationState != .active {
+        if action.shouldOpenDummyCamera && shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
             openDummyCamera()
         }
         
@@ -552,19 +527,24 @@ class MainViewModel: ObservableObject {
         case .openURL:
             if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
                let url = URL(string: urlString) {
-                // Handle CBNote URL scheme
-                if url.scheme == "cbnote" || url.scheme == "net.cizzuk.cbnote" {
-                    handleOpenURL(url: url, fromCameraControl: fromCameraControl)
-                    return
+                // If URL is CBNote's URL scheme
+                if let option = OpenAppOption.urlToOption(url) {
+                    // Safety
+                    guard option != .openURL else {
+                        openApp(with: .openAppOnly, shouldOpenDummyCamera: shouldOpenDummyCamera)
+                        return
+                    }
+                    openApp(with: option, shouldOpenDummyCamera: shouldOpenDummyCamera)
+                } else {
+                    
+                    // Else open URL normally
+                    // Show temporary screen curtain
+                    showSettings = false
+                    showCamera = false
+                    showTmpCurtain = true
+                    // Open URL
+                    UIApplication.shared.open(url)
                 }
-                
-                // Else open URL normally
-                // Show temporary screen curtain
-                showSettings = false
-                showCamera = false
-                showTmpCurtain = true
-                // Open URL
-                UIApplication.shared.open(url)
             } else {
                 // Fallback
                 openDummyCamera()

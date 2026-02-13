@@ -53,16 +53,6 @@ struct CBNoteApp: App {
         CaptureContext.syncContextSettings()
     }
     
-    // Only to be used by user actions
-    static func backToHomeScreen() {
-        UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
-    }
-    
-    static func exitApp() {
-        backToHomeScreen()
-        exit(0)
-    }
-    
     var body: some Scene {
         // MARK: - Window Group
         WindowGroup {

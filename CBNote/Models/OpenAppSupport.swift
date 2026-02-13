@@ -44,3 +44,36 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
         }
     }
 }
+
+extension OpenAppOption {
+    static func urlToOption(_ url: URL) -> OpenAppOption? {
+        // Get App URL Schemes
+        let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
+        let urlSchemes = appURLSchemes?.compactMap { $0["CFBundleURLSchemes"] as? [String] }.flatMap { $0 } ?? []
+        
+        // Check URL Scheme
+        guard let scheme = url.scheme,
+              urlSchemes.contains(scheme) else {
+            return nil
+        }
+        
+        // Parse URL
+        switch url.host {
+        case "open":
+            switch url.pathComponents.dropFirst().first {
+            case "camera":
+                return .launchCamera
+            case "paste":
+                return .pasteFromClipboard
+            case "newnote":
+                return .addNewNote
+            default:
+                break
+            }
+        default:
+            break
+        }
+        
+        return .openAppOnly
+    }
+}
