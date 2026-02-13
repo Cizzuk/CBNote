@@ -49,6 +49,8 @@ struct CBNoteApp: App {
     init() {
         // Initialize Watch Connectivity Manager
         _ = WatchConnectivityManager.shared
+        // Update Capture Context
+        CaptureContext.syncContextSettings()
     }
     
     // Only to be used by user actions

@@ -276,16 +276,6 @@
         }
       }
     },
-    "Do Nothing" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "何もしない"
-          }
-        }
-      }
-    },
     "Done" : {
       "localizations" : {
         "ja" : {
@@ -489,16 +479,6 @@
         }
       }
     },
-    "Locked Camera Action" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ロック中のカメラの動作"
-          }
-        }
-      }
-    },
     "MIT License\n\nCopyright (c) 2025 Cizzuk\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE." : {
       "shouldTranslate" : false
     },
@@ -678,16 +658,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "このMac内"
-          }
-        }
-      }
-    },
-    "Open App" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリを開く"
           }
         }
       }
@@ -872,16 +842,6 @@
         }
       }
     },
-    "Run Camera Control Action" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラコントロールアクションを実行"
-          }
-        }
-      }
-    },
     "Sample: %@" : {
       "localizations" : {
         "ja" : {
@@ -938,16 +898,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ノートで検索する時に使用する検索エンジンを設定します。"
-          }
-        }
-      }
-    },
-    "Set the behavior when you start the CBNote camera from the lock screen." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ロック画面からCBNoteのカメラを起動したときの動作を設定します。"
           }
         }
       }

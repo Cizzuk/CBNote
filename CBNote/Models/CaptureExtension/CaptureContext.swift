@@ -5,30 +5,58 @@
 //  Created by Cizzuk on 2025/12/05.
 //
 
-import Foundation
+import AppIntents
 
 nonisolated
 struct CaptureContext: Codable {
     enum LaunchAction: String, Codable, CaseIterable, Identifiable {
-        case launchCamera = "Launch Camera"
-        case openApp = "Open App"
-        case runCameraControlAction = "Run Camera Control Action"
-        case doNothing = "Do Nothing"
+        case runCameraControlAction
+        case launchCamera
+        case openAppOnly
         
         var id: String { rawValue }
-        var localizedName: LocalizedStringResource {
-            switch self {
-            case .launchCamera:
-                return "Launch Camera"
-            case .openApp:
-                return "Open App"
-            case .runCameraControlAction:
-                return "Run Camera Control Action"
-            case .doNothing:
-                return "Do Nothing"
+    }
+    
+    var launchAction: LaunchAction = .runCameraControlAction
+}
+
+// MARK: - Context Management
+
+#if !EXTENSION
+extension CaptureContext {
+    static func syncContextSettings() {
+        let launchAction = getLaunchAction()
+        
+        Task {
+            let context = CaptureContext(launchAction: launchAction)
+            do {
+                try await CaptureIntent.updateAppContext(context)
+            } catch {
+                print("Failed to update app context: \(error)")
             }
         }
     }
     
-    var launchAction: LaunchAction = .launchCamera
+    private static func getLaunchAction() -> LaunchAction {
+        let cameraControlAction: OpenAppOption
+        if let rawValue = UserDefaults.standard.string(forKey: "cameraControlAction"),
+           let action = OpenAppOption(rawValue: rawValue) {
+            cameraControlAction = action
+        } else {
+            cameraControlAction = .launchCamera
+        }
+        
+        let launchAction: LaunchAction
+        switch cameraControlAction {
+        case .launchCamera:
+            launchAction = .launchCamera
+        case .openAppOnly:
+            launchAction = .openAppOnly
+        default:
+            launchAction = .runCameraControlAction
+        }
+        
+        return launchAction
+    }
 }
+#endif

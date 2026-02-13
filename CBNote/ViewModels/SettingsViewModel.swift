@@ -26,6 +26,7 @@ class SettingsViewModel: ObservableObject {
     }() {
         didSet {
             UserDefaults.standard.set(cameraControlAction.rawValue, forKey: "cameraControlAction")
+            CaptureContext.syncContextSettings()
         }
     }
     

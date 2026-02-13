@@ -58,20 +58,8 @@ struct SettingsView: View {
                         if TrueDevice.isSaveToPhotosAvailable() {
                             Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
                         }
-                        
-                        if TrueDevice.isCamControlAvailable {
-                            Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
-                                ForEach(CaptureContext.LaunchAction.allCases) { action in
-                                    Text(action.localizedName).tag(action)
-                                }
-                            }
-                        }
                     } header: {
                         Text("Camera")
-                    } footer: {
-                        if TrueDevice.isCamControlAvailable {
-                            Text("Set the behavior when you start the CBNote camera from the lock screen.")
-                        }
                     }
                 }
                 
