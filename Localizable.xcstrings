@@ -62,6 +62,16 @@
         }
       }
     },
+    "Auto Paste from Clipboard" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードから自動でペースト"
+          }
+        }
+      }
+    },
     "Camera" : {
       "localizations" : {
         "ja" : {
@@ -1088,16 +1098,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バージョン"
-          }
-        }
-      }
-    },
-    "When App Opening" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリが開かれた時"
           }
         }
       }
