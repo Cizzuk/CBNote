@@ -18,7 +18,7 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
-                    Toggle("Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
+                    Toggle("Auto Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
                     if TrueDevice.isCamControlAvailable {
                         Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
                             ForEach(OpenAppOption.allCases) { action in
@@ -34,8 +34,6 @@ struct SettingsView: View {
                                 .submitLabel(.done)
                         }
                     }
-                } header: {
-                    Text("When App Opening")
                 } footer: {
                     if viewModel.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
                         let actionName = OpenAppOption.launchCamera.localizedName
