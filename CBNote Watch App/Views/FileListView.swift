@@ -18,7 +18,7 @@ struct FileListView: View {
             if model.isLoading {
                 ProgressView()
             } else if model.pinnedFiles.isEmpty && model.unpinnedFiles.isEmpty {
-                Text("No notes found.")
+                Text("No notes yet.")
                     .multilineTextAlignment(.center)
             } else {
                 List {

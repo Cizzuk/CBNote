@@ -16,7 +16,7 @@ extension MainView {
                 if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
                     Section {} footer: {
                         if viewModel.searchQuery.isEmpty {
-                            Text("No notes yet. Tap the + button to add a new note.")
+                            Text("No notes yet.")
                                 .frame(maxWidth: .infinity, alignment: .center)
                         } else {
                             VStack {

@@ -532,22 +532,12 @@
         }
       }
     },
-    "No notes found." : {
+    "No notes yet." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ノートがありません。"
-          }
-        }
-      }
-    },
-    "No notes yet. Tap the + button to add a new note." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ノートがまだありません。「+」ボタンをタップして新規ノートを追加します。"
+            "value" : "まだノートがありません。"
           }
         }
       }
