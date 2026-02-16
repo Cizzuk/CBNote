@@ -26,7 +26,7 @@ struct RecorderView: View {
                         Button(role: .destructive) {
                             finishRecordingAndDismiss()
                         } label: {
-                            Label("Finish", systemImage: "microphone.fill")
+                            Label("Finish", systemImage: "stop.circle")
                         }
                         .keyboardShortcut("S", modifiers: [.command])
                     } else {
