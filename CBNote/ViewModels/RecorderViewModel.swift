@@ -94,13 +94,15 @@ class RecorderViewModel: ObservableObject {
         
 		audioRecorder?.stop()
 		stopTimer()
-		isRecording = false
         
 		let finishedURL = recordingURL
 		audioRecorder = nil
 		recordingURL = nil
+
+        DispatchQueue.global(qos: .utility).async {
+			try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
         
-		try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
 		return finishedURL
 	}
     
