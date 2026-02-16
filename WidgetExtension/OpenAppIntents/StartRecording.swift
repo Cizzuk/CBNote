@@ -24,7 +24,7 @@ struct OpenAppStartRecordingControl: ControlWidget {
 }
 
 struct OpenAppStartRecordingIntent: AppIntent {
-    static let title: LocalizedStringResource = "Start Recording on CBNote"
+    static let title: LocalizedStringResource = "Start Recording"
     
     static var openAppWhenRun = true
     static var isDiscoverable = true
