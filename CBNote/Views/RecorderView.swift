@@ -13,6 +13,9 @@ struct RecorderView: View {
     @ObservedObject var viewModel = RecorderViewModel()
     
     var body: some View {
-        
+        NavigationStack {
+            
+        }
+        .presentationDetents([.fraction(0.3)])
     }
 }
