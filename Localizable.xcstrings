@@ -482,7 +482,7 @@
         }
       }
     },
-    "Launch Camera on CBNote" : {
+    "Launch CBNote Camera" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1021,16 +1021,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "録音を開始"
-          }
-        }
-      }
-    },
-    "Start Recording on CBNote" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CBNoteで録音を開始"
           }
         }
       }
