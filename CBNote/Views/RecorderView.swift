@@ -21,20 +21,24 @@ struct RecorderView: View {
                 Text(viewModel.elapsedTimeText)
                     .font(.system(size: 24, weight: .semibold, design: .monospaced))
                 
-                if viewModel.isRecording {
-                    Button(role: .destructive) {
-                        finishRecordingAndDismiss()
-                    } label: {
-                        Label("Finish", systemImage: "microphone.fill")
-                            .font(.title2)
+                Group {
+                    if viewModel.isRecording {
+                        Button(role: .destructive) {
+                            finishRecordingAndDismiss()
+                        } label: {
+                            Label("Finish", systemImage: "microphone.fill")
+                        }
+                        .keyboardShortcut("S", modifiers: [.command])
+                    } else {
+                        HStack {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                            Text("Preparing...")
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                } else {
-                    Button(action: { viewModel.startRecording() }) {
-                        Label("Start", systemImage: "microphone")
-                            .font(.title2)
-                    }
-                    .disabled(!viewModel.canStartRecording)
                 }
+                .font(.title2)
             }
             .animation(.default, value: viewModel.isRecording)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -57,10 +61,10 @@ struct RecorderView: View {
     }
     
     private func finishRecordingAndDismiss() {
+        dismiss()
         if viewModel.isRecording,
            let recordedURL = viewModel.stopRecording() {
             onRecordingFinished(recordedURL)
         }
-        dismiss()
     }
 }
