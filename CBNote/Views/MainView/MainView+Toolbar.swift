@@ -37,8 +37,10 @@ extension MainView {
                 }
             }
             
-            Button(action: { viewModel.showRecorder = true }) {
-                Label("Record Audio", systemImage: "waveform")
+            if TrueDevice.isMicrophoneAvailable {
+                Button(action: { viewModel.showRecorder = true }) {
+                    Label("Record Audio", systemImage: "waveform")
+                }
             }
             
             Button(action: { showFileImporter = true }) {
