@@ -439,16 +439,6 @@
         }
       }
     },
-    "Import from Photos" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“写真”から追加"
-          }
-        }
-      }
-    },
     "iPhone needs to be unlocked after reboot." : {
       "localizations" : {
         "ja" : {
