@@ -46,9 +46,9 @@ struct RecorderView: View {
                     }
                 }
             }
+            .onDisappear { finishRecordingAndDismiss() }
             .onChange(of: scenePhase) {
-                if scenePhase == .background,
-                   viewModel.isRecording {
+                if scenePhase == .background {
                     finishRecordingAndDismiss()
                 }
             }
@@ -57,7 +57,8 @@ struct RecorderView: View {
     }
     
     private func finishRecordingAndDismiss() {
-        if let recordedURL = viewModel.stopRecording() {
+        if viewModel.isRecording,
+           let recordedURL = viewModel.stopRecording() {
             onRecordingFinished(recordedURL)
         }
         dismiss()
