@@ -64,7 +64,7 @@ class RecorderViewModel: ObservableObject {
             
             do {
                 let session = AVAudioSession.sharedInstance()
-                try session.setCategory(.record, mode: .default, options: [.duckOthers])
+                try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothA2DP, .duckOthers])
                 try session.setActive(true)
                 
                 let recorder = try AVAudioRecorder(url: tempURL, settings: settings)
