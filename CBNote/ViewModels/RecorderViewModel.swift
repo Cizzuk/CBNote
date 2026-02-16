@@ -106,7 +106,7 @@ class RecorderViewModel: ObservableObject {
         audioRecorder?.stop()
         stopTimer()
         
-        let finishedURL = recordingURL
+        guard let finishedURL = recordingURL else { return nil }
         audioRecorder = nil
         recordingURL = nil
         
