@@ -50,6 +50,11 @@ struct RecorderView: View {
                     }
                 }
             }
+            .alert("Error", isPresented: $viewModel.showError) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text(viewModel.errorMessage)
+            }
             .onDisappear { finishRecordingAndDismiss() }
             .onChange(of: scenePhase) {
                 if scenePhase == .background {
