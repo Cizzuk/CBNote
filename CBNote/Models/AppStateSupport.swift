@@ -82,6 +82,21 @@ struct TrueDevice {
         #endif
     }
     
+    static let isMicrophoneAvailable: Bool = {
+        if userInterfaceIdiom == .vision {
+            return false
+        }
+        
+        switch AVAudioApplication.shared.recordPermission {
+        case .granted, .undetermined:
+            return true
+        case .denied:
+            return false
+        @unknown default:
+            return false
+        }
+    }()
+    
     static let defaultSearchEngine: String = {
         let defaultEngine: String
         if let url = URL(string: "x-web-search://?test"),
