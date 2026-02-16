@@ -111,6 +111,7 @@
 				OpenAppIntents/LaunchCamera.swift,
 				OpenAppIntents/OpenAppOnly.swift,
 				OpenAppIntents/PasteFromClipboard.swift,
+				OpenAppIntents/StartRecording.swift,
 			);
 			target = BE8854762EDB01F20040399C /* CBNote */;
 		};

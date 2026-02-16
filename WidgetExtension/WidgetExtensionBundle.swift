@@ -14,6 +14,7 @@ struct WidgetExtensionBundle: WidgetBundle {
         OpenAppLaunchCameraControl()
         OpenAppPasteFromClipboardControl()
         OpenAppAddNewNoteControl()
+        OpenAppStartRecordingControl()
         OpenAppOpenAppOnlyControl()
     }
 }

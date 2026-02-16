@@ -1025,6 +1025,16 @@
         }
       }
     },
+    "Start Recording on CBNote" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CBNoteで録音を開始"
+          }
+        }
+      }
+    },
     "Switch Camera" : {
       "localizations" : {
         "ja" : {
