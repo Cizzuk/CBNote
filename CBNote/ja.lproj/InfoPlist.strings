@@ -8,6 +8,7 @@
 
 NSCameraUsageDescription = "ノートに撮影した写真を保存するためにカメラを使用します。";
 NSPhotoLibraryAddUsageDescription = "ノートの写真をフォトライブラリに保存します。";
+NSMicrophoneUsageDescription = "音声ノートを録音するためにマイクを使用します。";
 
 UIApplicationShortcutItems_LaunchCamera = "カメラを起動";
 UIApplicationShortcutItems_PasteFromClipboard = "クリップボードから貼り付け";
