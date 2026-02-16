@@ -11,7 +11,7 @@ import SwiftUI
 
 struct OpenAppStartRecordingControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppStartRecordingControl"
-    static let title: LocalizedStringResource = "Start Recording on CBNote"
+    static let title: LocalizedStringResource = "Start Recording"
     
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppStartRecordingControl.kind) {
