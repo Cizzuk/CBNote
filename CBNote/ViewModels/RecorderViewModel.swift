@@ -62,16 +62,19 @@ class RecorderViewModel: ObservableObject {
             AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue
         ]
         
+        let sessionOptions: AVAudioSession.CategoryOptions
+        #if targetEnvironment(macCatalyst)
+        sessionOptions = [.mixWithOthers, .allowBluetoothA2DP]
+        #else
+        sessionOptions = [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
+        #endif
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
             do {
                 let session = AVAudioSession.sharedInstance()
-                try session.setCategory(
-                    .playAndRecord,
-                    mode: .default,
-                    options: [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
-                )
+                try session.setCategory(.playAndRecord, mode: .default, options: sessionOptions)
                 try session.setActive(true)
                 
                 let recorder = try AVAudioRecorder(url: tempURL, settings: settings)
