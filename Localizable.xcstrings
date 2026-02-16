@@ -11,6 +11,9 @@
         }
       }
     },
+    "%@" : {
+      "shouldTranslate" : false
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -366,6 +369,16 @@
         }
       }
     },
+    "Failed to start recording." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音の開始に失敗しました。"
+          }
+        }
+      }
+    },
     "File Name Format" : {
       "localizations" : {
         "ja" : {
@@ -387,7 +400,14 @@
       }
     },
     "Finish" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了"
+          }
+        }
+      }
     },
     "Flash is Off" : {
       "localizations" : {
@@ -488,6 +508,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "場所"
+          }
+        }
+      }
+    },
+    "Microphone access denied. Please enable it in Settings." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マイクへのアクセスが拒否されています。設定で有効にしてください。"
           }
         }
       }
@@ -765,6 +795,16 @@
         }
       }
     },
+    "Preparing..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "準備中…"
+          }
+        }
+      }
+    },
     "Privacy Policy" : {
       "localizations" : {
         "ja" : {
@@ -975,8 +1015,15 @@
         }
       }
     },
-    "Start" : {
-
+    "Start Recording" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音を開始"
+          }
+        }
+      }
     },
     "Switch Camera" : {
       "localizations" : {
@@ -1034,6 +1081,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻訳"
+          }
+        }
+      }
+    },
+    "Unknown microphone authorization status." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なマイクの認証ステータスです。"
           }
         }
       }
