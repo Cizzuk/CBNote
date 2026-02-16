@@ -565,6 +565,8 @@ class MainViewModel: ObservableObject {
             addAndPaste()
         case .addNewNote:
             createNewNote()
+        case .startRecording:
+            showRecorder = true
         case .openAppOnly:
             break
         case .openURL:

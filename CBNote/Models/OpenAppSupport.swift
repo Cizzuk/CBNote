@@ -15,6 +15,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
     case launchCamera = "Launch Camera"
     case pasteFromClipboard = "Paste from Clipboard"
     case addNewNote = "Add New Note"
+    case startRecording = "Start Recording"
     case openAppOnly = "Open App Only"
     case openURL = "Open URL"
 
@@ -28,6 +29,8 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
             return "Paste from Clipboard"
         case .addNewNote:
             return "Add New Note"
+        case .startRecording:
+            return "Start Recording"
         case .openAppOnly:
             return "Open App Only"
         case .openURL:
@@ -39,7 +42,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .launchCamera, .openURL:
             return false
-        case .pasteFromClipboard, .addNewNote, .openAppOnly:
+        case .pasteFromClipboard, .addNewNote, .startRecording, .openAppOnly:
             return true
         }
     }
@@ -67,6 +70,8 @@ extension OpenAppOption {
                 return .pasteFromClipboard
             case "newnote":
                 return .addNewNote
+            case "record":
+                return .startRecording
             default:
                 break
             }
