@@ -56,7 +56,7 @@ class RecorderViewModel: ObservableObject {
 			AVFormatIDKey: kAudioFormatMPEG4AAC,
 			AVSampleRateKey: 44_100,
 			AVNumberOfChannelsKey: 1,
-			AVEncoderAudioQualityKey: AVAudioQuality.medium.rawValue,
+            AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue
 		]
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -64,7 +64,11 @@ class RecorderViewModel: ObservableObject {
             
             do {
                 let session = AVAudioSession.sharedInstance()
-                try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothA2DP, .duckOthers])
+                try session.setCategory(
+                    .playAndRecord,
+                    mode: .default,
+                    options: [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
+                )
                 try session.setActive(true)
                 
                 let recorder = try AVAudioRecorder(url: tempURL, settings: settings)
