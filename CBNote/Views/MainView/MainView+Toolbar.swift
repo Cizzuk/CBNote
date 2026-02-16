@@ -40,9 +40,7 @@ extension MainView {
             Button(action: {}) {
                 Label("Record Audio", systemImage: "waveform")
             }
-            Button(action: {}) {
-                Label("Import from Photos", systemImage: "photo")
-            }
+            
             Button(action: { showFileImporter = true }) {
                 Label("Import from Files", systemImage: "document")
             }
