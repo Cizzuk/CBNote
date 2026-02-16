@@ -554,21 +554,19 @@ class MainViewModel: ObservableObject {
             openDummyCamera()
         }
         
+        showSettings = false
+        showCamera = false
+        showRecorder = false
+        
         switch action {
         case .launchCamera:
-            showSettings = false
             showCamera = true
         case .pasteFromClipboard:
-            showSettings = false
-            showCamera = false
             addAndPaste()
         case .addNewNote:
-            showSettings = false
-            showCamera = false
             createNewNote()
         case .openAppOnly:
-            showSettings = false
-            showCamera = false
+            break
         case .openURL:
             if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
                let url = URL(string: urlString) {
@@ -584,8 +582,6 @@ class MainViewModel: ObservableObject {
                     
                     // Else open URL normally
                     // Show temporary screen curtain
-                    showSettings = false
-                    showCamera = false
                     showTmpCurtain = true
                     // Open URL
                     UIApplication.shared.open(url)
