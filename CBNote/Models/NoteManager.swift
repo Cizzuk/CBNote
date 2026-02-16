@@ -119,6 +119,27 @@ class NoteManager: ObservableObject {
         return nil
     }
     
+    func saveNewFile(from url: URL) -> URL? {
+        guard url.startAccessingSecurityScopedResource() else { return nil }
+        defer { url.stopAccessingSecurityScopedResource() }
+        
+        // Create destination URL
+        guard let documentsURL = documentDir.directory else { return nil }
+        var destURL = documentsURL.appendingPathComponent(url.lastPathComponent)
+        if FileManager.default.fileExists(atPath: destURL.path) {
+            destURL = createFileURL(fileExtension: url.pathExtension) ?? destURL
+        }
+        
+        do {
+            try FileManager.default.copyItem(at: url, to: destURL)
+            loadFiles()
+            return destURL
+        } catch {
+            print("Error saving new file: \(error)")
+            return nil
+        }
+    }
+    
     func saveCapturedImage(data: Data) -> URL? {
         guard let fileURL = self.createFileURL(fileExtension: "jpeg") else { return nil }
         do {

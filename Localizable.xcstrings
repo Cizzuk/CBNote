@@ -336,6 +336,16 @@
         }
       }
     },
+    "Failed to Import File" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルのインポートに失敗しました"
+          }
+        }
+      }
+    },
     "Failed to load content." : {
       "localizations" : {
         "ja" : {

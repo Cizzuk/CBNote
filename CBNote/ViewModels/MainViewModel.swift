@@ -33,6 +33,7 @@ class MainViewModel: ObservableObject {
     @Published var showPasteError = false
     @Published var showCamera = false
     @Published var showSettings = false
+    @Published var showFileImportError = false
     
     @Published var renamingURL: URL?
     @Published var newName = ""
@@ -309,6 +310,15 @@ class MainViewModel: ObservableObject {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
     
+    func saveNewFile(from url: URL) {
+        guard let destURL = noteManager.saveNewFile(from: url) else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        newFileURLToScroll = destURL
+    }
+    
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
@@ -452,6 +462,21 @@ class MainViewModel: ObservableObject {
             self.loadFiles()
         }
         #endif
+    }
+    
+    // Handle file importer
+    func handleFileImporter(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            for url in urls {
+                saveNewFile(from: url)
+            }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        case .failure(let error):
+            print("File import error: ", error)
+            showFileImportError = true
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
     }
     
     // Handler for keyboard shortcuts

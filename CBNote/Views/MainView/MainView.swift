@@ -17,6 +17,7 @@ struct MainView: View {
     
     @State var previewURL: URL?
     @State var isExpandPinnedSection = true
+    @State var showFileImporter = false
     
     @AppStorage("showImagePreview") var showImagePreview: Bool = true
     @AppStorage("enableNoteListAnimations") var enableNoteListAnimations: Bool = false
@@ -60,6 +61,16 @@ struct MainView: View {
                     viewModel.renameFile()
                 }
                 .disabled(!viewModel.isValidFileName(viewModel.newName))
+            }
+            .alert("Failed to Import File", isPresented: $viewModel.showFileImportError) {
+                Button("OK", role: .close) {}
+            }
+            .fileImporter(
+                isPresented: $showFileImporter,
+                allowedContentTypes: [.item],
+                allowsMultipleSelection: true
+            ) { result in
+                viewModel.handleFileImporter(result)
             }
             // MARK: - Events
             .onAppear { viewModel.onAppear() }

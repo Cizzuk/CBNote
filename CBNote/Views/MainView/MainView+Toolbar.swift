@@ -43,7 +43,7 @@ extension MainView {
             Button(action: {}) {
                 Label("Import from Photos", systemImage: "photo")
             }
-            Button(action: {}) {
+            Button(action: { showFileImporter = true }) {
                 Label("Import from Files", systemImage: "document")
             }
         }
