@@ -37,7 +37,7 @@ extension MainView {
                 }
             }
             
-            Button(action: {}) {
+            Button(action: { viewModel.showRecorder = true }) {
                 Label("Record Audio", systemImage: "waveform")
             }
             

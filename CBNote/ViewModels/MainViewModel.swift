@@ -32,6 +32,7 @@ class MainViewModel: ObservableObject {
     
     @Published var showPasteError = false
     @Published var showCamera = false
+    @Published var showRecorder = false
     @Published var showSettings = false
     @Published var showFileImportError = false
     
@@ -463,6 +464,9 @@ class MainViewModel: ObservableObject {
         }
         #endif
     }
+    
+    // Handler for audio recorder
+//    func saveRecordedAudio(
     
     // Handle file importer
     func handleFileImporter(_ result: Result<[URL], Error>) {

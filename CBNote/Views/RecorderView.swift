@@ -8,9 +8,9 @@
 import AVFoundation
 import SwiftUI
 
-struct Recorderiew: View {
+struct RecorderView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var viewModel: RecorderViewModel
+    @ObservedObject var viewModel = RecorderViewModel()
     
     var body: some View {
         

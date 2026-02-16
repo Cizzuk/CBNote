@@ -47,6 +47,9 @@ struct MainView: View {
                     viewModel.saveCapturedImage(data: data)
                 }
             }
+            .sheet(isPresented: $viewModel.showRecorder) {
+                RecorderView()
+            }
             .sheet(isPresented: $viewModel.showSettings) {
                 SettingsView()
                     .navigationTransition(.zoom(
