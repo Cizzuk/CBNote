@@ -386,6 +386,9 @@
         }
       }
     },
+    "Finish" : {
+
+    },
     "Flash is Off" : {
       "localizations" : {
         "ja" : {
@@ -971,6 +974,9 @@
           }
         }
       }
+    },
+    "Start" : {
+
     },
     "Switch Camera" : {
       "localizations" : {

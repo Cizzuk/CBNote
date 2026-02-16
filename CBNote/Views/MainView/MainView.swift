@@ -48,7 +48,9 @@ struct MainView: View {
                 }
             }
             .sheet(isPresented: $viewModel.showRecorder) {
-                RecorderView()
+                RecorderView { url in
+                    viewModel.saveRecordedAudio(from: url)
+                }
             }
             .sheet(isPresented: $viewModel.showSettings) {
                 SettingsView()

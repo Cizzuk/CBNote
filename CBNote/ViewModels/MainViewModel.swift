@@ -466,7 +466,22 @@ class MainViewModel: ObservableObject {
     }
     
     // Handler for audio recorder
-//    func saveRecordedAudio(
+    func saveRecordedAudio(from sourceURL: URL) {
+        guard let destURL = noteManager.createFileURL(fileExtension: "m4a") else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        do {
+            try FileManager.default.moveItem(at: sourceURL, to: destURL)
+            newFileURLToScroll = destURL
+            loadFiles()
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        } catch {
+            print("saveRecordedAudio error: ", error)
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
+    }
     
     // Handle file importer
     func handleFileImporter(_ result: Result<[URL], Error>) {
