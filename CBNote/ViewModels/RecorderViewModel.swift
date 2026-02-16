@@ -10,9 +10,11 @@ import Combine
 import SwiftUI
 
 class RecorderViewModel: ObservableObject {
-    @Published var canStartRecording = false
     @Published var isRecording = false
     @Published var elapsedTime: TimeInterval = 0
+    
+    @Published var showError = false
+    @Published var errorMessage: LocalizedStringResource = ""
     
     private var audioRecorder: AVAudioRecorder?
     private var timerCancellable: AnyCancellable?
@@ -25,75 +27,72 @@ class RecorderViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    init() {
-        preparePermission()
-        if canStartRecording {
-            startRecording()
+    init() { startRecording() }
+    
+    func showErrorMessage(_ message: LocalizedStringResource) {
+        DispatchQueue.main.async {
+            self.errorMessage = message
+            self.showError = true
         }
     }
     
-    func preparePermission() {
-        switch AVAudioApplication.shared.recordPermission {
-        case .granted:
-            canStartRecording = true
-        case .undetermined:
-            AVAudioApplication.requestRecordPermission { granted in
-                DispatchQueue.main.async {
-                    self.canStartRecording = granted
-                }
-            }
-        case .denied:
-            canStartRecording = false
-        @unknown default:
-            canStartRecording = false
-        }
-    }
-    
+    @MainActor
     func startRecording() {
-        guard canStartRecording, !isRecording else { return }
-        
-        let tempURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("\(UUID().uuidString).m4a")
-        
-        let settings: [String: Any] = [
-            AVFormatIDKey: kAudioFormatMPEG4AAC,
-            AVSampleRateKey: 44_100,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue
-        ]
-        
-        let sessionOptions: AVAudioSession.CategoryOptions
-        #if targetEnvironment(macCatalyst)
-        sessionOptions = [.mixWithOthers, .allowBluetoothA2DP]
-        #else
-        sessionOptions = [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
-        #endif
-        
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
+        Task {
+            guard !isRecording else { return }
             
-            do {
-                let session = AVAudioSession.sharedInstance()
-                try session.setCategory(.playAndRecord, mode: .default, options: sessionOptions)
-                try session.setActive(true)
+            // Check Permission
+            if !(await checkPermission()) {
+                return
+            }
+            
+            let tempURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("\(UUID().uuidString).m4a")
+            
+            let settings: [String: Any] = [
+                AVFormatIDKey: kAudioFormatMPEG4AAC,
+                AVSampleRateKey: 44_100,
+                AVNumberOfChannelsKey: 1,
+                AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue
+            ]
+            
+            let sessionOptions: AVAudioSession.CategoryOptions
+            #if targetEnvironment(macCatalyst)
+            sessionOptions = [.mixWithOthers, .allowBluetoothA2DP]
+            #else
+            sessionOptions = [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
+            #endif
+            
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
                 
-                let recorder = try AVAudioRecorder(url: tempURL, settings: settings)
-                guard recorder.record() else { return }
-                
-                audioRecorder = recorder
-                recordingURL = tempURL
-                
-                DispatchQueue.main.async {
-                    self.elapsedTime = 0
-                    self.isRecording = true
-                }
-                
-                startTimer()
-            } catch {
-                stopTimer()
-                
-                DispatchQueue.main.async {
-                    self.isRecording = false
+                do {
+                    let session = AVAudioSession.sharedInstance()
+                    try session.setCategory(.playAndRecord, mode: .default, options: sessionOptions)
+                    try session.setActive(true)
+                    
+                    let recorder = try AVAudioRecorder(url: tempURL, settings: settings)
+                    guard recorder.record() else {
+                        showErrorMessage("Failed to start recording.")
+                        return
+                    }
+                    
+                    audioRecorder = recorder
+                    recordingURL = tempURL
+                    
+                    DispatchQueue.main.async {
+                        self.elapsedTime = 0
+                        self.isRecording = true
+                    }
+                    
+                    startTimer()
+                } catch {
+                    stopTimer()
+                    
+                    DispatchQueue.main.async {
+                        self.isRecording = false
+                        self.showErrorMessage("\(error.localizedDescription)")
+                    }
                 }
             }
         }
@@ -115,6 +114,32 @@ class RecorderViewModel: ObservableObject {
         }
         
         return finishedURL
+    }
+    
+    @MainActor
+    func checkPermission() async -> Bool {
+        switch AVAudioApplication.shared.recordPermission {
+        case .granted:
+            break
+        case .denied:
+            showErrorMessage("Microphone access denied. Please enable it in Settings.")
+            return false
+        case .undetermined:
+            let granted = await withCheckedContinuation { continuation in
+                AVAudioApplication.requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
+                }
+            }
+            if !granted {
+                showErrorMessage("Microphone access denied. Please enable it in Settings.")
+                return false
+            }
+        @unknown default:
+            showErrorMessage("Unknown microphone authorization status.")
+            return false
+        }
+        
+        return true
     }
     
     private func startTimer() {
