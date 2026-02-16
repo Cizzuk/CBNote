@@ -39,7 +39,7 @@ extension MainView {
             
             if TrueDevice.isMicrophoneAvailable {
                 Button(action: { viewModel.showRecorder = true }) {
-                    Label("Record Audio", systemImage: "waveform")
+                    Label("Record Audio", systemImage: "waveform.badge.microphone")
                 }
             }
             
