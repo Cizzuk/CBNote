@@ -399,16 +399,6 @@
         }
       }
     },
-    "Finish" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "終了"
-          }
-        }
-      }
-    },
     "Flash is Off" : {
       "localizations" : {
         "ja" : {
@@ -831,6 +821,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音声を録音"
+          }
+        }
+      }
+    },
+    "Recording" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音中"
           }
         }
       }
