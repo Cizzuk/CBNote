@@ -45,7 +45,6 @@ class Camera: NSObject, ObservableObject {
     private func updateReadyState() {
         DispatchQueue.main.async {
             self.isSessionReady = self.cameraPermission == .authorized && self.input != nil && self.session.isRunning
-            print("Camera Ready State Updated: \(self.isSessionReady)")
         }
     }
     
