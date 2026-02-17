@@ -57,9 +57,15 @@ struct CameraView: View {
                         Circle()
                             .glassEffect()
                         Button(action: { viewModel.takePhoto() }) {
-                            Circle()
-                                .inset(by: 8)
-                                .fill(.white)
+                            ZStack {
+                                if !viewModel.isCameraReady {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                }
+                                Circle()
+                                    .inset(by: 8)
+                                    .fill(.white)
+                            }
                         }
                         .accessibilityLabel("Take Photo")
                         .buttonStyle(.plain)
