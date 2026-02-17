@@ -63,7 +63,7 @@ struct CameraView: View {
                         }
                         .accessibilityLabel("Take Photo")
                         .buttonStyle(.plain)
-                        .disabled(viewModel.cameraPermission != .authorized)
+                        .disabled(!viewModel.isCameraReady)
                     }
                     .frame(width: 80, height: 80)
                     .padding(.bottom, 20)
@@ -91,7 +91,7 @@ struct CameraView: View {
                             viewModel.switchCamera()
                         }
                     }
-                    .disabled(viewModel.cameraPermission != .authorized)
+                    .disabled(!viewModel.isCameraReady)
                 }
             } // toolbar
             .accessibilityAction(.escape) { dismiss() }
