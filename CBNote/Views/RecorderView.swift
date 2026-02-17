@@ -55,7 +55,7 @@ struct RecorderView: View {
             } message: {
                 Text(viewModel.errorMessage)
             }
-            .onDisappear { finishRecordingAndDismiss() }
+            .onDisappear { finishRecording() }
             .onChange(of: scenePhase) {
                 if scenePhase == .background {
                     finishRecordingAndDismiss()
@@ -75,11 +75,15 @@ struct RecorderView: View {
         .presentationDetents([.fraction(0.3)])
     }
     
-    private func finishRecordingAndDismiss() {
-        dismiss()
+    private func finishRecording() {
         if viewModel.isRecording,
            let recordedURL = viewModel.stopRecording() {
             onRecordingFinished(recordedURL)
         }
+    }
+    
+    private func finishRecordingAndDismiss() {
+        finishRecording()
+        dismiss()
     }
 }
