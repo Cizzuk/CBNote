@@ -17,7 +17,9 @@ struct CameraPreview: UIViewControllerRepresentable {
         let view = VideoPreviewView()
         
         DispatchQueue.global(qos: .userInitiated).async {
-            self.session.startRunning()
+            if !self.session.isRunning {
+                self.session.startRunning()
+            }
             DispatchQueue.main.async {
                 view.videoPreviewLayer.videoGravity = .resizeAspect
                 view.videoPreviewLayer.session = self.session
