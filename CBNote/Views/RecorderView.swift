@@ -62,6 +62,16 @@ struct RecorderView: View {
                 }
             }
         }
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [Color.clear, Color.accent]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            .opacity(0.25 * Double(viewModel.micLevel))
+            .animation(.smooth, value: viewModel.micLevel)
+        )
         .presentationDetents([.fraction(0.3)])
     }
     

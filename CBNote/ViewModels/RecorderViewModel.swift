@@ -12,6 +12,7 @@ import SwiftUI
 class RecorderViewModel: ObservableObject {
     @Published var isRecording = false
     @Published var elapsedTime: TimeInterval = 0
+    @Published var micLevel: Float = 0.0
     
     @Published var showError = false
     @Published var errorMessage: LocalizedStringResource = ""
@@ -72,6 +73,8 @@ class RecorderViewModel: ObservableObject {
                     try session.setActive(true)
                     
                     let recorder = try AVAudioRecorder(url: tempURL, settings: settings)
+                    recorder.isMeteringEnabled = true
+                    
                     guard recorder.record() else {
                         showErrorMessage("Failed to start recording.")
                         return
@@ -101,6 +104,7 @@ class RecorderViewModel: ObservableObject {
     func stopRecording() -> URL? {
         guard isRecording else { return nil }
         isRecording = false
+        micLevel = 0
         
         audioRecorder?.stop()
         stopTimer()
@@ -144,11 +148,18 @@ class RecorderViewModel: ObservableObject {
     
     private func startTimer() {
         stopTimer()
-        timerCancellable = Timer.publish(every: 0.2, on: .main, in: .common)
+        timerCancellable = Timer.publish(every: 0.1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.elapsedTime = self.audioRecorder?.currentTime ?? self.elapsedTime
+
+                // Update micLevel
+                self.audioRecorder?.updateMeters()
+                let power = self.audioRecorder?.averagePower(forChannel: 0) ?? -60
+                let minPower: Float = -60
+                let level = max(0, min(1, (power - minPower) / abs(minPower)))
+                self.micLevel = level
             }
     }
     
