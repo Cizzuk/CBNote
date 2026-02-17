@@ -373,7 +373,7 @@ class MainViewModel: ObservableObject {
             }
         }
         
-        // Otherwise, search in Safari
+        // Otherwise, search in Browser
         if let encodedQuery = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             // Create Search URL
             let searchEngine = UserDefaults.standard.string(forKey: "searchEngine") ?? TrueDevice.defaultSearchEngine
