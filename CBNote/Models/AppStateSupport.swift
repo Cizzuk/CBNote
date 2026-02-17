@@ -30,12 +30,7 @@ struct TrueDevice {
         #endif
     }()
     
-    // Simply hide the camera features (not strictly)
     static let isCameraAvailable: Bool = {
-        if userInterfaceIdiom == .vision {
-            return false
-        }
-        
         if AVCaptureDevice.authorizationStatus(for: .video) == .restricted {
             return false
         }
@@ -59,14 +54,6 @@ struct TrueDevice {
         return false
         
         #endif
-    }()
-    
-    static let isMicrophoneAvailable: Bool = {
-        if userInterfaceIdiom == .vision {
-            return false
-        }
-        
-        return true
     }()
     
     static func isSaveToPhotosAllowed() -> Bool {
