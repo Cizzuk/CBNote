@@ -93,6 +93,7 @@
 		BE0BF7E32EDC3CEA00E228F0 /* Exceptions for "CBNote" folder in "CBNote" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AppIcons/cbnote.svg,
 				Info.plist,
 			);
 			target = BE8854762EDB01F20040399C /* CBNote */;
