@@ -64,7 +64,7 @@ struct RecorderView: View {
         }
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.clear, Color.accent]),
+                gradient: Gradient(colors: [Color.clear, Color.dropblue]),
                 startPoint: .top,
                 endPoint: .bottom
             )
