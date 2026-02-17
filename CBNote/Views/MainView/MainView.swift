@@ -14,6 +14,7 @@ struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
     @StateObject var viewModel = MainViewModel()
+    @StateObject private var dummyCameraManager = DummyCameraManager.shared
     
     @State var previewURL: URL?
     @State var isExpandPinnedSection = true
@@ -28,8 +29,8 @@ struct MainView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if let dummyCameraView = viewModel.dummyCamera?.view {
-                    dummyCameraView
+                if dummyCameraManager.isShowing {
+                    DummyCameraView()
                 }
                 
                 fileListView()

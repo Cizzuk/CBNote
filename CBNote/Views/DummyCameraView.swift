@@ -30,6 +30,7 @@ struct DummyCameraView: View {
             }
             .onDisappear {
                 viewModel.stopSession()
+                DummyCameraManager.shared.close()
             }
             .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }
     }

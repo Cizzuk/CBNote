@@ -17,7 +17,6 @@ extension Notification.Name {
 }
 
 class MainViewModel: ObservableObject {
-    @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
     @Published var showTmpCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
@@ -44,6 +43,7 @@ class MainViewModel: ObservableObject {
     @Published var translationText = ""
     
     let noteManager = NoteManager()
+    private let dummyCameraManager = DummyCameraManager.shared
     
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
@@ -137,7 +137,7 @@ class MainViewModel: ObservableObject {
         case .inactive:
             break
         case .background:
-            dummyCamera = nil
+            dummyCameraManager.close()
         @unknown default:
             break
         }
@@ -529,29 +529,10 @@ class MainViewModel: ObservableObject {
         openApp(with: action, shouldOpenDummyCamera: shouldOpenDummyCamera)
     }
     
-    // Launch a dummy camera to avoid being killed by the system.
-    func openDummyCamera() {
-        // Create new DummyCamera
-        // Update nonce to disable old kill tasks
-        let newNonce = UUID()
-        dummyCamera = (newNonce, DummyCameraView())
-        
-        // Kill the dummy camera after 2s.
-        // In the test, system killed the app when it was below 0.8 - 1s.
-        // For safety, the dummy will be killed in 2s.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            guard let self = self else { return }
-            // Check if nonce is not updated
-            if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
-                dummyCamera = nil
-            }
-        }
-    }
-    
     func openApp(with action: OpenAppOption, shouldOpenDummyCamera: Bool = false) {
         // Open Dummy Camera if needed
         if action.shouldOpenDummyCamera && shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
-            openDummyCamera()
+            dummyCameraManager.open()
         }
         
         showSettings = false
@@ -590,7 +571,7 @@ class MainViewModel: ObservableObject {
                 }
             } else {
                 // Fallback
-                openDummyCamera()
+                dummyCameraManager.open()
             }
         }
     }
