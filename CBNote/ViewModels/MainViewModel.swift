@@ -173,13 +173,14 @@ class MainViewModel: ObservableObject {
     
     func addAndPaste(suppressError: Bool = false) {
         showPasteError = false
-        let currentChangeCount = UIPasteboard.general.changeCount
-        if suppressError && currentChangeCount == lastPasteboardChangeCount {
-            return
-        }
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
+            
+            let currentChangeCount = UIPasteboard.general.changeCount
+            if suppressError && currentChangeCount == lastPasteboardChangeCount {
+                return
+            }
             
             var lastHandled: URL?
             let pasteboard = UIPasteboard.general
