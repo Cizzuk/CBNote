@@ -56,7 +56,7 @@ extension MainView {
             Divider()
         }
         
-        if FileTypes.isPreviewableImage(url) && TrueDevice.isSaveToPhotosAvailable() {
+        if FileTypes.isPreviewableImage(url) && TrueDevice.isSaveToPhotosAllowed() {
             // Save to Photos
             Button(action: { viewModel.saveImageToPhotos(at: url) }) {
                 Label("Save to Photos", systemImage: "photo.badge.arrow.down")

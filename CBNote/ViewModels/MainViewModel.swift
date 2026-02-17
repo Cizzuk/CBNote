@@ -386,7 +386,7 @@ class MainViewModel: ObservableObject {
     
     func saveImageToPhotos(at url: URL) {
         DispatchQueue.global(qos: .userInitiated).async {
-            guard TrueDevice.isSaveToPhotosAvailable() else {
+            guard TrueDevice.isSaveToPhotosAllowed() else {
                 print("saveImageToPhotos: Save to Photos not available")
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return

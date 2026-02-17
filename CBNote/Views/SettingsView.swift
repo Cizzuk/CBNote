@@ -53,7 +53,7 @@ struct SettingsView: View {
                         
                         Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
                         
-                        if TrueDevice.isSaveToPhotosAvailable() {
+                        if TrueDevice.isSaveToPhotosAllowed() {
                             Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
                         }
                     } header: {

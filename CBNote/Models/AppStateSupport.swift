@@ -61,7 +61,15 @@ struct TrueDevice {
         #endif
     }()
     
-    static func isSaveToPhotosAvailable() -> Bool {
+    static let isMicrophoneAvailable: Bool = {
+        if userInterfaceIdiom == .vision {
+            return false
+        }
+        
+        return true
+    }()
+    
+    static func isSaveToPhotosAllowed() -> Bool {
         #if targetEnvironment(macCatalyst)
         return false
         
@@ -81,21 +89,6 @@ struct TrueDevice {
         
         #endif
     }
-    
-    static let isMicrophoneAvailable: Bool = {
-        if userInterfaceIdiom == .vision {
-            return false
-        }
-        
-        switch AVAudioApplication.shared.recordPermission {
-        case .granted, .undetermined:
-            return true
-        case .denied:
-            return false
-        @unknown default:
-            return false
-        }
-    }()
     
     static let defaultSearchEngine: String = {
         let defaultEngine: String
