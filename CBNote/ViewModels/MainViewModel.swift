@@ -529,10 +529,20 @@ class MainViewModel: ObservableObject {
         openApp(with: action, shouldOpenDummyCamera: shouldOpenDummyCamera)
     }
     
-    func openApp(with action: OpenAppOption, shouldOpenDummyCamera: Bool = false) {
-        // Open Dummy Camera if needed
-        if action.shouldOpenDummyCamera && shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
-            dummyCameraManager.open()
+    func openApp(
+        with action: OpenAppOption,
+        shouldOpenDummyCamera: Bool = false,
+        allowCBNoteURLScheme: Bool = true)
+    {
+        func openDummyCameraIfNeeded() {
+            if shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
+                dummyCameraManager.open()
+            }
+        }
+        
+        // Open Dummy Camera if action needs it
+        if action.shouldOpenDummyCamera {
+            openDummyCameraIfNeeded()
         }
         
         showSettings = false
@@ -542,36 +552,44 @@ class MainViewModel: ObservableObject {
         switch action {
         case .launchCamera:
             showCamera = true
+            
         case .pasteFromClipboard:
             addAndPaste()
+            
         case .addNewNote:
             createNewNote()
+            
         case .startRecording:
             showRecorder = true
+            
         case .openAppOnly:
             break
+            
         case .openURL:
-            if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
-               let url = URL(string: urlString) {
-                // If URL is CBNote's URL scheme
-                if let option = OpenAppOption.urlToOption(url) {
-                    // Safety
-                    guard option != .openURL else {
-                        openApp(with: .openAppOnly, shouldOpenDummyCamera: shouldOpenDummyCamera)
-                        return
-                    }
-                    openApp(with: option, shouldOpenDummyCamera: shouldOpenDummyCamera)
-                } else {
-                    
-                    // Else open URL normally
-                    // Show temporary screen curtain
-                    showTmpCurtain = true
-                    // Open URL
-                    UIApplication.shared.open(url)
+            guard let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
+                  let url = URL(string: urlString) else {
+                openDummyCameraIfNeeded()
+                return
+            }
+            
+            // If URL is CBNote's URL scheme
+            if let option = OpenAppOption.urlToOption(url) {
+                guard allowCBNoteURLScheme else {
+                    openDummyCameraIfNeeded()
+                    return
                 }
+                openApp(
+                    with: option,
+                    shouldOpenDummyCamera: shouldOpenDummyCamera,
+                    allowCBNoteURLScheme: false // Prevent infinite loop
+                )
+                
             } else {
-                // Fallback
-                dummyCameraManager.open()
+                // Else open URL normally
+                // Show temporary screen curtain
+                showTmpCurtain = true
+                // Open URL
+                UIApplication.shared.open(url)
             }
         }
     }
