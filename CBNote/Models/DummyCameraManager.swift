@@ -15,7 +15,7 @@ import Foundation
 final class DummyCameraManager: ObservableObject {
     static let shared = DummyCameraManager()
 
-    @Published private(set) var nonce: UUID?
+    @Published private var nonce: UUID?
 
     private init() {}
 
