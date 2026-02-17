@@ -5,8 +5,6 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-#if !targetEnvironment(macCatalyst)
-
 import AVKit
 import SwiftUI
 import UIKit
@@ -59,13 +57,19 @@ struct CameraView: View {
                         Circle()
                             .glassEffect()
                         Button(action: { viewModel.takePhoto() }) {
-                            Circle()
-                                .inset(by: 8)
-                                .fill(.white)
+                            ZStack {
+                                if !viewModel.isCameraReady {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                }
+                                Circle()
+                                    .inset(by: 8)
+                                    .fill(.white)
+                            }
                         }
                         .accessibilityLabel("Take Photo")
                         .buttonStyle(.plain)
-                        .disabled(viewModel.cameraPermission != .authorized)
+                        .disabled(!viewModel.isCameraReady)
                     }
                     .frame(width: 80, height: 80)
                     .padding(.bottom, 20)
@@ -93,7 +97,7 @@ struct CameraView: View {
                             viewModel.switchCamera()
                         }
                     }
-                    .disabled(viewModel.cameraPermission != .authorized)
+                    .disabled(!viewModel.isCameraReady)
                 }
             } // toolbar
             .accessibilityAction(.escape) { dismiss() }
@@ -145,5 +149,3 @@ struct CameraView: View {
         }
     }
 }
-
-#endif

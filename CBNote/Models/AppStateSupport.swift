@@ -30,25 +30,12 @@ struct TrueDevice {
         #endif
     }()
     
-    // Simply hide the camera features (not strictly)
     static let isCameraAvailable: Bool = {
-        #if targetEnvironment(macCatalyst)
-        return false
-        
-        #else
-        if userInterfaceIdiom == .mac {
-            return false
-        } else if userInterfaceIdiom == .vision {
-            return false
-        }
-        
         if AVCaptureDevice.authorizationStatus(for: .video) == .restricted {
             return false
         }
         
         return true
-        
-        #endif
     }()
     
     static let isCamControlAvailable: Bool = {
@@ -69,7 +56,7 @@ struct TrueDevice {
         #endif
     }()
     
-    static func isSaveToPhotosAvailable() -> Bool {
+    static func isSaveToPhotosAllowed() -> Bool {
         #if targetEnvironment(macCatalyst)
         return false
         
@@ -89,6 +76,17 @@ struct TrueDevice {
         
         #endif
     }
+    
+    static let defaultSearchEngine: String = {
+        let defaultEngine: String
+        if let url = URL(string: "x-web-search://?test"),
+           UIApplication.shared.canOpenURL(url) {
+            defaultEngine = "x-web-search://?%s"
+        } else {
+            defaultEngine = "https://www.google.com/search?q=%s"
+        }
+        return defaultEngine
+    }()
 }
 
 enum DocumentDir: String, CaseIterable {

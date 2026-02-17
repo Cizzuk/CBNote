@@ -57,6 +57,14 @@
 			<key>UIApplicationShortcutItemType</key>
 			<string>net.cizzuk.cbnote.HomeShortcut.AddNewNote</string>
 		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>waveform.badge.microphone</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>UIApplicationShortcutItems_StartRecording</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>net.cizzuk.cbnote.HomeShortcut.StartRecording</string>
+		</dict>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>

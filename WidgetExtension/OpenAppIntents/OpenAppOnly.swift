@@ -16,7 +16,7 @@ struct OpenAppOpenAppOnlyControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppOpenAppOnlyControl.kind) {
             ControlWidgetButton(action: OpenAppOpenAppOnlyIntent()) {
-                Label(OpenAppOpenAppOnlyControl.title, systemImage: "arrow.up.forward.app.fill")
+                Label(OpenAppOpenAppOnlyControl.title, image: "cbnote")
             }
         }
         .displayName(OpenAppOpenAppOnlyControl.title)

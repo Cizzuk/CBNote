@@ -28,6 +28,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             action = .pasteFromClipboard
         case "net.cizzuk.cbnote.HomeShortcut.AddNewNote":
             action = .addNewNote
+        case "net.cizzuk.cbnote.HomeShortcut.StartRecording":
+            action = .startRecording
         default:
             action = nil
         }
@@ -49,16 +51,8 @@ struct CBNoteApp: App {
     init() {
         // Initialize Watch Connectivity Manager
         _ = WatchConnectivityManager.shared
-    }
-    
-    // Only to be used by user actions
-    static func backToHomeScreen() {
-        UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
-    }
-    
-    static func exitApp() {
-        backToHomeScreen()
-        exit(0)
+        // Update Capture Context
+        CaptureContext.syncContextSettings()
     }
     
     var body: some Scene {
@@ -106,7 +100,7 @@ struct CBNoteApp: App {
                         object: CustomKeyboardShortcut.addNewNote
                     )
                 } label: {
-                    Label("Add New Note", systemImage: "plus")
+                    Label("Add New Note", systemImage: "square.and.pencil")
                 }
                 .keyboardShortcut("N", modifiers: [.command])
 

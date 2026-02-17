@@ -11,6 +11,9 @@
         }
       }
     },
+    "%@" : {
+      "shouldTranslate" : false
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -42,12 +45,32 @@
         }
       }
     },
+    "App Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの設定"
+          }
+        }
+      }
+    },
     "Ascending" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "昇順"
+          }
+        }
+      }
+    },
+    "Auto Paste from Clipboard" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードから自動でペースト"
           }
         }
       }
@@ -266,16 +289,6 @@
         }
       }
     },
-    "Do Nothing" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "何もしない"
-          }
-        }
-      }
-    },
     "Done" : {
       "localizations" : {
         "ja" : {
@@ -326,6 +339,16 @@
         }
       }
     },
+    "Failed to Import File" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルのインポートに失敗しました"
+          }
+        }
+      }
+    },
     "Failed to load content." : {
       "localizations" : {
         "ja" : {
@@ -342,6 +365,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像の読み込みに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to start recording." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音の開始に失敗しました。"
           }
         }
       }
@@ -409,6 +442,16 @@
     "iCloud Drive" : {
       "shouldTranslate" : false
     },
+    "Import from Files" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“ファイル”から追加"
+          }
+        }
+      }
+    },
     "iPhone needs to be unlocked after reboot." : {
       "localizations" : {
         "ja" : {
@@ -429,7 +472,7 @@
         }
       }
     },
-    "Launch Camera on CBNote" : {
+    "Launch CBNote Camera" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -459,12 +502,12 @@
         }
       }
     },
-    "Locked Camera Action" : {
+    "Microphone access denied. Please enable it in Settings." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ロック中のカメラの動作"
+            "value" : "マイクへのアクセスが拒否されています。設定で有効にしてください。"
           }
         }
       }
@@ -512,22 +555,12 @@
         }
       }
     },
-    "No notes found." : {
+    "No notes yet." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ノートがありません。"
-          }
-        }
-      }
-    },
-    "No notes yet. Tap the + button to add a new note." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ノートがまだありません。「+」ボタンをタップして新規ノートを追加します。"
+            "value" : "まだノートがありません。"
           }
         }
       }
@@ -652,16 +685,6 @@
         }
       }
     },
-    "Open App" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリを開く"
-          }
-        }
-      }
-    },
     "Open App Only" : {
       "localizations" : {
         "ja" : {
@@ -702,22 +725,22 @@
         }
       }
     },
-    "Options" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オプション"
-          }
-        }
-      }
-    },
     "Paste" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "貼り付け"
+          }
+        }
+      }
+    },
+    "Paste Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペーストに失敗しました"
           }
         }
       }
@@ -762,6 +785,16 @@
         }
       }
     },
+    "Preparing..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "準備中…"
+          }
+        }
+      }
+    },
     "Privacy Policy" : {
       "localizations" : {
         "ja" : {
@@ -778,6 +811,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クイックルック"
+          }
+        }
+      }
+    },
+    "Record Audio" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声を録音"
+          }
+        }
+      }
+    },
+    "Recording" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音中"
           }
         }
       }
@@ -812,22 +865,22 @@
         }
       }
     },
+    "Replace query with %s." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリを%sで置き換えます。"
+          }
+        }
+      }
+    },
     "Request Camera Access" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カメラにアクセスする権限をリクエスト"
-          }
-        }
-      }
-    },
-    "Run Camera Control Action" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラコントロールアクションを実行"
           }
         }
       }
@@ -862,6 +915,16 @@
         }
       }
     },
+    "Search Engine" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索エンジン"
+          }
+        }
+      }
+    },
     "Search Notes" : {
       "localizations" : {
         "ja" : {
@@ -872,12 +935,12 @@
         }
       }
     },
-    "Set the behavior when you start the CBNote camera from the lock screen." : {
+    "Set a search engine used for searching within notes." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ロック画面からCBNoteのカメラを起動したときの動作を設定します。"
+            "value" : "ノートで検索する時に使用する検索エンジンを設定します。"
           }
         }
       }
@@ -952,6 +1015,16 @@
         }
       }
     },
+    "Start Recording" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音を開始"
+          }
+        }
+      }
+    },
     "Switch Camera" : {
       "localizations" : {
         "ja" : {
@@ -1012,6 +1085,16 @@
         }
       }
     },
+    "Unknown microphone authorization status." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なマイクの認証ステータスです。"
+          }
+        }
+      }
+    },
     "Unpin" : {
       "localizations" : {
         "ja" : {
@@ -1068,16 +1151,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バージョン"
-          }
-        }
-      }
-    },
-    "When App Opening" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリが開かれた時"
           }
         }
       }

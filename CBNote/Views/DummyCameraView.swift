@@ -11,18 +11,19 @@ import AVKit
 import SwiftUI
 
 struct DummyCameraView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = CameraViewModel()
     
     var body: some View {
         DummyCameraPreview(session: viewModel.session)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
             .opacity(0)
             .frame(width: 0, height: 0)
             .onChange(of: scenePhase) {
                 if scenePhase == .background {
                     viewModel.stopSession()
-                    dismiss()
+                    DummyCameraManager.shared.close()
                 }
             }
             .onAppear {
@@ -30,6 +31,7 @@ struct DummyCameraView: View {
             }
             .onDisappear {
                 viewModel.stopSession()
+                DummyCameraManager.shared.close()
             }
             .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }
     }

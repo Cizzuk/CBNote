@@ -28,18 +28,6 @@ struct ExtensionContentView: View {
         ZStack {
             if let action = launchAction {
                 switch action {
-                case .launchCamera:
-                    CameraView(isLockedMode: true) { data in
-                        saveToSession(session, data: data)
-                    }
-                case .openApp:
-                    Color.black
-                        .ignoresSafeArea()
-                        .task {
-                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension.openApp")
-                            try? await session.openApplication(for: activity)
-                            exit(0)
-                        }
                 case .runCameraControlAction:
                     Color.black
                         .ignoresSafeArea()
@@ -48,10 +36,16 @@ struct ExtensionContentView: View {
                             try? await session.openApplication(for: activity)
                             exit(0)
                         }
-                case .doNothing:
+                case .launchCamera:
+                    CameraView(isLockedMode: true) { data in
+                        saveToSession(session, data: data)
+                    }
+                case .openAppOnly:
                     Color.black
                         .ignoresSafeArea()
-                        .onAppear {
+                        .task {
+                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension.openAppOnly")
+                            try? await session.openApplication(for: activity)
                             exit(0)
                         }
                 }
@@ -64,10 +58,10 @@ struct ExtensionContentView: View {
                 if let context = try await CaptureIntent.appContext {
                     launchAction = context.launchAction
                 } else {
-                    launchAction = .launchCamera
+                    launchAction = .runCameraControlAction
                 }
             } catch {
-                launchAction = .openApp
+                launchAction = .runCameraControlAction
             }
         }
     }

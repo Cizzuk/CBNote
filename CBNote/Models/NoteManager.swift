@@ -84,13 +84,13 @@ class NoteManager: ObservableObject {
         sortDirection = direction
     }
     
-    func createFileURL(fileExtension: String, suffix: String = "") -> URL? {
+    func createFileURL(fileExtension: String) -> URL? {
         guard let documentsURL = documentDir.directory else { return nil }
         
         let dateFormatter = DateFormatter()
         let dateFormat = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss"
         dateFormatter.dateFormat = dateFormat
-        let baseName = dateFormatter.string(from: Date()) + suffix
+        let baseName = dateFormatter.string(from: Date())
         let extensionPart = fileExtension.isEmpty ? "" : ".\(fileExtension)"
         
         // Ensure unique filename
@@ -117,6 +117,24 @@ class NoteManager: ObservableObject {
             print("Error creating file: \(error)")
         }
         return nil
+    }
+    
+    func saveNewFile(from url: URL) -> URL? {
+        guard url.startAccessingSecurityScopedResource() else { return nil }
+        defer { url.stopAccessingSecurityScopedResource() }
+        
+        // Create destination URL
+        guard let destURL = createFileURL(fileExtension: url.pathExtension)
+        else { return nil }
+        
+        do {
+            try FileManager.default.copyItem(at: url, to: destURL)
+            loadFiles()
+            return destURL
+        } catch {
+            print("Error saving new file: \(error)")
+            return nil
+        }
     }
     
     func saveCapturedImage(data: Data) -> URL? {

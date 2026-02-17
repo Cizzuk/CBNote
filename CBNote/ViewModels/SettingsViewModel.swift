@@ -26,6 +26,7 @@ class SettingsViewModel: ObservableObject {
     }() {
         didSet {
             UserDefaults.standard.set(cameraControlAction.rawValue, forKey: "cameraControlAction")
+            CaptureContext.syncContextSettings()
         }
     }
     
@@ -90,6 +91,14 @@ class SettingsViewModel: ObservableObject {
                 nameFormat = "yyyy-MM-dd-HH-mm-ss"
             }
             UserDefaults.standard.set(nameFormat, forKey: "nameFormat")
+        }
+    }
+    
+    // MARK: - Search Engine
+    @Published var searchEngine: String = UserDefaults.standard.string(forKey: "searchEngine") ?? TrueDevice.defaultSearchEngine
+    {
+        didSet {
+            UserDefaults.standard.set(searchEngine, forKey: "searchEngine")
         }
     }
     

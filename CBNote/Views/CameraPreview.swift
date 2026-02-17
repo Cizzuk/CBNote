@@ -5,8 +5,6 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-#if !targetEnvironment(macCatalyst)
-
 import AVFoundation
 import SwiftUI
 
@@ -18,8 +16,15 @@ struct CameraPreview: UIViewControllerRepresentable {
         let controller = VideoPreviewController()
         let view = VideoPreviewView()
         
-        view.videoPreviewLayer.videoGravity = .resizeAspect
-        view.videoPreviewLayer.session = session
+        DispatchQueue.global(qos: .userInitiated).async {
+            if !self.session.isRunning {
+                self.session.startRunning()
+            }
+            DispatchQueue.main.async {
+                view.videoPreviewLayer.videoGravity = .resizeAspect
+                view.videoPreviewLayer.session = self.session
+            }
+        }
         
         // Add tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
@@ -119,5 +124,3 @@ struct CameraPreview: UIViewControllerRepresentable {
         }
     }
 }
-
-#endif

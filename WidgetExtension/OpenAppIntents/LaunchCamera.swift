@@ -11,7 +11,7 @@ import SwiftUI
 
 struct OpenAppLaunchCameraControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppLaunchCameraControl"
-    static let title: LocalizedStringResource = "Launch Camera on CBNote"
+    static let title: LocalizedStringResource = "Launch CBNote Camera"
     
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppLaunchCameraControl.kind) {
@@ -24,15 +24,10 @@ struct OpenAppLaunchCameraControl: ControlWidget {
 }
 
 struct OpenAppLaunchCameraIntent: AppIntent {
-    static let title: LocalizedStringResource = "Launch Camera on CBNote"
+    static let title: LocalizedStringResource = "Launch CBNote Camera"
     
     static var openAppWhenRun = true
-    #if !targetEnvironment(macCatalyst)
     static var isDiscoverable = true
-    #else
-    // Hide on Mac Catalyst
-    static var isDiscoverable = false
-    #endif
 
     @MainActor
     func perform() async throws -> some OpensIntent {

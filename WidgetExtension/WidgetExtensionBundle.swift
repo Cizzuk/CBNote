@@ -11,11 +11,10 @@ import SwiftUI
 @main
 struct WidgetExtensionBundle: WidgetBundle {
     var body: some Widget {
-        #if !targetEnvironment(macCatalyst)
         OpenAppLaunchCameraControl()
-        #endif
         OpenAppPasteFromClipboardControl()
         OpenAppAddNewNoteControl()
+        OpenAppStartRecordingControl()
         OpenAppOpenAppOnlyControl()
     }
 }

@@ -17,7 +17,6 @@ extension Notification.Name {
 }
 
 class MainViewModel: ObservableObject {
-    @Published var dummyCamera: (nonce: UUID, view: DummyCameraView)? = nil
     @Published var showTmpCurtain: Bool = false
     
     @Published var pinnedFiles: [URL] = []
@@ -32,7 +31,9 @@ class MainViewModel: ObservableObject {
     
     @Published var showPasteError = false
     @Published var showCamera = false
+    @Published var showRecorder = false
     @Published var showSettings = false
+    @Published var showFileImportError = false
     
     @Published var renamingURL: URL?
     @Published var newName = ""
@@ -42,6 +43,7 @@ class MainViewModel: ObservableObject {
     @Published var translationText = ""
     
     let noteManager = NoteManager()
+    private let dummyCameraManager = DummyCameraManager.shared
     
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
@@ -135,7 +137,7 @@ class MainViewModel: ObservableObject {
         case .inactive:
             break
         case .background:
-            dummyCamera = nil
+            dummyCameraManager.close()
         @unknown default:
             break
         }
@@ -170,6 +172,8 @@ class MainViewModel: ObservableObject {
     // MARK: - Clipboard Management
     
     func addAndPaste(suppressError: Bool = false) {
+        showPasteError = false
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
@@ -308,6 +312,15 @@ class MainViewModel: ObservableObject {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
     
+    func saveNewFile(from url: URL) {
+        guard let destURL = noteManager.saveNewFile(from: url) else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        newFileURLToScroll = destURL
+    }
+    
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
@@ -342,15 +355,12 @@ class MainViewModel: ObservableObject {
     // MARK: - Special Note Actions
     
     func translateFile(at url: URL) {
-        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         translationText = content
         showTranslation = true
-        #endif
     }
     
     func openInBrowser(at url: URL) {
-        #if !targetEnvironment(macCatalyst)
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         
         // If content is a valid URL, open directly
@@ -364,18 +374,20 @@ class MainViewModel: ObservableObject {
             }
         }
         
-        // Otherwise, search in Safari
-        if let encodedContent = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-           let searchURL = URL(string: "x-web-search://?\(encodedContent)") {
-            UIApplication.shared.open(searchURL)
+        // Otherwise, search in Browser
+        if let encodedQuery = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            // Create Search URL
+            let searchEngine = UserDefaults.standard.string(forKey: "searchEngine") ?? TrueDevice.defaultSearchEngine
+            let queryURLString = searchEngine.replacingOccurrences(of: "%s", with: encodedQuery)
+            if let searchURL = URL(string: queryURLString) {
+                UIApplication.shared.open(searchURL)
+            }
         }
-        #endif
     }
     
     func saveImageToPhotos(at url: URL) {
-        #if !targetEnvironment(macCatalyst)
         DispatchQueue.global(qos: .userInitiated).async {
-            guard TrueDevice.isSaveToPhotosAvailable() else {
+            guard TrueDevice.isSaveToPhotosAllowed() else {
                 print("saveImageToPhotos: Save to Photos not available")
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
@@ -398,14 +410,12 @@ class MainViewModel: ObservableObject {
                 }
             })
         }
-        #endif
     }
     
     // MARK: - Handlers
     
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
-        #if !targetEnvironment(macCatalyst)
         // Save as new note
         guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
             if !suppress {
@@ -425,7 +435,6 @@ class MainViewModel: ObservableObject {
         if UserDefaults.standard.bool(forKey: "saveCapturedImageToPhotos") {
             saveImageToPhotos(at: newImageURL)
         }
-        #endif
     }
     
     // Handler for locked camera captures
@@ -457,6 +466,39 @@ class MainViewModel: ObservableObject {
         #endif
     }
     
+    // Handler for audio recorder
+    func saveRecordedAudio(from sourceURL: URL) {
+        guard let destURL = noteManager.createFileURL(fileExtension: "m4a") else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        do {
+            try FileManager.default.moveItem(at: sourceURL, to: destURL)
+            newFileURLToScroll = destURL
+            loadFiles()
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        } catch {
+            print("saveRecordedAudio error: ", error)
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
+    }
+    
+    // Handle file importer
+    func handleFileImporter(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            for url in urls {
+                saveNewFile(from: url)
+            }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        case .failure(let error):
+            print("File import error: ", error)
+            showFileImportError = true
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
+    }
+    
     // Handler for keyboard shortcuts
     func handleKeyboardShortcut(shortcut: CustomKeyboardShortcut) {
         switch shortcut {
@@ -472,108 +514,83 @@ class MainViewModel: ObservableObject {
     }
     
     // Handler for URL scheme
-    func handleOpenURL(url: URL, fromCameraControl: Bool = false) {
-        switch url.host {
-        case "magicaction":
-            switch url.pathComponents.dropFirst().first {
-            case "home":
-                CBNoteApp.backToHomeScreen()
-            case "kill":
-                CBNoteApp.exitApp()
-            default:
-                openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
-            }
-        case "open":
-            var action: OpenAppOption = .openAppOnly
-
-            switch url.pathComponents.dropFirst().first {
-            case "camera":
-                action = .launchCamera
-            case "paste":
-                action = .pasteFromClipboard
-            case "newnote":
-                action = .addNewNote
-            default:
-                break
-            }
-            
-            openApp(with: action, fromCameraControl: fromCameraControl)
-        default:
-            openApp(with: .openAppOnly, fromCameraControl: fromCameraControl)
+    func handleOpenURL(url: URL) {
+        if let option = OpenAppOption.urlToOption(url) {
+            openApp(with: option)
         }
     }
     
     // Handler for launch from camera control
-    func handleCameraControlAction() {
-        #if !targetEnvironment(macCatalyst)
+    func handleCameraControlAction(shouldOpenDummyCamera: Bool = true) {
         guard TrueDevice.isCamControlAvailable else { return }
         
         let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
         let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
         
-        openApp(with: action, fromCameraControl: true)
-        #endif
+        openApp(with: action, shouldOpenDummyCamera: shouldOpenDummyCamera)
     }
     
-    // Launch a dummy camera to avoid being killed by the system.
-    func openDummyCamera() {
-        // Create new DummyCamera
-        // Update nonce to disable old kill tasks
-        let newNonce = UUID()
-        dummyCamera = (newNonce, DummyCameraView())
-        
-        // Kill the dummy camera after 2s.
-        // In the test, system killed the app when it was below 0.8 - 1s.
-        // For safety, the dummy will be killed in 2s.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            guard let self = self else { return }
-            // Check if nonce is not updated
-            if let currentNonce = dummyCamera?.nonce, currentNonce == newNonce {
-                dummyCamera = nil
+    func openApp(
+        with action: OpenAppOption,
+        shouldOpenDummyCamera: Bool = false,
+        allowCBNoteURLScheme: Bool = true)
+    {
+        func openDummyCameraIfNeeded() {
+            if shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
+                dummyCameraManager.open()
             }
         }
-    }
-    
-    func openApp(with action: OpenAppOption, fromCameraControl: Bool = false) {
-        // Open Dummy Camera if needed
-        if action.shouldOpenDummyCamera && fromCameraControl && UIApplication.shared.applicationState != .active {
-            openDummyCamera()
+        
+        // Open Dummy Camera if action needs it
+        if action.shouldOpenDummyCamera {
+            openDummyCameraIfNeeded()
         }
+        
+        showSettings = false
+        showCamera = false
+        showRecorder = false
         
         switch action {
         case .launchCamera:
-            showSettings = false
             showCamera = true
+            
         case .pasteFromClipboard:
-            showSettings = false
-            showCamera = false
             addAndPaste()
+            
         case .addNewNote:
-            showSettings = false
-            showCamera = false
             createNewNote()
+            
+        case .startRecording:
+            showRecorder = true
+            
         case .openAppOnly:
-            showSettings = false
-            showCamera = false
+            break
+            
         case .openURL:
-            if let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
-               let url = URL(string: urlString) {
-                // Handle CBNote URL scheme
-                if url.scheme == "cbnote" || url.scheme == "net.cizzuk.cbnote" {
-                    handleOpenURL(url: url, fromCameraControl: fromCameraControl)
+            guard let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
+                  let url = URL(string: urlString) else {
+                openDummyCameraIfNeeded()
+                return
+            }
+            
+            // If URL is CBNote's URL scheme
+            if let option = OpenAppOption.urlToOption(url) {
+                guard allowCBNoteURLScheme else {
+                    openDummyCameraIfNeeded()
                     return
                 }
+                openApp(
+                    with: option,
+                    shouldOpenDummyCamera: shouldOpenDummyCamera,
+                    allowCBNoteURLScheme: false // Prevent infinite loop
+                )
                 
+            } else {
                 // Else open URL normally
                 // Show temporary screen curtain
-                showSettings = false
-                showCamera = false
                 showTmpCurtain = true
                 // Open URL
                 UIApplication.shared.open(url)
-            } else {
-                // Fallback
-                openDummyCamera()
             }
         }
     }

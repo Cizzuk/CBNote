@@ -5,8 +5,6 @@
 //  Created by Cizzuk on 2025/12/04.
 //
 
-#if !targetEnvironment(macCatalyst)
-
 import Combine
 import Photos
 import UIKit
@@ -15,6 +13,7 @@ class Camera: NSObject, ObservableObject {
     @Published var session = AVCaptureSession()
     @Published var isFlashOn = false
     @Published var cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
+    @Published var isSessionReady = false
     
     private let output = AVCapturePhotoOutput()
     private var input: AVCaptureDeviceInput?
@@ -42,6 +41,12 @@ class Camera: NSObject, ObservableObject {
         super.init()
         checkPermissions()
     }
+
+    private func updateReadyState() {
+        DispatchQueue.main.async {
+            self.isSessionReady = self.cameraPermission == .authorized && self.input != nil && self.session.isRunning
+        }
+    }
     
     private func checkPermissions() {
         cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
@@ -55,14 +60,17 @@ class Camera: NSObject, ObservableObject {
                         self.setupSession()
                     }
                     self.cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
+                    self.updateReadyState()
                 }
             }
         default:
+            updateReadyState()
             break
         }
     }
     
     private func setupSession() {
+        isSessionReady = false
         session.beginConfiguration()
         defer { session.commitConfiguration() }
         
@@ -84,6 +92,7 @@ class Camera: NSObject, ObservableObject {
     
     // Setup new camera or lens input
     private func setupInput(for device: AVCaptureDevice) {
+        isSessionReady = false
         do {
             let newInput = try AVCaptureDeviceInput(device: device)
             
@@ -118,6 +127,7 @@ class Camera: NSObject, ObservableObject {
                     session.addInput(newInput)
                     input = newInput
                 }
+                self.updateReadyState()
             }
         } catch {
             print("Error setting up input: \(error)")
@@ -251,8 +261,9 @@ class Camera: NSObject, ObservableObject {
         DispatchQueue.global(qos: .userInteractive).async {
             if !self.session.isRunning {
                 self.session.startRunning()
-                self.updateRotationAngle()
             }
+            self.updateRotationAngle()
+            self.updateReadyState()
         }
     }
 
@@ -262,6 +273,7 @@ class Camera: NSObject, ObservableObject {
             if session.isRunning {
                 session.stopRunning()
             }
+            self.updateReadyState()
         }
     }
 }
@@ -297,5 +309,3 @@ class CaptureControlsDelegate: NSObject, AVCaptureSessionControlsDelegate {
     
     func sessionControlsDidBecomeInactive(_ session: AVCaptureSession) { }
 }
-
-#endif

@@ -9,3 +9,4 @@
 UIApplicationShortcutItems_LaunchCamera = "Launch Camera";
 UIApplicationShortcutItems_PasteFromClipboard = "Paste from Clipboard";
 UIApplicationShortcutItems_AddNewNote = "Add New Note";
+UIApplicationShortcutItems_StartRecording = "Start Recording";

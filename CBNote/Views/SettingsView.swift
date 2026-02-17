@@ -18,7 +18,7 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
-                    Toggle("Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
+                    Toggle("Auto Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
                     if TrueDevice.isCamControlAvailable {
                         Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
                             ForEach(OpenAppOption.allCases) { action in
@@ -34,8 +34,6 @@ struct SettingsView: View {
                                 .submitLabel(.done)
                         }
                     }
-                } header: {
-                    Text("When App Opening")
                 } footer: {
                     if viewModel.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
                         let actionName = OpenAppOption.launchCamera.localizedName
@@ -55,23 +53,11 @@ struct SettingsView: View {
                         
                         Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
                         
-                        if TrueDevice.isSaveToPhotosAvailable() {
+                        if TrueDevice.isSaveToPhotosAllowed() {
                             Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
-                        }
-                        
-                        if TrueDevice.isCamControlAvailable {
-                            Picker("Locked Camera Action", selection: $viewModel.captureLaunchAction) {
-                                ForEach(CaptureContext.LaunchAction.allCases) { action in
-                                    Text(action.localizedName).tag(action)
-                                }
-                            }
                         }
                     } header: {
                         Text("Camera")
-                    } footer: {
-                        if TrueDevice.isCamControlAvailable {
-                            Text("Set the behavior when you start the CBNote camera from the lock screen.")
-                        }
                     }
                 }
                 
@@ -89,6 +75,7 @@ struct SettingsView: View {
                     TextField("yyyy-MM-dd-HH-mm-ss", text: $viewModel.nameFormat)
                         .disableAutocorrection(true)
                         .textInputAutocapitalization(.never)
+                        .submitLabel(.done)
                         .onChange(of: viewModel.nameFormat) {
                             updateNameFormatSample()
                         }
@@ -102,6 +89,22 @@ struct SettingsView: View {
                 }
                 .onAppear {
                     updateNameFormatSample()
+                }
+                
+                Section {
+                    TextField("URL", text: $viewModel.searchEngine, prompt: Text(verbatim: TrueDevice.defaultSearchEngine))
+                        .disableAutocorrection(true)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .environment(\.layoutDirection, .leftToRight)
+                        .submitLabel(.done)
+                } header: {
+                    Text("Search Engine")
+                } footer: {
+                    VStack(alignment: .leading) {
+                        Text("Set a search engine used for searching within notes.")
+                        Text("Replace query with %s.")
+                    }
                 }
                 
                 Section {
