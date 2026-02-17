@@ -28,6 +28,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             action = .pasteFromClipboard
         case "net.cizzuk.cbnote.HomeShortcut.AddNewNote":
             action = .addNewNote
+        case "net.cizzuk.cbnote.HomeShortcut.StartRecording":
+            action = .startRecording
         default:
             action = nil
         }

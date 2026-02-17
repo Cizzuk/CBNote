@@ -13,3 +13,4 @@ NSMicrophoneUsageDescription = "音声ノートを録音するためにマイク
 UIApplicationShortcutItems_LaunchCamera = "カメラを起動";
 UIApplicationShortcutItems_PasteFromClipboard = "クリップボードから貼り付け";
 UIApplicationShortcutItems_AddNewNote = "新規ノートを追加";
+UIApplicationShortcutItems_StartRecording = "録音を開始";
