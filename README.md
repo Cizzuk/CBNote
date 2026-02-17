@@ -15,7 +15,9 @@ In app settings, you can choose the action for launching from Camera Control fro
 - Launch In-App Camera
 - Paste from Clipboard
 - Add New Note
-- Open App Only
+- Start Audio Recording
+- Open CBNote Only
+- Open Custom URL
 
 And other features:
 
