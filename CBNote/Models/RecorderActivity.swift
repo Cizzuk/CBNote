@@ -8,6 +8,24 @@
 import ActivityKit
 import Foundation
 
+#if targetEnvironment(macCatalyst)
+
+class RecorderActivityManager {
+    static func isActive() -> Bool {
+        return false
+    }
+    
+    static func start(endDate: Date? = nil) {
+        print("Activities are not supported on macOS. Cannot start recorder activity.")
+    }
+    
+    static func endAll() {
+        print("Activities are not supported on macOS. No recorder activities to end.")
+    }
+}
+
+#else
+
 struct RecorderActivityAttributes: ActivityAttributes {
     struct ContentState: Codable, Hashable { }
 }
@@ -66,3 +84,5 @@ class RecorderActivityManager {
         }
     }
 }
+
+#endif
