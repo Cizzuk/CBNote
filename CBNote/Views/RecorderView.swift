@@ -10,7 +10,6 @@ import SwiftUI
 
 struct RecorderView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = RecorderViewModel()
     
     let onRecordingFinished: (URL) -> Void
@@ -56,11 +55,6 @@ struct RecorderView: View {
                 Text(viewModel.errorMessage)
             }
             .onDisappear { finishRecording() }
-            .onChange(of: scenePhase) {
-                if scenePhase == .background {
-                    finishRecordingAndDismiss()
-                }
-            }
         }
         .background(
             LinearGradient(
