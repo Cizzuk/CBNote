@@ -56,9 +56,8 @@ extension OpenAppOption {
         
         // Check URL Scheme
         guard let scheme = url.scheme,
-              urlSchemes.contains(scheme) else {
-            return nil
-        }
+              urlSchemes.contains(scheme)
+        else { return nil }
         
         // Parse URL
         switch url.host {

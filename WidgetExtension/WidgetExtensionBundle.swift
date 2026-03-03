@@ -16,5 +16,6 @@ struct WidgetExtensionBundle: WidgetBundle {
         OpenAppAddNewNoteControl()
         OpenAppStartRecordingControl()
         OpenAppOpenAppOnlyControl()
+        RecorderActivityWidget()
     }
 }
