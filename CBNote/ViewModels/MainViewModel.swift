@@ -134,6 +134,10 @@ class MainViewModel: ObservableObject {
             checkAutoPaste()
             loadFiles()
             refreshFiles()
+            
+            if !showRecorder {
+                RecorderActivityManager.endAll()
+            }
         case .inactive:
             break
         case .background:
