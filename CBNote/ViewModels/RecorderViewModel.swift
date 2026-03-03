@@ -89,8 +89,10 @@ class RecorderViewModel: ObservableObject {
                     }
                     
                     startTimer()
+                    RecorderActivityManager.start()
                 } catch {
                     stopTimer()
+                    RecorderActivityManager.endAll()
                     
                     DispatchQueue.main.async {
                         self.isRecording = false
@@ -108,6 +110,7 @@ class RecorderViewModel: ObservableObject {
         
         audioRecorder?.stop()
         stopTimer()
+        RecorderActivityManager.endAll()
         
         guard let finishedURL = recordingURL else { return nil }
         audioRecorder = nil

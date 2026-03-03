@@ -120,6 +120,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/OpenAppSupport.swift,
+				Models/RecorderActivity.swift,
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* WidgetExtension */;
 		};
@@ -721,6 +722,7 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "Use the camera to save captured photos as notes.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record audio notes.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save the image from the note to your Photo Library.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -779,6 +781,7 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "Use the camera to save captured photos as notes.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record audio notes.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save the image from the note to your Photo Library.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
