@@ -55,6 +55,9 @@ struct RecorderView: View {
                 Text(viewModel.errorMessage)
             }
             .onDisappear { finishRecording() }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
+                finishRecordingAndDismiss()
+            }
         }
         .background(
             LinearGradient(

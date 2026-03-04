@@ -26,7 +26,7 @@ class RecorderActivityManager {
 
 #else
 
-struct RecorderActivityAttributes: ActivityAttributes {
+nonisolated struct RecorderActivityAttributes: ActivityAttributes {
     struct ContentState: Codable, Hashable { }
 }
 
@@ -73,14 +73,14 @@ class RecorderActivityManager {
             staleDate: nil
         )
         
-        for activity in activities {
-            Task {
+        Task.detached {
+            for activity in activities {
                 await activity.end(
                     content,
                     dismissalPolicy: .immediate
                 )
+                print("Ended recorder activity: \(activity)")
             }
-            print("Ended recorder activity: \(activity)")
         }
     }
 }
