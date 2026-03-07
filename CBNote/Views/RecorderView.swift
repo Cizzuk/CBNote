@@ -48,6 +48,7 @@ struct RecorderView: View {
             } message: {
                 Text(viewModel.errorMessage)
             }
+            // MARK: - Events
             .onDisappear { finishRecording() }
             .onReceive(viewModel.$shouldDismiss) { shouldDismiss in
                 if shouldDismiss {
@@ -67,6 +68,8 @@ struct RecorderView: View {
         )
         .presentationDetents([.fraction(0.3)])
     }
+    
+    // MARK: - Methods
     
     private func finishRecording() {
         if viewModel.isRecording,
