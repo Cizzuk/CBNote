@@ -6,6 +6,7 @@
 //
 
 import ActivityKit
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -58,6 +59,19 @@ struct RecorderActivityWidget: Widget {
         }
     }
     
+    struct StopButton: View {
+        var body: some View {
+            Button(intent: OpenAppOpenAppOnlyIntent()) {
+                Label("Finish", systemImage: "stop.fill")
+                    .labelStyle(.iconOnly)
+                    .font(.system(size: 30, weight: .bold))
+                    .padding(5)
+            }
+            .tint(.red)
+            .padding(5)
+        }
+    }
+    
     struct MainActivityView: View {
         @Environment(\.activityFamily) var activityFamily
         
@@ -71,7 +85,10 @@ struct RecorderActivityWidget: Widget {
             case .medium:
                 HStack(spacing: 10) {
                     IconImage(size: 40)
+                        .padding(.leading, 10)
                     DescriptionText()
+                    Spacer()
+                    StopButton()
                 }
                 .padding()
             @unknown default:
@@ -96,8 +113,8 @@ struct RecorderActivityWidget: Widget {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    RecordImage(size: 50)
-                        .padding(5)
+                    StopButton()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } compactLeading: {
                 IconImage()

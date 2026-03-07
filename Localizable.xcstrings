@@ -399,6 +399,16 @@
         }
       }
     },
+    "Finish" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了"
+          }
+        }
+      }
+    },
     "Flash is Off" : {
       "localizations" : {
         "ja" : {
