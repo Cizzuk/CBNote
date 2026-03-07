@@ -10,6 +10,8 @@ import Combine
 import SwiftUI
 
 class RecorderViewModel: ObservableObject {
+    @Published var shouldDismiss = false
+    
     @Published var isRecording = false
     @Published var elapsedTime: TimeInterval = 0
     @Published var micLevel: Float = 0.0

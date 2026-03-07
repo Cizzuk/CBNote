@@ -49,6 +49,11 @@ struct RecorderView: View {
                 Text(viewModel.errorMessage)
             }
             .onDisappear { finishRecording() }
+            .onReceive(viewModel.$shouldDismiss) { shouldDismiss in
+                if shouldDismiss {
+                    finishRecordingAndDismiss()
+                }
+            }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
                 finishRecordingAndDismiss()
             }
