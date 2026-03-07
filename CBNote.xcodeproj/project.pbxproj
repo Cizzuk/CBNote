@@ -13,6 +13,10 @@
 		BE994B642EDC522A008053C1 /* CaptureExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = BE994B5B2EDC522A008053C1 /* CaptureExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEAF98732EE546A300488245 /* CBNote Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BEAF98692EE546A100488245 /* CBNote Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEC15B1A2F3893AB002B7B82 /* TemporaryScreenCurtain in Frameworks */ = {isa = PBXBuildFile; productRef = BEC15B192F3893AB002B7B82 /* TemporaryScreenCurtain */; };
+		BEE666DF2F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
+		BEE666E02F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
+		BEE666E12F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
+		BEE666E22F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
 		BEFA7AF12EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
 		BEFA7AF22EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
 		BEFA7AF32EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
@@ -86,6 +90,7 @@
 		BE8854772EDB01F20040399C /* CBNote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBNote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE994B5B2EDC522A008053C1 /* CaptureExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = CaptureExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEAF98692EE546A100488245 /* CBNote Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CBNote Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEE666DE2F5C67C1008C8134 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		BEFA7AF02EE572870023643B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -236,6 +241,7 @@
 		BE88546E2EDB01F20040399C = {
 			isa = PBXGroup;
 			children = (
+				BEE666DE2F5C67C1008C8134 /* Constants.swift */,
 				BEFA7AF02EE572870023643B /* Localizable.xcstrings */,
 				BE8854792EDB01F20040399C /* CBNote */,
 				BE994B5C2EDC522A008053C1 /* CaptureExtension */,
@@ -445,6 +451,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEE666E02F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +459,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEE666E12F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,6 +467,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEE666E22F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,6 +475,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEE666DF2F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
