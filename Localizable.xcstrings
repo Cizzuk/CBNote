@@ -399,12 +399,12 @@
         }
       }
     },
-    "Finish" : {
+    "Finish Record" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "終了"
+            "value" : "録音を終了"
           }
         }
       }
