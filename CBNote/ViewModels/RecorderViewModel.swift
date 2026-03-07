@@ -8,6 +8,7 @@
 import AVFoundation
 import Combine
 import SwiftUI
+import UIKit
 
 class RecorderViewModel: ObservableObject {
     @Published var shouldDismiss = false
@@ -21,6 +22,7 @@ class RecorderViewModel: ObservableObject {
     
     private var audioRecorder: AVAudioRecorder?
     private var timerCancellable: AnyCancellable?
+    private var notificationCancellables = Set<AnyCancellable>()
     private var recordingURL: URL?
     
     var elapsedTimeText: String {
@@ -30,7 +32,31 @@ class RecorderViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    init() { startRecording() }
+    init() {
+        NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)
+            .sink { [weak self] notification in
+                guard let userInfo = notification.userInfo,
+                      let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                      let type = AVAudioSession.InterruptionType(rawValue: typeValue),
+                      type == .began
+                else { return }
+
+                DispatchQueue.main.async {
+                    self?.shouldDismiss = true
+                }
+            }
+            .store(in: &notificationCancellables)
+
+        NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.shouldDismiss = true
+                }
+            }
+            .store(in: &notificationCancellables)
+        
+        startRecording()
+    }
     
     func showErrorMessage(_ message: LocalizedStringResource) {
         DispatchQueue.main.async {

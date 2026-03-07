@@ -54,19 +54,6 @@ struct RecorderView: View {
                     finishRecordingAndDismiss()
                 }
             }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
-                finishRecordingAndDismiss()
-            }
-            .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { notification in
-                guard let userInfo = notification.userInfo,
-                      let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-                      let type = AVAudioSession.InterruptionType(rawValue: typeValue)
-                else { return }
-                
-                if type == .began {
-                    finishRecordingAndDismiss()
-                }
-            }
         }
         .background(
             LinearGradient(
