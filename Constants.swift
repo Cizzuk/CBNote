@@ -6,9 +6,3 @@
 //
 
 import Foundation
-
-let groupUserDefaults = UserDefaults(suiteName: "group.net.cizzuk.cbnote")!
-
-enum GUDFlag {
-    static let shouldFinishRecording = "flag_shouldFinishRecording"
-}
