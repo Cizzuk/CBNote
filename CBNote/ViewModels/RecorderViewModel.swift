@@ -8,8 +8,20 @@
 import AVFoundation
 import Combine
 import SwiftUI
+import UIKit
 
 class RecorderViewModel: ObservableObject {
+    private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
+        guard let observer else { return }
+
+        let viewModel = Unmanaged<RecorderViewModel>.fromOpaque(observer).takeUnretainedValue()
+        DispatchQueue.main.async {
+            viewModel.shouldDismiss = true
+        }
+    }
+
+    @Published var shouldDismiss = false
+    
     @Published var isRecording = false
     @Published var elapsedTime: TimeInterval = 0
     @Published var micLevel: Float = 0.0
@@ -19,6 +31,7 @@ class RecorderViewModel: ObservableObject {
     
     private var audioRecorder: AVAudioRecorder?
     private var timerCancellable: AnyCancellable?
+    private var notificationCancellables = Set<AnyCancellable>()
     private var recordingURL: URL?
     
     var elapsedTimeText: String {
@@ -28,7 +41,53 @@ class RecorderViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    init() { startRecording() }
+    init() {
+        // Observe Darwin Notification for Finishing Recording from Live Activity
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            RecorderViewModel.finishRecordDarwinCallback,
+            CFNotificationName.shouldFinishRecording.rawValue,
+            nil,
+            .deliverImmediately
+        )
+        
+        // Observe AVAudioSession Interruptions
+        NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)
+            .sink { [weak self] notification in
+                guard let userInfo = notification.userInfo,
+                      let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                      let type = AVAudioSession.InterruptionType(rawValue: typeValue),
+                      type == .began
+                else { return }
+
+                DispatchQueue.main.async {
+                    self?.shouldDismiss = true
+                }
+            }
+            .store(in: &notificationCancellables)
+
+        // Observe App Termination
+        NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.shouldDismiss = true
+                }
+            }
+            .store(in: &notificationCancellables)
+        
+        startRecording()
+    }
+
+    deinit {
+        // Remove All Darwin Notification Observers
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            nil,
+            nil
+        )
+    }
     
     func showErrorMessage(_ message: LocalizedStringResource) {
         DispatchQueue.main.async {

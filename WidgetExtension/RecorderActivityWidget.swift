@@ -6,6 +6,7 @@
 //
 
 import ActivityKit
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -58,6 +59,37 @@ struct RecorderActivityWidget: Widget {
         }
     }
     
+    struct FinishRecordButton: View {
+        var body: some View {
+            Button(intent: FinishRecordButtonIntent()) {
+                Label("Finish Record", systemImage: "stop.fill")
+                    .labelStyle(.iconOnly)
+                    .font(.system(size: 30, weight: .bold))
+                    .padding(5)
+            }
+            .tint(.red)
+            .padding(5)
+        }
+    }
+    
+    struct FinishRecordButtonIntent: AppIntent {
+        static let title: LocalizedStringResource = "Finish Record"
+        static var openAppWhenRun = false
+        static var isDiscoverable = false
+
+        @MainActor
+        func perform() async throws -> some OpensIntent {
+            CFNotificationCenterPostNotification(
+                CFNotificationCenterGetDarwinNotifyCenter(),
+                CFNotificationName.shouldFinishRecording,
+                nil,
+                nil,
+                true
+            )
+            return .result()
+        }
+    }
+    
     struct MainActivityView: View {
         @Environment(\.activityFamily) var activityFamily
         
@@ -71,7 +103,10 @@ struct RecorderActivityWidget: Widget {
             case .medium:
                 HStack(spacing: 10) {
                     IconImage(size: 40)
+                        .padding(.leading, 10)
                     DescriptionText()
+                    Spacer()
+                    FinishRecordButton()
                 }
                 .padding()
             @unknown default:
@@ -96,8 +131,8 @@ struct RecorderActivityWidget: Widget {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    RecordImage(size: 50)
-                        .padding(5)
+                    FinishRecordButton()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } compactLeading: {
                 IconImage()

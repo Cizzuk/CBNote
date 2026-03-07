@@ -19,6 +19,7 @@ struct RecorderView: View {
             VStack(spacing: 20) {
                 Text(viewModel.elapsedTimeText)
                     .font(.system(size: 24, weight: .semibold, design: .monospaced))
+                    .padding(.top, 40)
                 
                 Group {
                     if viewModel.isRecording {
@@ -42,19 +43,18 @@ struct RecorderView: View {
             .animation(.default, value: viewModel.isRecording)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: { finishRecordingAndDismiss() }) {
-                        Label("Close", systemImage: "checkmark")
-                    }
-                }
-            }
             .alert("Error", isPresented: $viewModel.showError) {
                 Button("OK") { dismiss() }
             } message: {
                 Text(viewModel.errorMessage)
             }
+            // MARK: - Events
             .onDisappear { finishRecording() }
+            .onReceive(viewModel.$shouldDismiss) { shouldDismiss in
+                if shouldDismiss {
+                    finishRecordingAndDismiss()
+                }
+            }
         }
         .background(
             LinearGradient(
@@ -68,6 +68,8 @@ struct RecorderView: View {
         )
         .presentationDetents([.fraction(0.3)])
     }
+    
+    // MARK: - Methods
     
     private func finishRecording() {
         if viewModel.isRecording,

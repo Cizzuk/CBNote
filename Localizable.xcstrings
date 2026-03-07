@@ -399,6 +399,16 @@
         }
       }
     },
+    "Finish Record" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音を終了"
+          }
+        }
+      }
+    },
     "Flash is Off" : {
       "localizations" : {
         "ja" : {
