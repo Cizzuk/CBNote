@@ -62,7 +62,7 @@ struct RecorderActivityWidget: Widget {
     struct FinishRecordButton: View {
         var body: some View {
             Button(intent: FinishRecordButtonIntent()) {
-                Label("Finish", systemImage: "stop.fill")
+                Label("Finish Record", systemImage: "stop.fill")
                     .labelStyle(.iconOnly)
                     .font(.system(size: 30, weight: .bold))
                     .padding(5)
