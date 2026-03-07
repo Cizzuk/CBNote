@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+extension CFNotificationName {
+    static let shouldFinishRecording = CFNotificationName("net.cizzuk.cbnote.CFNotification.shouldFinishRecording" as CFString)
+}

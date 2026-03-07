@@ -11,6 +11,15 @@ import SwiftUI
 import UIKit
 
 class RecorderViewModel: ObservableObject {
+    private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
+        guard let observer else { return }
+
+        let viewModel = Unmanaged<RecorderViewModel>.fromOpaque(observer).takeUnretainedValue()
+        DispatchQueue.main.async {
+            viewModel.shouldDismiss = true
+        }
+    }
+
     @Published var shouldDismiss = false
     
     @Published var isRecording = false
@@ -33,6 +42,17 @@ class RecorderViewModel: ObservableObject {
     }
     
     init() {
+        // Observe Darwin Notification for Finishing Recording from Live Activity
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            RecorderViewModel.finishRecordDarwinCallback,
+            CFNotificationName.shouldFinishRecording.rawValue,
+            nil,
+            .deliverImmediately
+        )
+        
+        // Observe AVAudioSession Interruptions
         NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)
             .sink { [weak self] notification in
                 guard let userInfo = notification.userInfo,
@@ -47,6 +67,7 @@ class RecorderViewModel: ObservableObject {
             }
             .store(in: &notificationCancellables)
 
+        // Observe App Termination
         NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
             .sink { [weak self] _ in
                 DispatchQueue.main.async {
@@ -56,6 +77,16 @@ class RecorderViewModel: ObservableObject {
             .store(in: &notificationCancellables)
         
         startRecording()
+    }
+
+    deinit {
+        // Remove All Darwin Notification Observers
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            nil,
+            nil
+        )
     }
     
     func showErrorMessage(_ message: LocalizedStringResource) {
