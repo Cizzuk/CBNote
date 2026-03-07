@@ -59,9 +59,9 @@ struct RecorderActivityWidget: Widget {
         }
     }
     
-    struct StopButton: View {
+    struct FinishRecordButton: View {
         var body: some View {
-            Button(intent: OpenAppOpenAppOnlyIntent()) {
+            Button(intent: FinishRecordButtonIntent()) {
                 Label("Finish", systemImage: "stop.fill")
                     .labelStyle(.iconOnly)
                     .font(.system(size: 30, weight: .bold))
@@ -69,6 +69,17 @@ struct RecorderActivityWidget: Widget {
             }
             .tint(.red)
             .padding(5)
+        }
+    }
+    
+    struct FinishRecordButtonIntent: AppIntent {
+        static let title: LocalizedStringResource = "Finish Record"
+        static var openAppWhenRun = false
+        static var isDiscoverable = false
+
+        @MainActor
+        func perform() async throws -> some OpensIntent {
+            return .result()
         }
     }
     
@@ -88,7 +99,7 @@ struct RecorderActivityWidget: Widget {
                         .padding(.leading, 10)
                     DescriptionText()
                     Spacer()
-                    StopButton()
+                    FinishRecordButton()
                 }
                 .padding()
             @unknown default:
@@ -113,7 +124,7 @@ struct RecorderActivityWidget: Widget {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    StopButton()
+                    FinishRecordButton()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } compactLeading: {
