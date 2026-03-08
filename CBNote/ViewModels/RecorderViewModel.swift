@@ -51,7 +51,7 @@ class RecorderViewModel: ObservableObject {
         CFNotificationCenterAddObserver(
             CFNotificationCenterGetDarwinNotifyCenter(),
             Unmanaged.passUnretained(self).toOpaque(),
-            Self.finishRecordDarwinCallback,
+            RecorderViewModel.finishRecordDarwinCallback,
             CFNotificationName.shouldFinishRecording.rawValue,
             nil,
             .deliverImmediately
