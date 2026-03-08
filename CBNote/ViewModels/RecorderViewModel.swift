@@ -11,15 +11,6 @@ import SwiftUI
 import UIKit
 
 class RecorderViewModel: ObservableObject {
-    private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
-        guard let observer else { return }
-
-        let viewModel = Unmanaged<RecorderViewModel>.fromOpaque(observer).takeUnretainedValue()
-        DispatchQueue.main.async {
-            viewModel.shouldDismiss = true
-        }
-    }
-
     @Published var shouldDismiss = false
     
     @Published var isRecording = false
@@ -41,8 +32,22 @@ class RecorderViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
+    private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
+        guard let observer else { return }
+        let viewModel = Unmanaged<RecorderViewModel>.fromOpaque(observer).takeUnretainedValue()
+        
+        // Check Flag
+        if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
+            DispatchQueue.main.async {
+                viewModel.shouldDismiss = true
+            }
+            GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
+        }
+    }
+    
     init() {
         // Observe Darwin Notification for Finishing Recording from Live Activity
+        GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
         CFNotificationCenterAddObserver(
             CFNotificationCenterGetDarwinNotifyCenter(),
             Unmanaged.passUnretained(self).toOpaque(),
