@@ -79,13 +79,15 @@ struct RecorderActivityWidget: Widget {
 
         @MainActor
         func perform() async throws -> some OpensIntent {
+            GroupUserDefaults.set(true, forKey: CFNotificationFlags.shouldFinishRecording)
             CFNotificationCenterPostNotification(
                 CFNotificationCenterGetDarwinNotifyCenter(),
-                CFNotificationName.shouldFinishRecording,
+                .shouldFinishRecording,
                 nil,
                 nil,
                 true
             )
+            
             return .result()
         }
     }
