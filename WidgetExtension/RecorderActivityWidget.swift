@@ -127,6 +127,7 @@ struct RecorderActivityWidget: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     IconImage(size: 50)
                         .padding(5)
+                        .frame(maxHeight: .infinity)
                 }
                 DynamicIslandExpandedRegion(.center) {
                     DescriptionText()
