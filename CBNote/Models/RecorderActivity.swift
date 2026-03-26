@@ -52,7 +52,7 @@ class RecorderActivityManager {
         )
         
         do {
-            let activity = try Activity.request(
+            _ = try Activity.request(
                 attributes: attributes,
                 content: content,
                 pushType: nil
