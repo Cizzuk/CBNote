@@ -57,7 +57,6 @@ class RecorderActivityManager {
                 content: content,
                 pushType: nil
             )
-            print("Started recorder activity: \(activity)")
         } catch {
             print("Failed to start recorder activity: \(error)")
         }
@@ -73,15 +72,14 @@ class RecorderActivityManager {
             staleDate: nil
         )
         
-        Task.detached {
+        let semaphore = DispatchSemaphore(value: 0)
+        Task.detached(priority: .userInitiated) {
             for activity in activities {
-                await activity.end(
-                    content,
-                    dismissalPolicy: .immediate
-                )
-                print("Ended recorder activity: \(activity)")
+                await activity.end(content, dismissalPolicy: .immediate)
             }
+            semaphore.signal()
         }
+        semaphore.wait()
     }
 }
 
