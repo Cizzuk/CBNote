@@ -22,7 +22,7 @@ struct SettingsView: View {
                     if TrueDevice.isCamControlAvailable {
                         Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
                             ForEach(OpenAppOption.allCases) { action in
-                                Text(action.localizedName).tag(action)
+                                Text(action.displayName).tag(action)
                             }
                         }
                         if viewModel.cameraControlAction == .openURL {
@@ -36,7 +36,7 @@ struct SettingsView: View {
                     }
                 } footer: {
                     if viewModel.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
-                        let actionName = OpenAppOption.launchCamera.localizedName
+                        let actionName = OpenAppOption.launchCamera.displayName
                         Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
                     }
                 }

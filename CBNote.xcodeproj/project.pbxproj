@@ -100,9 +100,17 @@
 				LaunchCamera.swift,
 				OpenAppOnly.swift,
 				PasteFromClipboard.swift,
+				SetCameraCotrolAction.swift,
 				StartRecording.swift,
 			);
 			target = BE8854762EDB01F20040399C /* CBNote */;
+		};
+		BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "WidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SetCameraCotrolAction.swift,
+			);
+			target = BE2DD7E92EE25FEC00F13CF0 /* WidgetExtension */;
 		};
 		BE0BF7E32EDC3CEA00E228F0 /* Exceptions for "CBNote" folder in "CBNote" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -161,6 +169,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				BE0BD3DD2F7763DC0056E6BC /* Exceptions for "AppIntents" folder in "CBNote" target */,
+				BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "WidgetExtension" target */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
