@@ -35,6 +35,16 @@
         }
       }
     },
+    "Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクション"
+          }
+        }
+      }
+    },
     "Add New Note" : {
       "localizations" : {
         "ja" : {
@@ -705,6 +715,16 @@
         }
       }
     },
+    "Open App Option" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開くときのオプション"
+          }
+        }
+      }
+    },
     "Open CBNote" : {
       "localizations" : {
         "ja" : {
@@ -951,6 +971,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ノートで検索する時に使用する検索エンジンを設定します。"
+          }
+        }
+      }
+    },
+    "Set Camera Control Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールアクションを設定"
+          }
+        }
+      }
+    },
+    "Set Camera Control Action to ${action}" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールアクションを${action}に設定"
+          }
+        }
+      }
+    },
+    "Sets an action when launched from Camera Control." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールから起動したときのアクションを設定します。"
           }
         }
       }
