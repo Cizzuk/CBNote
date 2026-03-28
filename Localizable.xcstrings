@@ -990,7 +990,37 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カメラコントロールアクションを${action}に設定"
+            "value" : "カメラコントロールアクションを ${action} に設定"
+          }
+        }
+      }
+    },
+    "Set URL for Open URL Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「URLを開く」アクションのURLを設定"
+          }
+        }
+      }
+    },
+    "Set URL for Open URL Action to ${url}" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「URLを開く」アクションのURLを ${url} に設定"
+          }
+        }
+      }
+    },
+    "Sets a URL to be used in the Open URL action." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「URLを開く」アクションで使用するURLを設定します。"
           }
         }
       }
