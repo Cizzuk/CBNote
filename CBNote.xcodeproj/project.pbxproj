@@ -93,19 +93,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BE0BD3DD2F7763DC0056E6BC /* Exceptions for "AppIntents" folder in "CBNote" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				AddNewNote.swift,
-				LaunchCamera.swift,
-				OpenAppOnly.swift,
-				PasteFromClipboard.swift,
-				SetCameraControlAction.swift,
-				SetURLForOpenURLAction.swift,
-				StartRecording.swift,
-			);
-			target = BE8854762EDB01F20040399C /* CBNote */;
-		};
 		BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "WidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -170,7 +157,6 @@
 		BE0BD3D22F7763DB0056E6BC /* AppIntents */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BE0BD3DD2F7763DC0056E6BC /* Exceptions for "AppIntents" folder in "CBNote" target */,
 				BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "WidgetExtension" target */,
 			);
 			path = AppIntents;
@@ -325,6 +311,7 @@
 				BEAF98722EE546A300488245 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE8854792EDB01F20040399C /* CBNote */,
 			);
 			name = CBNote;
