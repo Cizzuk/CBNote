@@ -6,9 +6,8 @@
 //
 
 import AppIntents
-import WidgetKit
 
-struct SetWakeupActionIntent: AppIntent {
+struct SetCameraCotrolAction: AppIntent {
     static let title: LocalizedStringResource = "Set Camera Control Action"
     static let description: LocalizedStringResource = "Sets an action when launched from Camera Control."
     
