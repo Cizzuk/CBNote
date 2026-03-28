@@ -1,5 +1,5 @@
 //
-//  OpenAppSupport.swift
+//  OpenAppOption.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2025/12/08.

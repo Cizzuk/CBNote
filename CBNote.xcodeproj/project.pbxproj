@@ -10,6 +10,8 @@
 		BE2DD7EB2EE25FEC00F13CF0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE5E92162EE1278500C2241E /* WidgetKit.framework */; };
 		BE2DD7EC2EE25FEC00F13CF0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE5E92182EE1278500C2241E /* SwiftUI.framework */; };
 		BE2DD7F92EE25FED00F13CF0 /* WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BE2DD7EA2EE25FEC00F13CF0 /* WidgetExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BE3285E52F776D7A00D66CCB /* OpenAppOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */; };
+		BE3286082F776D7A00D66CCB /* OpenAppOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */; };
 		BE994B642EDC522A008053C1 /* CaptureExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = BE994B5B2EDC522A008053C1 /* CaptureExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEAF98732EE546A300488245 /* CBNote Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BEAF98692EE546A100488245 /* CBNote Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEC15B1A2F3893AB002B7B82 /* TemporaryScreenCurtain in Frameworks */ = {isa = PBXBuildFile; productRef = BEC15B192F3893AB002B7B82 /* TemporaryScreenCurtain */; };
@@ -83,6 +85,7 @@
 
 /* Begin PBXFileReference section */
 		BE2DD7EA2EE25FEC00F13CF0 /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAppOption.swift; sourceTree = "<group>"; };
 		BE5E92162EE1278500C2241E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		BE5E92182EE1278500C2241E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		BE8854772EDB01F20040399C /* CBNote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBNote.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,7 +122,6 @@
 		BE49CBE82EE6618E0058D021 /* Exceptions for "CBNote" folder in "WidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/OpenAppSupport.swift,
 				Models/RecorderActivity.swift,
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* WidgetExtension */;
@@ -244,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				BEE666DE2F5C67C1008C8134 /* Constants.swift */,
+				BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */,
 				BEFA7AF02EE572870023643B /* Localizable.xcstrings */,
 				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE8854792EDB01F20040399C /* CBNote */,
@@ -456,6 +459,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE3286082F776D7A00D66CCB /* OpenAppOption.swift in Sources */,
 				BEE666E02F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -464,6 +468,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE3285E52F776D7A00D66CCB /* OpenAppOption.swift in Sources */,
 				BEE666E12F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
