@@ -9,7 +9,9 @@ import UniformTypeIdentifiers
 
 struct FileTypes {
     static func isEditableText(_ url: URL) -> Bool {
-        let editableText = ["rtf", "xml", "html", "htm", "tex", "json", "yaml", "yml", "toml"]
+        let editableText = [
+            "rtf", "xml", "html", "htm", "tex", "json", "yaml", "yml", "toml", "ahap"
+        ]
         let isEditableText: Bool = editableText.contains(url.pathExtension.lowercased())
         
         if let type = UTType(filenameExtension: url.pathExtension) {
