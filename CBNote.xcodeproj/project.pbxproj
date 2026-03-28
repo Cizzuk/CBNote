@@ -100,7 +100,7 @@
 				LaunchCamera.swift,
 				OpenAppOnly.swift,
 				PasteFromClipboard.swift,
-				SetCameraCotrolAction.swift,
+				SetCameraControlAction.swift,
 				SetURLForOpenURLAction.swift,
 				StartRecording.swift,
 			);
@@ -109,7 +109,7 @@
 		BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "WidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				SetCameraCotrolAction.swift,
+				SetCameraControlAction.swift,
 				SetURLForOpenURLAction.swift,
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* WidgetExtension */;

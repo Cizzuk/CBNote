@@ -1,5 +1,5 @@
 //
-//  SetCameraCotrolAction.swift
+//  SetCameraControlAction.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2026/03/28.
@@ -7,7 +7,7 @@
 
 import AppIntents
 
-struct SetCameraCotrolAction: AppIntent {
+struct SetCameraControlAction: AppIntent {
     static let title: LocalizedStringResource = "Set Camera Control Action"
     static let description: LocalizedStringResource = "Sets an action when launched from Camera Control."
     
