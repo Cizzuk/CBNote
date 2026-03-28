@@ -6,7 +6,6 @@
 //
 
 import AppIntents
-import UIKit
 
 extension Notification.Name {
     static let openAppIntentPerformed = Notification.Name("openAppIntentPerformed")
