@@ -101,6 +101,7 @@
 				OpenAppOnly.swift,
 				PasteFromClipboard.swift,
 				SetCameraCotrolAction.swift,
+				SetURLForOpenURLAction.swift,
 				StartRecording.swift,
 			);
 			target = BE8854762EDB01F20040399C /* CBNote */;
@@ -109,6 +110,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				SetCameraCotrolAction.swift,
+				SetURLForOpenURLAction.swift,
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* WidgetExtension */;
 		};
