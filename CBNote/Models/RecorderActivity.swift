@@ -72,14 +72,11 @@ class RecorderActivityManager {
             staleDate: nil
         )
         
-        let semaphore = DispatchSemaphore(value: 0)
         Task.detached(priority: .userInitiated) {
             for activity in activities {
                 await activity.end(content, dismissalPolicy: .immediate)
             }
-            semaphore.signal()
         }
-        semaphore.wait()
     }
 }
 
