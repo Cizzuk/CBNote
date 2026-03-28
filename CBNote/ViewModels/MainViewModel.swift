@@ -44,6 +44,7 @@ class MainViewModel: ObservableObject {
     
     let noteManager = NoteManager()
     private let dummyCameraManager = DummyCameraManager.shared
+    private let userSettings = UserSettings.shared
     
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
@@ -66,7 +67,7 @@ class MainViewModel: ObservableObject {
         noteManager.$documentDir
             .sink { [weak self] dir in
                 self?.documentDir = dir
-                UserDefaults.standard.set(dir.rawValue, forKey: "documentDir")
+                self?.userSettings.documentDir = dir
             }
             .store(in: &cancellables)
         
@@ -77,14 +78,14 @@ class MainViewModel: ObservableObject {
         noteManager.$sortKey
             .sink { [weak self] key in
                 self?.sortKey = key
-                UserDefaults.standard.set(key.rawValue, forKey: "sortKey")
+                self?.userSettings.sortKey = key
             }
             .store(in: &cancellables)
         
         noteManager.$sortDirection
             .sink { [weak self] direction in
                 self?.sortDirection = direction
-                UserDefaults.standard.set(direction.rawValue, forKey: "sortDirection")
+                self?.userSettings.sortDirection = direction
             }
             .store(in: &cancellables)
     }
@@ -93,7 +94,7 @@ class MainViewModel: ObservableObject {
         var filteredFiles = files
         
         // Hidden file filter
-        let showHiddenFiles = UserDefaults.standard.bool(forKey: "showHiddenFiles")
+        let showHiddenFiles = userSettings.showHiddenFiles
         if !showHiddenFiles {
             filteredFiles = filteredFiles.filter { !$0.lastPathComponent.hasPrefix(".") }
         }
@@ -277,7 +278,7 @@ class MainViewModel: ObservableObject {
     }
     
     func checkAutoPaste() {
-        if UserDefaults.standard.bool(forKey: "autoPasteWhenOpening") {
+        if userSettings.autoPasteWhenOpening {
             addAndPaste(suppressError: true)
         }
     }
@@ -381,7 +382,7 @@ class MainViewModel: ObservableObject {
         // Otherwise, search in Browser
         if let encodedQuery = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             // Create Search URL
-            let searchEngine = UserDefaults.standard.string(forKey: "searchEngine") ?? TrueDevice.defaultSearchEngine
+            let searchEngine = userSettings.searchEngine
             let queryURLString = searchEngine.replacingOccurrences(of: "%s", with: encodedQuery)
             if let searchURL = URL(string: queryURLString) {
                 UIApplication.shared.open(searchURL)
@@ -436,7 +437,7 @@ class MainViewModel: ObservableObject {
         }
         
         // Save to Photos if needed
-        if UserDefaults.standard.bool(forKey: "saveCapturedImageToPhotos") {
+        if userSettings.saveCapturedImageToPhotos {
             saveImageToPhotos(at: newImageURL)
         }
     }
@@ -528,8 +529,7 @@ class MainViewModel: ObservableObject {
     func handleCameraControlAction(shouldOpenDummyCamera: Bool = true) {
         guard TrueDevice.isCamControlAvailable else { return }
         
-        let actionString = UserDefaults.standard.string(forKey: "cameraControlAction")
-        let action = OpenAppOption(rawValue: actionString ?? "") ?? .launchCamera
+        let action = userSettings.cameraControlAction
         
         openApp(with: action, shouldOpenDummyCamera: shouldOpenDummyCamera)
     }
@@ -571,8 +571,8 @@ class MainViewModel: ObservableObject {
             break
             
         case .openURL:
-            guard let urlString = UserDefaults.standard.string(forKey: "cameraControlActionOpenURL"),
-                  let url = URL(string: urlString) else {
+            guard !userSettings.cameraControlActionOpenURL.isEmpty,
+                let url = URL(string: userSettings.cameraControlActionOpenURL) else {
                 openDummyCameraIfNeeded()
                 return
             }

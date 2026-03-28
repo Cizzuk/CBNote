@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = SettingsViewModel()
+    @ObservedObject private var userSettings = UserSettings.shared
     @State private var cameraAccessStatus = AVCaptureDevice.authorizationStatus(for: .video)
     @State private var nameFormatSample: String = ""
     
@@ -18,15 +18,15 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
-                    Toggle("Auto Paste from Clipboard", isOn: $viewModel.autoPasteWhenOpening)
+                    Toggle("Auto Paste from Clipboard", isOn: $userSettings.autoPasteWhenOpening)
                     if TrueDevice.isCamControlAvailable {
-                        Picker("Camera Control Action", selection: $viewModel.cameraControlAction) {
+                        Picker("Camera Control Action", selection: $userSettings.cameraControlAction) {
                             ForEach(OpenAppOption.allCases) { action in
-                                Text(action.localizedName).tag(action)
+                                Text(action.displayName).tag(action)
                             }
                         }
-                        if viewModel.cameraControlAction == .openURL {
-                            TextField("URL", text: $viewModel.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
+                        if userSettings.cameraControlAction == .openURL {
+                            TextField("URL", text: $userSettings.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
                                 .disableAutocorrection(true)
                                 .keyboardType(.URL)
                                 .textInputAutocapitalization(.never)
@@ -35,8 +35,8 @@ struct SettingsView: View {
                         }
                     }
                 } footer: {
-                    if viewModel.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
-                        let actionName = OpenAppOption.launchCamera.localizedName
+                    if userSettings.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
+                        let actionName = OpenAppOption.launchCamera.displayName
                         Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
                     }
                 }
@@ -51,10 +51,10 @@ struct SettingsView: View {
                             }
                         }
                         
-                        Toggle("Remain in Camera After Shooting", isOn: $viewModel.remainCameraAfterCapture)
+                        Toggle("Remain in Camera After Shooting", isOn: $userSettings.remainCameraAfterCapture)
                         
                         if TrueDevice.isSaveToPhotosAllowed() {
-                            Toggle("Save Captured Image to Photos", isOn: $viewModel.saveCapturedImageToPhotos)
+                            Toggle("Save Captured Image to Photos", isOn: $userSettings.saveCapturedImageToPhotos)
                         }
                     } header: {
                         Text("Camera")
@@ -62,9 +62,9 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    Toggle("Show Image Preview", isOn: $viewModel.showImagePreview)
-                    Toggle("Show Hidden Files", isOn: $viewModel.showHiddenFiles)
-                    Toggle("Enable Note List Animations", isOn: $viewModel.enableNoteListAnimations)
+                    Toggle("Show Image Preview", isOn: $userSettings.showImagePreview)
+                    Toggle("Show Hidden Files", isOn: $userSettings.showHiddenFiles)
+                    Toggle("Enable Note List Animations", isOn: $userSettings.enableNoteListAnimations)
                 } header: {
                     Text("Note List")
                 } footer: {
@@ -72,11 +72,11 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    TextField("yyyy-MM-dd-HH-mm-ss", text: $viewModel.nameFormat)
+                    TextField("yyyy-MM-dd-HH-mm-ss", text: $userSettings.nameFormat)
                         .disableAutocorrection(true)
                         .textInputAutocapitalization(.never)
                         .submitLabel(.done)
-                        .onChange(of: viewModel.nameFormat) {
+                        .onChange(of: userSettings.nameFormat) {
                             updateNameFormatSample()
                         }
                 } header: {
@@ -92,7 +92,7 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    TextField("URL", text: $viewModel.searchEngine, prompt: Text(verbatim: TrueDevice.defaultSearchEngine))
+                    TextField("URL", text: $userSettings.searchEngine, prompt: Text(verbatim: TrueDevice.defaultSearchEngine))
                         .disableAutocorrection(true)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
@@ -120,7 +120,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .animation(.default, value: viewModel.cameraControlAction)
+            .animation(.default, value: userSettings.cameraControlAction)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -144,7 +144,7 @@ struct SettingsView: View {
     
     private func updateNameFormatSample() {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = viewModel.nameFormat
+        dateFormatter.dateFormat = userSettings.nameFormat
         nameFormatSample = dateFormatter.string(from: Date()) + ".txt"
     }
     

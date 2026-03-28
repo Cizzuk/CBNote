@@ -1,17 +1,17 @@
 //
-//  OpenAppSupport.swift
+//  OpenAppOption.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2025/12/08.
 //
 
-import UIKit
+import AppIntents
 
 extension Notification.Name {
     static let openAppIntentPerformed = Notification.Name("openAppIntentPerformed")
 }
 
-enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
+enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
     case launchCamera = "Launch Camera"
     case pasteFromClipboard = "Paste from Clipboard"
     case addNewNote = "Add New Note"
@@ -21,21 +21,21 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable {
 
     var id: String { rawValue }
     
-    var localizedName: LocalizedStringResource {
-        switch self {
-        case .launchCamera:
-            return "Launch Camera"
-        case .pasteFromClipboard:
-            return "Paste from Clipboard"
-        case .addNewNote:
-            return "Add New Note"
-        case .startRecording:
-            return "Start Recording"
-        case .openAppOnly:
-            return "Open App Only"
-        case .openURL:
-            return "Open URL"
-        }
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: "Open App Option")
+    }
+    
+    static var caseDisplayRepresentations: [OpenAppOption : DisplayRepresentation] = [
+        .launchCamera: "Launch Camera",
+        .pasteFromClipboard: "Paste from Clipboard",
+        .addNewNote: "Add New Note",
+        .startRecording: "Start Recording",
+        .openAppOnly: "Open App Only",
+        .openURL: "Open URL"
+    ]
+    
+    var displayName: LocalizedStringResource {
+        return Self.caseDisplayRepresentations[self]?.title ?? ""
     }
     
     var shouldOpenDummyCamera: Bool {

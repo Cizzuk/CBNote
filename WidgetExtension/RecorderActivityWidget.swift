@@ -78,7 +78,7 @@ struct RecorderActivityWidget: Widget {
         static var isDiscoverable = false
 
         @MainActor
-        func perform() async throws -> some OpensIntent {
+        func perform() async throws -> some IntentResult {
             GroupUserDefaults.set(true, forKey: CFNotificationFlags.shouldFinishRecording)
             CFNotificationCenterPostNotification(
                 CFNotificationCenterGetDarwinNotifyCenter(),
@@ -127,6 +127,7 @@ struct RecorderActivityWidget: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     IconImage(size: 50)
                         .padding(5)
+                        .frame(maxHeight: .infinity)
                 }
                 DynamicIslandExpandedRegion(.center) {
                     DescriptionText()

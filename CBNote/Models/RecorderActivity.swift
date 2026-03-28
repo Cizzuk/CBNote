@@ -52,12 +52,11 @@ class RecorderActivityManager {
         )
         
         do {
-            let activity = try Activity.request(
+            _ = try Activity.request(
                 attributes: attributes,
                 content: content,
                 pushType: nil
             )
-            print("Started recorder activity: \(activity)")
         } catch {
             print("Failed to start recorder activity: \(error)")
         }
@@ -73,13 +72,9 @@ class RecorderActivityManager {
             staleDate: nil
         )
         
-        Task.detached {
+        Task.detached(priority: .userInitiated) {
             for activity in activities {
-                await activity.end(
-                    content,
-                    dismissalPolicy: .immediate
-                )
-                print("Ended recorder activity: \(activity)")
+                await activity.end(content, dismissalPolicy: .immediate)
             }
         }
     }

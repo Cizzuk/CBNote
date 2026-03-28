@@ -14,13 +14,14 @@ struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
     @StateObject var viewModel = MainViewModel()
+    @ObservedObject private var userSettings = UserSettings.shared
     
     @State var previewURL: URL?
     @State var isExpandPinnedSection = true
     @State var showFileImporter = false
     
-    @AppStorage("showImagePreview") var showImagePreview: Bool = true
-    @AppStorage("enableNoteListAnimations") var enableNoteListAnimations: Bool = false
+    var showImagePreview: Bool { userSettings.showImagePreview }
+    var enableNoteListAnimations: Bool { userSettings.enableNoteListAnimations }
     
     @Namespace var ns_settingsView
     let id_openSettingsButton = "openSettingsButton"
@@ -37,7 +38,7 @@ struct MainView: View {
                 #endif
                 // MARK: - Modals
                 .fullScreenCover(isPresented: $viewModel.showCamera) {
-                    CameraView { data in
+                    CameraView(remainAfterCapture: userSettings.remainCameraAfterCapture) { data in
                         viewModel.saveCapturedImage(data: data)
                     }
                 }

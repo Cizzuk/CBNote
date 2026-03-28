@@ -14,6 +14,7 @@ struct CameraView: View {
     @StateObject private var viewModel = CameraViewModel()
     
     var isLockedMode: Bool = false
+    var remainAfterCapture: Bool = false
     var onSave: (Data) -> Void
     @State private var alertMessage: LocalizedStringResource? = nil
     
@@ -113,7 +114,7 @@ struct CameraView: View {
             viewModel.startSession()
             viewModel.onPhotoCaptured = { data in
                 onSave(data)
-                if !viewModel.remainCameraAfterCapture {
+                if !remainAfterCapture {
                     DispatchQueue.main.async {
                         dismiss()
                     }

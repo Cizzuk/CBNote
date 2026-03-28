@@ -34,10 +34,6 @@ class CameraViewModel: ObservableObject {
         camera.isSessionReady
     }
     
-    var remainCameraAfterCapture: Bool {
-        UserDefaults.standard.bool(forKey: "remainCameraAfterCapture")
-    }
-    
     private var cancellables = Set<AnyCancellable>()
     
     init() {

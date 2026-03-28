@@ -32,12 +32,14 @@ class NoteManager: ObservableObject {
             loadFiles()
         }
     }
+
+    private let userSettings = UserSettings.shared
     
     init() {
-        // Load UserDefaults
-        self.documentDir = DocumentDir(rawValue: UserDefaults.standard.string(forKey: "documentDir") ?? "") ?? .defaultDir
-        self.sortKey = SortKey(rawValue: UserDefaults.standard.string(forKey: "sortKey") ?? "") ?? .name
-        self.sortDirection = SortDirection(rawValue: UserDefaults.standard.string(forKey: "sortDirection") ?? "") ?? .descending
+        // Load userSettings
+        self.documentDir = userSettings.documentDir
+        self.sortKey = userSettings.sortKey
+        self.sortDirection = userSettings.sortDirection
         
         loadPinnedFiles()
         loadFiles()
@@ -88,7 +90,7 @@ class NoteManager: ObservableObject {
         guard let documentsURL = documentDir.directory else { return nil }
         
         let dateFormatter = DateFormatter()
-        let dateFormat = UserDefaults.standard.string(forKey: "nameFormat") ?? "yyyy-MM-dd-HH-mm-ss"
+        let dateFormat = userSettings.nameFormat
         dateFormatter.dateFormat = dateFormat
         let baseName = dateFormatter.string(from: Date())
         let extensionPart = fileExtension.isEmpty ? "" : ".\(fileExtension)"

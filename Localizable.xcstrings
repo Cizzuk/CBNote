@@ -35,6 +35,16 @@
         }
       }
     },
+    "Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクション"
+          }
+        }
+      }
+    },
     "Add New Note" : {
       "localizations" : {
         "ja" : {
@@ -705,6 +715,16 @@
         }
       }
     },
+    "Open App Option" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開くときのオプション"
+          }
+        }
+      }
+    },
     "Open CBNote" : {
       "localizations" : {
         "ja" : {
@@ -951,6 +971,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ノートで検索する時に使用する検索エンジンを設定します。"
+          }
+        }
+      }
+    },
+    "Set Camera Control Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールアクションを設定"
+          }
+        }
+      }
+    },
+    "Set Camera Control Action to ${action}" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールアクションを ${action} に設定"
+          }
+        }
+      }
+    },
+    "Set URL for Open URL Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「URLを開く」アクションのURLを設定"
+          }
+        }
+      }
+    },
+    "Set URL for Open URL Action to ${url}" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「URLを開く」アクションのURLを ${url} に設定"
+          }
+        }
+      }
+    },
+    "Sets a URL to be used in the Open URL action." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「URLを開く」アクションで使用するURLを設定します。"
+          }
+        }
+      }
+    },
+    "Sets an action when launched from Camera Control." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラコントロールから起動したときのアクションを設定します。"
           }
         }
       }
