@@ -93,6 +93,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BE0BD3DD2F7763DC0056E6BC /* Exceptions for "AppIntents" folder in "CBNote" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AddNewNote.swift,
+				LaunchCamera.swift,
+				OpenAppOnly.swift,
+				PasteFromClipboard.swift,
+				StartRecording.swift,
+			);
+			target = BE8854762EDB01F20040399C /* CBNote */;
+		};
 		BE0BF7E32EDC3CEA00E228F0 /* Exceptions for "CBNote" folder in "CBNote" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -107,17 +118,6 @@
 				Info.plist,
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* WidgetExtension */;
-		};
-		BE2DD8112EE266AE00F13CF0 /* Exceptions for "WidgetExtension" folder in "CBNote" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				OpenAppIntents/AddNewNote.swift,
-				OpenAppIntents/LaunchCamera.swift,
-				OpenAppIntents/OpenAppOnly.swift,
-				OpenAppIntents/PasteFromClipboard.swift,
-				OpenAppIntents/StartRecording.swift,
-			);
-			target = BE8854762EDB01F20040399C /* CBNote */;
 		};
 		BE49CBE82EE6618E0058D021 /* Exceptions for "CBNote" folder in "WidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -157,10 +157,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		BE0BD3D22F7763DB0056E6BC /* AppIntents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BE0BD3DD2F7763DC0056E6BC /* Exceptions for "AppIntents" folder in "CBNote" target */,
+			);
+			path = AppIntents;
+			sourceTree = "<group>";
+		};
 		BE2DD7ED2EE25FEC00F13CF0 /* WidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BE2DD8112EE266AE00F13CF0 /* Exceptions for "WidgetExtension" folder in "CBNote" target */,
 				BE2DD7FD2EE25FED00F13CF0 /* Exceptions for "WidgetExtension" folder in "WidgetExtension" target */,
 			);
 			path = WidgetExtension;
@@ -241,6 +248,7 @@
 			children = (
 				BEE666DE2F5C67C1008C8134 /* Constants.swift */,
 				BEFA7AF02EE572870023643B /* Localizable.xcstrings */,
+				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE8854792EDB01F20040399C /* CBNote */,
 				BE994B5C2EDC522A008053C1 /* CaptureExtension */,
 				BE2DD7ED2EE25FEC00F13CF0 /* WidgetExtension */,
@@ -277,6 +285,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE2DD7ED2EE25FEC00F13CF0 /* WidgetExtension */,
 			);
 			name = WidgetExtension;
