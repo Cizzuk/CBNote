@@ -38,13 +38,7 @@ extension CaptureContext {
     }
     
     private static func getLaunchAction() -> LaunchAction {
-        let cameraControlAction: OpenAppOption
-        if let rawValue = UserDefaults.standard.string(forKey: "cameraControlAction"),
-           let action = OpenAppOption(rawValue: rawValue) {
-            cameraControlAction = action
-        } else {
-            cameraControlAction = .launchCamera
-        }
+        let cameraControlAction = UserSettings.shared.cameraControlAction
         
         let launchAction: LaunchAction
         switch cameraControlAction {

@@ -23,7 +23,7 @@ struct SetURLForOpenURLAction: AppIntent {
     
     @MainActor
     func perform() async throws -> some IntentResult {
-        UserDefaults.standard.set(url.absoluteString, forKey: "cameraControlActionOpenURL")
+        UserSettings.shared.cameraControlActionOpenURL = url.absoluteString
         return .result()
     }
 }

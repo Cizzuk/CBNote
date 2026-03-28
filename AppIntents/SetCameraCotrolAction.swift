@@ -23,8 +23,7 @@ struct SetCameraCotrolAction: AppIntent {
     
     @MainActor
     func perform() async throws -> some IntentResult {
-        UserDefaults.standard.set(action.rawValue, forKey: "cameraControlAction")
-        CaptureContext.syncContextSettings()
+        UserSettings.shared.cameraControlAction = action
         return .result()
     }
 }
