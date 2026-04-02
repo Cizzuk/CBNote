@@ -123,7 +123,7 @@ extension MainView {
                 isExpandPinnedSection.toggle()
             }
         }
-        .foregroundColor(.secondary)
+        .foregroundStyle(.secondary)
         .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
     }
 }

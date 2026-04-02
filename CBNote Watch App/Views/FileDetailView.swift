@@ -23,7 +23,7 @@ struct FileDetailView: View {
                 case .text(let text):
                     if text.isEmpty {
                         Text("Note is empty")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                     } else {
                         ScrollView {
                             Text(text)
@@ -45,12 +45,12 @@ struct FileDetailView: View {
                 case .unsupported:
                     Text("Unsupported file type.")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
             } else {
                 Text("Failed to load content.")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
             }
         }
         .navigationTitle(file.name)
