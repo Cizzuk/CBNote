@@ -12,9 +12,37 @@ import UIKit
 
 class Camera: NSObject, ObservableObject {
     @Published var session = AVCaptureSession()
-    @Published var isFlashOn = false
     @Published var cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
     @Published var shouldFlashScreen = false
+    @Published var flashMode: FlashMode = .off
+    
+    enum FlashMode {
+        case off, on, auto
+        
+        var avFlashMode: AVCaptureDevice.FlashMode {
+            switch self {
+            case .off:  return .off
+            case .on:   return .on
+            case .auto: return .auto
+            }
+        }
+        
+        var accessibilityValue: LocalizedStringResource {
+            switch self {
+            case .off:  return "Flash Off"
+            case .on:   return "Flash On"
+            case .auto: return "Flash Auto"
+            }
+        }
+        
+        var systemImage: String {
+            switch self {
+            case .off:  return "bolt.slash"
+            case .on:   return "bolt.fill"
+            case .auto: return "bolt.badge.automatic.fill"
+            }
+        }
+    }
     
     private let output = AVCapturePhotoOutput()
     private var input: AVCaptureDeviceInput?
@@ -213,7 +241,15 @@ class Camera: NSObject, ObservableObject {
     }
     
     func toggleFlash() {
-        isFlashOn.toggle()
+        let supportedModes = output.supportedFlashModes
+        
+        if supportedModes.contains(.auto) && flashMode == .off {
+            flashMode = .auto
+        } else if supportedModes.contains(.on) && flashMode != .on {
+            flashMode = .on
+        } else {
+            flashMode = .off
+        }
     }
     
     func focus(at point: CGPoint) {
@@ -254,8 +290,8 @@ class Camera: NSObject, ObservableObject {
         
         updateRotationAngle()
         let settings = AVCapturePhotoSettings()
-        if output.supportedFlashModes.contains(isFlashOn ? .on : .off) {
-            settings.flashMode = isFlashOn ? .on : .off
+        if output.supportedFlashModes.contains(flashMode.avFlashMode) {
+            settings.flashMode = flashMode.avFlashMode
         }
         output.capturePhoto(with: settings, delegate: self)
     }

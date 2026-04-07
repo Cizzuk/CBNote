@@ -81,13 +81,15 @@ struct CameraView: View {
                 
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Group {
-                        Button("Toggle Flash", systemImage: camera.isFlashOn ? "bolt.fill" : "bolt.slash") {
+                        Button("Toggle Flash", systemImage: camera.flashMode.systemImage) {
                             camera.toggleFlash()
                         }
-                        .accessibilityValue(camera.isFlashOn ? "Flash is On" : "Flash is Off")
+                        .accessibilityValue(camera.flashMode.accessibilityValue)
+                        
                         Button("Switch Lens", systemImage: "camera.aperture") {
                             camera.switchLens()
                         }
+                        
                         Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
                             camera.switchCamera()
                         }
