@@ -12,25 +12,25 @@ import SwiftUI
 
 struct DummyCameraView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var viewModel = CameraViewModel()
+    @StateObject private var camera = Camera()
     
     var body: some View {
-        DummyCameraPreview(session: viewModel.session)
+        DummyCameraPreview(session: camera.session)
             .allowsHitTesting(false)
             .accessibilityHidden(true)
             .opacity(0)
             .frame(width: 0, height: 0)
             .onChange(of: scenePhase) {
                 if scenePhase == .background {
-                    viewModel.stopSession()
+                    camera.stopSession()
                     DummyCameraManager.shared.close()
                 }
             }
             .onAppear {
-                viewModel.startSession()
+                camera.startSession()
             }
             .onDisappear {
-                viewModel.stopSession()
+                camera.stopSession()
                 DummyCameraManager.shared.close()
             }
             .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }

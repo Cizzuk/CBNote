@@ -11,11 +11,12 @@ import UIKit
 
 struct CameraView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject private var viewModel = CameraViewModel()
+    @StateObject private var camera = Camera()
     
     var isLockedMode: Bool = false
     var remainAfterCapture: Bool = false
     var onSave: (Data) -> Void
+    
     @State private var alertMessage: LocalizedStringResource? = nil
     
     var body: some View {
@@ -23,15 +24,15 @@ struct CameraView: View {
             ZStack {
                 Color.black.ignoresSafeArea()
                 
-                if viewModel.cameraPermission == .authorized {
-                    CameraPreview(session: viewModel.session) { point in
-                        viewModel.focus(at: point)
+                if camera.cameraPermission == .authorized {
+                    CameraPreview(session: camera.session) { point in
+                        camera.focus(at: point)
                     }
                     .ignoresSafeArea()
-                    .opacity(viewModel.shouldFlashScreen ? 0 : 1)
+                    .opacity(camera.shouldFlashScreen ? 0 : 1)
                     .onCameraCaptureEvent(defaultSoundDisabled: true) { event in
                         if event.phase == .began {
-                            viewModel.takePhoto()
+                            camera.takePhoto()
                         }
                     }
                 }
@@ -57,20 +58,13 @@ struct CameraView: View {
                     ZStack {
                         Circle()
                             .glassEffect()
-                        Button(action: { viewModel.takePhoto() }) {
-                            ZStack {
-                                if !viewModel.isCameraReady {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                }
-                                Circle()
-                                    .inset(by: 8)
-                                    .fill(.white)
-                            }
+                        Button(action: { camera.takePhoto() }) {
+                            Circle()
+                                .inset(by: 8)
+                                .fill(.white)
                         }
                         .accessibilityLabel("Take Photo")
                         .buttonStyle(.plain)
-                        .disabled(!viewModel.isCameraReady)
                     }
                     .frame(width: 80, height: 80)
                     .padding(.bottom, 20)
@@ -87,32 +81,33 @@ struct CameraView: View {
                 
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Group {
-                        Button("Toggle Flash", systemImage: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash") {
-                            viewModel.toggleFlash()
+                        Button("Toggle Flash", systemImage: camera.flashMode.systemImage) {
+                            camera.toggleFlash()
                         }
-                        .accessibilityValue(viewModel.isFlashOn ? "Flash is On" : "Flash is Off")
+                        .accessibilityValue(camera.flashMode.accessibilityValue)
+                        
                         Button("Switch Lens", systemImage: "camera.aperture") {
-                            viewModel.switchLens()
+                            camera.switchLens()
                         }
+                        
                         Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
-                            viewModel.switchCamera()
+                            camera.switchCamera()
                         }
                     }
-                    .disabled(!viewModel.isCameraReady)
                 }
             } // toolbar
             .accessibilityAction(.escape) { dismiss() }
         } // NavigationStack
-        .accessibilityAction(.magicTap) { viewModel.takePhoto() }
-        .onChange(of: viewModel.cameraPermission) {
+        .accessibilityAction(.magicTap) { camera.takePhoto() }
+        .onChange(of: camera.cameraPermission) {
             updateAlertMessage()
         }
         .onAppear {
             #if !EXTENSION
             UIApplication.shared.isIdleTimerDisabled = true
             #endif
-            viewModel.startSession()
-            viewModel.onPhotoCaptured = { data in
+            camera.startSession()
+            camera.onPhotoCaptured = { data in
                 onSave(data)
                 if !remainAfterCapture {
                     DispatchQueue.main.async {
@@ -126,13 +121,13 @@ struct CameraView: View {
             #if !EXTENSION
             UIApplication.shared.isIdleTimerDisabled = false
             #endif
-            viewModel.stopSession()
+            camera.stopSession()
         }
     }
     
     // Set permission error messages
     private func updateAlertMessage() {
-        switch viewModel.cameraPermission {
+        switch camera.cameraPermission {
         case .authorized:
             if isLockedMode {
                 alertMessage = "You are on the lock screen. You can check photos taken after unlocking your device."

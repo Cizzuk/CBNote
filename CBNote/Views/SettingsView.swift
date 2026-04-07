@@ -110,12 +110,12 @@ struct SettingsView: View {
                 Section {
                     NavigationLink(destination: AboutView()) {
                         Label("About", systemImage: "info.circle")
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.primary)
                     }
                     if UIApplication.shared.supportsAlternateIcons {
                         NavigationLink(destination: ChangeIconView()) {
                             Label("Change App Icon", systemImage: "app.dashed")
-                                .foregroundColor(.primary)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }
@@ -156,16 +156,16 @@ struct SettingsView: View {
                         let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
                         let currentBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
                         Label("Version", systemImage: "info.circle")
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.primary)
                         Spacer()
                         Text("\(currentVersion ?? "Unknown") (\(currentBuild ?? "Unknown"))")
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     }
                     .accessibilityElement(children: .combine)
                     HStack {
                         Label("Developer", systemImage: "hammer")
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.primary)
                         Spacer()
                         Link(destination:URL(string: "https://cizzuk.net/")!, label: {
                             Text("Cizzuk")
