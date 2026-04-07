@@ -9,7 +9,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@" : {
       "shouldTranslate" : false
@@ -419,7 +420,17 @@
         }
       }
     },
-    "Flash is Off" : {
+    "Flash Auto" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュ自動"
+          }
+        }
+      }
+    },
+    "Flash Off" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -429,7 +440,7 @@
         }
       }
     },
-    "Flash is On" : {
+    "Flash On" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1171,6 +1182,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻訳"
+          }
+        }
+      }
+    },
+    "Unknown Flash Mode" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なフラッシュモード"
           }
         }
       }
