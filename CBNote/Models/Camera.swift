@@ -282,6 +282,14 @@ class Camera: NSObject, ObservableObject {
 extension Camera: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         AudioServicesDisposeSystemSoundID(1108) // 1108: shutter sound
+        
+        DispatchQueue.main.async {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            self.shouldFlashScreen = true
+            withAnimation(.linear(duration: 0.1)) {
+                self.shouldFlashScreen = false
+            }
+        }
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
@@ -294,14 +302,6 @@ extension Camera: AVCapturePhotoCaptureDelegate {
         
         DispatchQueue.global(qos: .userInteractive).async {
             self.onPhotoCaptured?(data)
-        }
-        
-        DispatchQueue.main.async {
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-            self.shouldFlashScreen = true
-            withAnimation(.linear(duration: 0.1)) {
-                self.shouldFlashScreen = false
-            }
         }
     }
 }
