@@ -7,12 +7,14 @@
 
 import Combine
 import Photos
+import SwiftUI
 import UIKit
 
 class Camera: NSObject, ObservableObject {
     @Published var session = AVCaptureSession()
     @Published var isFlashOn = false
     @Published var cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
+    @Published var shouldFlashScreen = false
     
     private let output = AVCapturePhotoOutput()
     private var input: AVCaptureDeviceInput?
@@ -292,6 +294,14 @@ extension Camera: AVCapturePhotoCaptureDelegate {
         
         DispatchQueue.global(qos: .userInteractive).async {
             self.onPhotoCaptured?(data)
+        }
+        
+        DispatchQueue.main.async {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            self.shouldFlashScreen = true
+            withAnimation(.linear(duration: 0.1)) {
+                self.shouldFlashScreen = false
+            }
         }
     }
 }

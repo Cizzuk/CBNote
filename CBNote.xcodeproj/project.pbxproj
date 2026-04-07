@@ -139,7 +139,6 @@
 				Models/Camera.swift,
 				Models/CaptureExtension/CaptureContext.swift,
 				Models/CaptureExtension/CaptureIntent.swift,
-				ViewModels/CameraViewModel.swift,
 				Views/CameraPreview.swift,
 				Views/CameraView.swift,
 			);
