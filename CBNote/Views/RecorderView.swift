@@ -24,6 +24,7 @@ struct RecorderView: View {
                 Group {
                     if viewModel.isRecording {
                         Button(role: .destructive) {
+                            viewModel.finishRecording()
                             dismiss()
                         } label: {
                             Label("Recording", systemImage: "stop.circle")
