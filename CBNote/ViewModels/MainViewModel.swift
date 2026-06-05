@@ -177,131 +177,36 @@ class MainViewModel: ObservableObject {
     // MARK: - Clipboard Management
     
     func addAndPaste(suppressError: Bool = false) {
-        showPasteError = false
-        
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            
-            let currentChangeCount = UIPasteboard.general.changeCount
-            if suppressError && currentChangeCount == lastPasteboardChangeCount {
-                return
-            }
-            
-            var lastHandled: URL?
-            let pasteboard = UIPasteboard.general
-            
-            for (index, item) in pasteboard.items.enumerated() {
-                let indexSet = IndexSet(integer: index)
-                func getData(for type: String) -> Data? {
-                    pasteboard.data(forPasteboardType: type, inItemSet: indexSet)?.first
-                }
-                
-                // 1. Text or URL -> .txt
-                var textContent: String?
-                let textTypes = [
-                    UTType.plainText.identifier,
-                    UTType.utf8PlainText.identifier,
-                    UTType.text.identifier,
-                    UTType.rtf.identifier,
-                ]
-                
-                if let matchedType = textTypes.first(where: { item.keys.contains($0) }),
-                   let data = getData(for: matchedType) {
-                    textContent = String(data: data, encoding: .utf8)
-                    
-                } else if item.keys.contains(UTType.url.identifier),
-                          let data = getData(for: UTType.url.identifier) {
-                    // This URL is maybe bplist, so need to convert to string
-                    // Parse to [Any]
-                    if let dict = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [Any] {
-                        // Find URL
-                        for entry in dict {
-                            // Try parse as String
-                            if let urlString = entry as? String,
-                               // Try convert to URL
-                               let url = URL(string: urlString) {
-                                // Use absoluteString as text content
-                                textContent = url.absoluteString
-                                break
-                            }
-                        }
+        ClipboardManager.newNoteFromClipboard(
+            noteManager: noteManager,
+            completion: { [weak self] result in
+                switch result {
+                case .success(let url):
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    self?.lastPasteboardChangeCount = UIPasteboard.general.changeCount
+                    self?.noteManager.loadFiles()
+                    DispatchQueue.main.async {
+                        self?.newFileURLToScroll = url
+                    }
+                case .failure:
+                    self?.showPasteError = true
+                    if !suppressError {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
-                
-                if let text = textContent {
-                    guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
-                    try? text.write(to: destURL, atomically: true, encoding: .utf8)
-                    lastHandled = destURL
-                    continue
-                }
-                
-                // 2. File URL
-                if item.keys.contains(UTType.fileURL.identifier),
-                   let data = getData(for: UTType.fileURL.identifier),
-                   let url = URL(dataRepresentation: data, relativeTo: nil) {
-                    
-                    guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
-                    if let fileData = try? Data(contentsOf: url) {
-                        try? fileData.write(to: destURL)
-                        lastHandled = destURL
-                        continue
-                    }
-                }
-                
-                // 3. Generic Data (Fallback) (No extension)
-                for typeIdentifier in item.keys.sorted() {
-                    guard let type = UTType(typeIdentifier),
-                          let data = getData(for: typeIdentifier) else { continue }
-                    
-                    let ext = type.preferredFilenameExtension ?? ""
-                    guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
-                    try? data.write(to: destURL)
-                    lastHandled = destURL
-                    break
-                }
             }
-            
-            if let handledURL = lastHandled {
-                lastPasteboardChangeCount = currentChangeCount
-                DispatchQueue.main.async {
-                    self.newFileURLToScroll = handledURL
-                }
-                loadFiles()
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } else if !suppressError {
-                DispatchQueue.main.async {
-                    self.showPasteError = true
-                }
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
+        )
     }
     
     func checkAutoPaste() {
-        if userSettings.autoPasteWhenOpening {
+        if userSettings.autoPasteWhenOpening && lastPasteboardChangeCount != UIPasteboard.general.changeCount {
             addAndPaste(suppressError: true)
         }
     }
     
     func copyFile(at url: URL) {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            
-            if FileTypes.isEditableText(url) {
-                if let text = try? String(contentsOf: url, encoding: .utf8) {
-                    UIPasteboard.general.string = text
-                }
-            } else if FileTypes.isPreviewableImage(url) {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    UIPasteboard.general.image = image
-                }
-            } else {
-                if let fileData = try? Data(contentsOf: url) {
-                    UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
-                }
-            }
-            lastPasteboardChangeCount = UIPasteboard.general.changeCount
-        }
+        ClipboardManager.copyFile(at: url)
+        lastPasteboardChangeCount = UIPasteboard.general.changeCount
     }
     
     // MARK: - Note Management
