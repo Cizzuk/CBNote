@@ -31,7 +31,7 @@ class AudioRecorder: ObservableObject {
     
     private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
         guard let observer else { return }
-        let viewModel = Unmanaged<RecorderViewModel>.fromOpaque(observer).takeUnretainedValue()
+        let viewModel = Unmanaged<AudioRecorder>.fromOpaque(observer).takeUnretainedValue()
         
         // Check Flag
         if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
