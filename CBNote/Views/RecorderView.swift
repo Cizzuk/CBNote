@@ -24,7 +24,7 @@ struct RecorderView: View {
                 Group {
                     if viewModel.isRecording {
                         Button(role: .destructive) {
-                            finishRecordingAndDismiss()
+                            dismiss()
                         } label: {
                             Label("Recording", systemImage: "stop.circle")
                         }
@@ -49,10 +49,11 @@ struct RecorderView: View {
                 Text(viewModel.errorMessage)
             }
             // MARK: - Events
-            .onDisappear { finishRecording() }
-            .onReceive(viewModel.$shouldDismiss) { shouldDismiss in
-                if shouldDismiss {
-                    finishRecordingAndDismiss()
+            .onDisappear { viewModel.finishRecording() }
+            .onAppear {
+                viewModel.onFinish = { url in
+                    onRecordingFinished(url)
+                    dismiss()
                 }
             }
         }
@@ -67,19 +68,5 @@ struct RecorderView: View {
             .animation(.smooth, value: viewModel.micLevel)
         )
         .presentationDetents([.fraction(0.3)])
-    }
-    
-    // MARK: - Methods
-    
-    private func finishRecording() {
-        if viewModel.isRecording,
-           let recordedURL = viewModel.stopRecording() {
-            onRecordingFinished(recordedURL)
-        }
-    }
-    
-    private func finishRecordingAndDismiss() {
-        finishRecording()
-        dismiss()
     }
 }
