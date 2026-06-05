@@ -9,7 +9,7 @@ import UniformTypeIdentifiers
 import UIKit
 
 class ClipboardManager {
-    static func copyFile(at url: URL) {
+    static func copyFile(at url: URL, completion: @escaping () -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             if FileTypes.isEditableText(url) {
                 if let text = try? String(contentsOf: url, encoding: .utf8) {
@@ -24,6 +24,7 @@ class ClipboardManager {
                     UIPasteboard.general.setData(fileData, forPasteboardType: "public.data")
                 }
             }
+            DispatchQueue.main.async { completion() }
         }
     }
     

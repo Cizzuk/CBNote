@@ -205,8 +205,9 @@ class MainViewModel: ObservableObject {
     }
     
     func copyFile(at url: URL) {
-        ClipboardManager.copyFile(at: url)
-        lastPasteboardChangeCount = UIPasteboard.general.changeCount
+        ClipboardManager.copyFile(at: url) { [weak self] in
+            self?.lastPasteboardChangeCount = UIPasteboard.general.changeCount
+        }
     }
     
     // MARK: - Note Management
