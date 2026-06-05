@@ -71,8 +71,6 @@ class AudioRecorder: ObservableObject {
                 self?.finishRecording()
             }
             .store(in: &notificationCancellables)
-        
-        startRecording()
     }
     
     deinit {
