@@ -9,6 +9,8 @@ import Combine
 import Foundation
 
 class NoteManager: ObservableObject {
+    private let userSettings = UserSettings.shared
+    
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
@@ -31,8 +33,6 @@ class NoteManager: ObservableObject {
             loadFiles()
         }
     }
-    
-    private let userSettings = UserSettings.shared
     
     init() {
         // Load userSettings
