@@ -50,6 +50,7 @@ struct RecorderView: View {
                 Text(viewModel.errorMessage)
             }
             // MARK: - Events
+            .onAppear { viewModel.startRecording() }
             .onDisappear { viewModel.finishRecording() }
             .onReceive(viewModel.$isFinished) { isFinished in
                 if isFinished {
