@@ -51,9 +51,11 @@ struct RecorderView: View {
             }
             // MARK: - Events
             .onDisappear { viewModel.finishRecording() }
-            .onAppear {
-                viewModel.onFinish = { url in
-                    onRecordingFinished(url)
+            .onReceive(viewModel.$isFinished) { isFinished in
+                if isFinished {
+                    if let url = viewModel.recordedURL {
+                        onRecordingFinished(url)
+                    }
                     dismiss()
                 }
             }

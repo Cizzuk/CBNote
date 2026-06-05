@@ -13,10 +13,8 @@ class RecorderViewModel: ObservableObject {
     private let recorder = AudioRecorder()
     private var cancellables = Set<AnyCancellable>()
     
-    var onFinish: ((URL) -> Void)? {
-        get { recorder.onFinish }
-        set { recorder.onFinish = newValue }
-    }
+    @Published var isFinished = false
+    var recordedURL: URL?
     
     @Published var isRecording = false
     @Published var elapsedTime: TimeInterval = 0
@@ -33,6 +31,13 @@ class RecorderViewModel: ObservableObject {
     }
     
     init() {
+        recorder.onFinish = { [weak self] url in
+            DispatchQueue.main.async {
+                self?.recordedURL = url
+                self?.isFinished = true
+            }
+        }
+        
         recorder.onError = { [weak self] error in
             guard let self = self else { return }
             switch error {
@@ -47,19 +52,27 @@ class RecorderViewModel: ObservableObject {
             }
         }
         
+        // Observers
+        
         recorder.$isRecording
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isRecording, on: self)
+            .sink { [weak self] recording in
+                self?.isRecording = recording
+            }
             .store(in: &cancellables)
         
         recorder.$elapsedTime
             .receive(on: DispatchQueue.main)
-            .assign(to: \.elapsedTime, on: self)
+            .sink { [weak self] time in
+                self?.elapsedTime = time
+            }
             .store(in: &cancellables)
         
         recorder.$micLevel
             .receive(on: DispatchQueue.main)
-            .assign(to: \.micLevel, on: self)
+            .sink { [weak self] level in
+                self?.micLevel = level
+            }
             .store(in: &cancellables)
     }
     
