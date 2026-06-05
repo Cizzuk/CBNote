@@ -189,8 +189,8 @@ class MainViewModel: ObservableObject {
                         self?.newFileURLToScroll = url
                     }
                 case .failure:
-                    self?.showPasteError = true
                     if !suppressError {
+                        self?.showPasteError = true
                         UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
