@@ -310,8 +310,8 @@ class MainViewModel: ObservableObject {
             // Save
             PHPhotoLibrary.shared().performChanges({
                 PHAssetChangeRequest.creationRequestForAsset(from: image)
-            }, completionHandler: { success, error in
-                if !success, let error = error {
+            }, completionHandler: { success, _ in
+                if !success {
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
             })
