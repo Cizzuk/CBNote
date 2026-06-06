@@ -131,9 +131,7 @@ class MainViewModel: ObservableObject {
     func onChange(scenePhase: ScenePhase) {
         switch scenePhase {
         case .active:
-            checkLockedCameraCaptures()
             checkAutoPaste()
-            loadFiles()
             refreshFiles()
             
             if !showRecorder {
