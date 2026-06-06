@@ -6,7 +6,7 @@
 //
 
 import Combine
-import Foundation
+import LockedCameraCapture
 
 class NoteManager: ObservableObject {
     private let userSettings = UserSettings.shared
@@ -240,5 +240,35 @@ class NoteManager: ObservableObject {
             let filenames = self.pinnedFiles.map { $0.lastPathComponent }
             UserDefaults.standard.set(filenames, forKey: self.documentDir.pinnedKey)
         }
+    }
+    
+    // MARK: - Helpers
+    
+    // Handler for locked camera captures
+    func importLockedCameraCaptures() {
+        #if !targetEnvironment(macCatalyst)
+        DispatchQueue.global(qos: .utility).async {
+            let urls = LockedCameraCaptureManager.shared.sessionContentURLs
+            guard !urls.isEmpty else { return }
+            
+            for url in urls {
+                guard let fileURLs = try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil),
+                    !fileURLs.isEmpty
+                else { continue }
+                
+                for fileURL in fileURLs {
+                    if let data = try? Data(contentsOf: fileURL) {
+                        _ = self.saveCapturedImage(data: data)
+                    }
+                }
+                
+                DispatchQueue.global(qos: .background).async {
+                    Task { try? await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url) }
+                }
+            }
+            
+            self.loadFiles()
+        }
+        #endif
     }
 }

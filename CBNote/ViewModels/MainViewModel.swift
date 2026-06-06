@@ -123,7 +123,7 @@ class MainViewModel: ObservableObject {
     }
     
     func onAppear() {
-        checkLockedCameraCaptures()
+        noteManager.importLockedCameraCaptures()
         checkAutoPaste()
         loadFiles()
     }
@@ -153,7 +153,7 @@ class MainViewModel: ObservableObject {
     }
     
     func refreshFiles() {
-        checkLockedCameraCaptures()
+        noteManager.importLockedCameraCaptures()
         loadFiles()
         NotificationCenter.default.post(name: .noteListRefreshAttempt, object: nil)
     }
@@ -341,35 +341,6 @@ class MainViewModel: ObservableObject {
         if userSettings.saveCapturedImageToPhotos {
             saveImageToPhotos(at: newImageURL)
         }
-    }
-    
-    // Handler for locked camera captures
-    func checkLockedCameraCaptures() {
-        #if !targetEnvironment(macCatalyst)
-        DispatchQueue.global(qos: .utility).async {
-            let urls = LockedCameraCaptureManager.shared.sessionContentURLs
-            guard !urls.isEmpty else { return }
-            
-            for url in urls {
-                guard
-                    let fileURLs = try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil),
-                    !fileURLs.isEmpty
-                else { continue }
-                
-                for fileURL in fileURLs {
-                    if let data = try? Data(contentsOf: fileURL) {
-                        self.saveCapturedImage(data: data, suppress: true)
-                    }
-                }
-                
-                DispatchQueue.global(qos: .background).async {
-                    Task { try? await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url) }
-                }
-            }
-            
-            self.loadFiles()
-        }
-        #endif
     }
     
     // Handler for audio recorder
