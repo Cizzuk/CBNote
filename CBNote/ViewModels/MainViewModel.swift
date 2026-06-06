@@ -299,14 +299,12 @@ class MainViewModel: ObservableObject {
     func saveImageToPhotos(at url: URL) {
         DispatchQueue.global(qos: .userInitiated).async {
             guard TrueDevice.isSaveToPhotosAllowed() else {
-                print("saveImageToPhotos: Save to Photos not available")
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
             }
             
             guard let data = try? Data(contentsOf: url),
                   let image = UIImage(data: data) else {
-                print("saveImageToPhotos: Unable to load image data")
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
             }
@@ -316,7 +314,6 @@ class MainViewModel: ObservableObject {
                 PHAssetChangeRequest.creationRequestForAsset(from: image)
             }, completionHandler: { success, error in
                 if !success, let error = error {
-                    print("saveImageToPhotos: ", error)
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
             })
