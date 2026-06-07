@@ -13,9 +13,9 @@ extension MainView {
         ScrollViewReader { proxy in
             List {
                 // Empty State
-                if viewModel.pinnedFiles.isEmpty && viewModel.unpinnedFiles.isEmpty {
+                if vm.pinnedFiles.isEmpty && vm.unpinnedFiles.isEmpty {
                     Section {} footer: {
-                        if viewModel.searchQuery.isEmpty {
+                        if vm.searchQuery.isEmpty {
                             Text("No notes yet.")
                                 .frame(maxWidth: .infinity, alignment: .center)
                         } else {
@@ -24,7 +24,7 @@ extension MainView {
                                     .frame(maxWidth: .infinity, alignment: .center)
                                     .font(.headline)
                                 Spacer()
-                                Text("for \"\(viewModel.searchQuery)\".")
+                                Text("for \"\(vm.searchQuery)\".")
                                     .frame(maxWidth: .infinity, alignment: .center)
                                     .font(.caption)
                             }
@@ -33,14 +33,14 @@ extension MainView {
                 }
                 
                 // Pinned Files
-                if !viewModel.pinnedFiles.isEmpty {
+                if !vm.pinnedFiles.isEmpty {
                     Section {
                         if isExpandPinnedSection {
-                            ForEach(viewModel.pinnedFiles, id: \.self) { url in
+                            ForEach(vm.pinnedFiles, id: \.self) { url in
                                 fileRow(url: url, onPreview: { previewURL = url })
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(action: { viewModel.pinUnpinFile(at: url) }) {
-                                            if viewModel.isFilePinned(url) {
+                                        Button(action: { vm.pinUnpinFile(at: url) }) {
+                                            if vm.isFilePinned(url) {
                                                 Label("Unpin", systemImage: "pin.slash")
                                             } else {
                                                 Label("Pin", systemImage: "pin")
@@ -57,15 +57,15 @@ extension MainView {
                 
                 // Unpinned Files
                 Section {
-                    ForEach(viewModel.unpinnedFiles, id: \.self) { url in
+                    ForEach(vm.unpinnedFiles, id: \.self) { url in
                         fileRow(url: url, onPreview: { previewURL = url })
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
-                                    viewModel.deleteFile(at: url)
+                                    vm.deleteFile(at: url)
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
-                                Button(action: { viewModel.startRenaming(at: url) }) {
+                                Button(action: { vm.startRenaming(at: url) }) {
                                     Label("Rename", systemImage: "pencil")
                                 }
                             }
@@ -73,22 +73,22 @@ extension MainView {
                 }
             } // List
             // MARK: - List Config
-            .animation(enableNoteListAnimations ? .easeOut : nil, value: viewModel.pinnedFiles)
-            .animation(enableNoteListAnimations ? .easeOut : nil, value: viewModel.unpinnedFiles)
+            .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.pinnedFiles)
+            .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.unpinnedFiles)
             .refreshable {
-                viewModel.refreshFiles()
+                vm.refreshFiles()
                 // To reduce View jitter
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
             .scrollDismissesKeyboard(.interactively)
-            .onChange(of: viewModel.unpinnedFiles) {
-                guard let scrollPos = viewModel.newFileURLToScroll else { return }
+            .onChange(of: vm.unpinnedFiles) {
+                guard let scrollPos = vm.newFileURLToScroll else { return }
                 DispatchQueue.global(qos: .userInteractive).async {
                     withAnimation(.easeOut) {
                         proxy.scrollTo("\(scrollPos.absoluteString)")
                     }
                     DispatchQueue.main.async {
-                        self.viewModel.newFileURLToScroll = nil
+                        self.vm.newFileURLToScroll = nil
                     }
                 }
             }
@@ -99,7 +99,7 @@ extension MainView {
     @ViewBuilder
     private var pinnedSectionHeader: some View {
         Menu {
-            Button(action: { viewModel.unpinAll() }) {
+            Button(action: { vm.unpinAll() }) {
                 Label("Unpin All", systemImage: "pin.slash")
             }
         } label: {

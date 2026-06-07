@@ -12,16 +12,16 @@ extension MainView {
     var toolbarContent: some ToolbarContent {
         // MARK: - Primary Actions
         ToolbarItemGroup(placement: .primaryAction) {
-            Button(action: { viewModel.createNewNote() }) {
+            Button(action: { vm.createNewNote() }) {
                 Label("Add New Note", systemImage: "square.and.pencil")
             }
             
-            Button(action: { viewModel.addAndPaste() }) {
+            Button(action: { vm.addAndPaste() }) {
                 Label("Paste", systemImage: "document.on.clipboard")
             }
             .confirmationDialog(
                 "Paste Failed",
-                isPresented: $viewModel.showPasteError
+                isPresented: $vm.showPasteError
             ) {
                 Button("OK", role: .close) {}
             } message: {
@@ -32,12 +32,12 @@ extension MainView {
         // MARK: - Secondary Actions
         ToolbarItemGroup(placement: .secondaryAction) {
             if TrueDevice.isCameraAvailable {
-                Button(action: { viewModel.showCamera = true }) {
+                Button(action: { vm.showCamera = true }) {
                     Label("Take Photo", systemImage: "camera")
                 }
             }
             
-            Button(action: { viewModel.showRecorder = true }) {
+            Button(action: { vm.showRecorder = true }) {
                 Label("Record Audio", systemImage: "waveform.badge.microphone")
             }
             
@@ -49,7 +49,7 @@ extension MainView {
         // MARK: - Top Left
         ToolbarItem(placement: .topBarLeading) {
             Menu {
-                Button(action: { viewModel.showSettings = true }) {
+                Button(action: { vm.showSettings = true }) {
                     Label("App Settings", systemImage: "gearshape")
                 }
                 
@@ -58,15 +58,15 @@ extension MainView {
                 // iCloud/On-Device
                 Section {
                     ForEach(DocumentDir.availableDirs, id: \.self) { type in
-                        Button(action: { viewModel.setDocumentDir(type: type) }) {
+                        Button(action: { vm.setDocumentDir(type: type) }) {
                             HStack {
-                                if viewModel.documentDir == type {
+                                if vm.documentDir == type {
                                     Image(systemName: "checkmark")
                                 }
                                 Text(type.localizedName)
                             }
                         }
-                        .accessibility(addTraits: viewModel.documentDir == type ? [.isSelected] : [])
+                        .accessibility(addTraits: vm.documentDir == type ? [.isSelected] : [])
                     }
                 } header: {
                     Text("Location")
@@ -77,16 +77,16 @@ extension MainView {
                 // Sort
                 Section {
                     ForEach(SortKey.allCases, id: \.self) { key in
-                        Button(action: { viewModel.toggleSort(key: key) }) {
+                        Button(action: { vm.toggleSort(key: key) }) {
                             HStack {
-                                if viewModel.sortKey == key {
-                                    Image(systemName: viewModel.sortDirection == .descending ? "chevron.down" : "chevron.up")
+                                if vm.sortKey == key {
+                                    Image(systemName: vm.sortDirection == .descending ? "chevron.down" : "chevron.up")
                                 }
                                 Text(key.localizedName)
                             }
                         }
-                        .accessibility(addTraits: viewModel.sortKey == key ? [.isSelected] : [])
-                        .accessibilityHint(viewModel.sortKey == key ? "Currently sorted in \(viewModel.sortDirection.localizedName) order." : "")
+                        .accessibility(addTraits: vm.sortKey == key ? [.isSelected] : [])
+                        .accessibilityHint(vm.sortKey == key ? "Currently sorted in \(vm.sortDirection.localizedName) order." : "")
                     }
                 } header: {
                     Text("Sort By")
