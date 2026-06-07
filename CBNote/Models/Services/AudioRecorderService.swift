@@ -31,11 +31,11 @@ class AudioRecorderService: ObservableObject {
     
     private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
         guard let observer else { return }
-        let viewModel = Unmanaged<AudioRecorderService>.fromOpaque(observer).takeUnretainedValue()
+        let instance = Unmanaged<AudioRecorderService>.fromOpaque(observer).takeUnretainedValue()
         
         // Check Flag
         if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
-            viewModel.finishRecording()
+            instance.finishRecording()
             GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
         }
     }
