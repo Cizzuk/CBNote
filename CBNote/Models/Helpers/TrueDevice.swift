@@ -1,5 +1,5 @@
 //
-//  AppStateSupport.swift
+//  TrueDevice.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2025/12/14.

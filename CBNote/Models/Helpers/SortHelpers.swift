@@ -1,5 +1,5 @@
 //
-//  NoteHelpers.swift
+//  SortHelpers.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2026/06/07.
