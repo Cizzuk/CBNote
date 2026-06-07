@@ -65,6 +65,7 @@ class MainViewModel: ObservableObject {
             .store(in: &cancellables)
         
         noteManager.$documentDir
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] dir in
                 self?.documentDir = dir
                 self?.userSettings.documentDir = dir
@@ -76,6 +77,7 @@ class MainViewModel: ObservableObject {
         }
         
         noteManager.$sortKey
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] key in
                 self?.sortKey = key
                 self?.userSettings.sortKey = key
@@ -83,6 +85,7 @@ class MainViewModel: ObservableObject {
             .store(in: &cancellables)
         
         noteManager.$sortDirection
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] direction in
                 self?.sortDirection = direction
                 self?.userSettings.sortDirection = direction
