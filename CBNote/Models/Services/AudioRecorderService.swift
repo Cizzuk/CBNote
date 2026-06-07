@@ -1,5 +1,5 @@
 //
-//  AudioRecorder.swift
+//  AudioRecorderService.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2026/06/05.
@@ -9,7 +9,7 @@ import AVFoundation
 import Combine
 import UIKit
 
-class AudioRecorder: ObservableObject {
+class AudioRecorderService: ObservableObject {
     enum RecordError: Error {
         case various(Error)
         case permissionDenied
@@ -31,7 +31,7 @@ class AudioRecorder: ObservableObject {
     
     private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
         guard let observer else { return }
-        let viewModel = Unmanaged<AudioRecorder>.fromOpaque(observer).takeUnretainedValue()
+        let viewModel = Unmanaged<AudioRecorderService>.fromOpaque(observer).takeUnretainedValue()
         
         // Check Flag
         if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
@@ -46,7 +46,7 @@ class AudioRecorder: ObservableObject {
         CFNotificationCenterAddObserver(
             CFNotificationCenterGetDarwinNotifyCenter(),
             Unmanaged.passUnretained(self).toOpaque(),
-            AudioRecorder.finishRecordDarwinCallback,
+            AudioRecorderService.finishRecordDarwinCallback,
             CFNotificationName.shouldFinishRecording.rawValue,
             nil,
             .deliverImmediately

@@ -1,5 +1,5 @@
 //
-//  Camera.swift
+//  CameraService.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2025/12/04.
@@ -10,7 +10,7 @@ import Photos
 import SwiftUI
 import UIKit
 
-class Camera: NSObject, ObservableObject {
+class CameraService: NSObject, ObservableObject {
     @Published var session = AVCaptureSession()
     @Published var cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
     @Published var shouldFlashScreen = false
@@ -287,7 +287,7 @@ class Camera: NSObject, ObservableObject {
     }
 }
 
-extension Camera: AVCapturePhotoCaptureDelegate {
+extension CameraService: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         AudioServicesDisposeSystemSoundID(1108) // 1108: shutter sound
         

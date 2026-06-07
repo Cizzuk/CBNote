@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 
 class RecorderViewModel: ObservableObject {
-    private let recorder = AudioRecorder()
+    private let recorder = AudioRecorderService()
     private var cancellables = Set<AnyCancellable>()
     
     @Published var isFinished = false

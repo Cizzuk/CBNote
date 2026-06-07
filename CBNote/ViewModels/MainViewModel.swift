@@ -42,8 +42,8 @@ class MainViewModel: ObservableObject {
     @Published var showTranslation = false
     @Published var translationText = ""
     
-    let noteManager = NoteManager()
-    private let dummyCameraManager = DummyCameraManager.shared
+    let noteManager = NoteService()
+    private let dummyCameraManager = DummyCameraService.shared
     private let userSettings = UserSettings.shared
     
     private var lastPasteboardChangeCount: Int = -1
@@ -175,7 +175,7 @@ class MainViewModel: ObservableObject {
     // MARK: - Clipboard Management
     
     func addAndPaste(suppressError: Bool = false) {
-        ClipboardManager.newNoteFromClipboard(
+        ClipboardSupport.newNoteFromClipboard(
             noteManager: noteManager,
             completion: { [weak self] result in
                 switch result {
@@ -203,7 +203,7 @@ class MainViewModel: ObservableObject {
     }
     
     func copyFile(at url: URL) {
-        ClipboardManager.copyFile(at: url) { [weak self] in
+        ClipboardSupport.copyFile(at: url) { [weak self] in
             self?.lastPasteboardChangeCount = UIPasteboard.general.changeCount
         }
     }

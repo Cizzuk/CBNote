@@ -1,5 +1,5 @@
 //
-//  DummyCameraManager.swift
+//  DummyCameraService.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2026/02/17.
@@ -13,8 +13,8 @@ import UIKit
 // In the test, system killed the app when it was below 0.8 - 1s.
 
 @MainActor
-final class DummyCameraManager: ObservableObject {
-    static let shared = DummyCameraManager()
+final class DummyCameraService: ObservableObject {
+    static let shared = DummyCameraService()
     
     @Published private var isShowing = false
     

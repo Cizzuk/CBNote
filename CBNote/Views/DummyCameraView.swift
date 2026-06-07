@@ -12,7 +12,7 @@ import SwiftUI
 
 struct DummyCameraView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var camera = Camera()
+    @StateObject private var camera = CameraService()
     
     var body: some View {
         DummyCameraPreview(session: camera.session)
@@ -23,7 +23,7 @@ struct DummyCameraView: View {
             .onChange(of: scenePhase) {
                 if scenePhase == .background {
                     camera.stopSession()
-                    DummyCameraManager.shared.close()
+                    DummyCameraService.shared.close()
                 }
             }
             .onAppear {
@@ -31,7 +31,7 @@ struct DummyCameraView: View {
             }
             .onDisappear {
                 camera.stopSession()
-                DummyCameraManager.shared.close()
+                DummyCameraService.shared.close()
             }
             .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }
     }

@@ -1,5 +1,5 @@
 //
-//  NoteManager.swift
+//  NoteService.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2025/12/07.
@@ -8,7 +8,7 @@
 import Combine
 import LockedCameraCapture
 
-class NoteManager: ObservableObject {
+class NoteService: ObservableObject {
     private let userSettings = UserSettings.shared
     
     @Published var files: [URL] = []

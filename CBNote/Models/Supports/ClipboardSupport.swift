@@ -1,5 +1,5 @@
 //
-//  ClipboardManager.swift
+//  ClipboardSupport.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2026/06/05.
@@ -8,7 +8,7 @@
 import UniformTypeIdentifiers
 import UIKit
 
-class ClipboardManager {
+class ClipboardSupport {
     static func copyFile(at url: URL, completion: @escaping () -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             if FileTypes.isEditableText(url) {
@@ -33,7 +33,7 @@ class ClipboardManager {
     }
     
     static func newNoteFromClipboard(
-        noteManager: NoteManager,
+        noteManager: NoteService,
         completion: @escaping (Result<URL, Error>) -> Void
     ) {
         DispatchQueue.global(qos: .userInitiated).async {

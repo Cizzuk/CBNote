@@ -8,17 +8,15 @@
 import Foundation
 
 class iCloudSupport {
-    static let shared = iCloudSupport()
-    
-    var isAvailable: Bool {
+    static var isAvailable: Bool {
         return FileManager.default.url(forUbiquityContainerIdentifier: nil) != nil
     }
     
-    var directoryURL: URL? {
+    static var directoryURL: URL? {
         FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
     }
     
-    func isiCloudItem(at url: URL) -> Bool {
+    static func isiCloudItem(at url: URL) -> Bool {
         do {
             let resourceValues = try url.resourceValues(forKeys: [.isUbiquitousItemKey])
             return resourceValues.isUbiquitousItem ?? false
@@ -27,7 +25,7 @@ class iCloudSupport {
         }
     }
     
-    func itemDownloadingStatus(at url: URL) -> URLUbiquitousItemDownloadingStatus? {
+    static func itemDownloadingStatus(at url: URL) -> URLUbiquitousItemDownloadingStatus? {
         if !isiCloudItem(at: url) {
             return .current
         }
@@ -41,7 +39,7 @@ class iCloudSupport {
     }
 
     
-    func isDownloaded(at url: URL) -> Bool? {
+    static func isDownloaded(at url: URL) -> Bool? {
         let status = itemDownloadingStatus(at: url)
         
         switch status {
