@@ -83,13 +83,11 @@ extension MainView {
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: vm.unpinnedFiles) {
                 guard let scrollPos = vm.newFileURLToScroll else { return }
-                DispatchQueue.global(qos: .userInteractive).async {
+                DispatchQueue.main.async {
                     withAnimation(.easeOut) {
                         proxy.scrollTo("\(scrollPos.absoluteString)")
                     }
-                    DispatchQueue.main.async {
-                        self.vm.newFileURLToScroll = nil
-                    }
+                    self.vm.newFileURLToScroll = nil
                 }
             }
         } // ScrollViewReader
