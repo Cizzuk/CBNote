@@ -56,6 +56,7 @@ class AudioRecorderService: ObservableObject {
         
         // Observe AVAudioSession Interruptions
         NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] notification in
                 guard let userInfo = notification.userInfo,
                       let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
@@ -69,6 +70,7 @@ class AudioRecorderService: ObservableObject {
         
         // Observe App Termination
         NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.finishRecording()
             }
