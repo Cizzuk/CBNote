@@ -5,6 +5,8 @@
 //  Created by Cizzuk on 2026/02/17.
 //
 
+#if !targetEnvironment(macCatalyst)
+
 import Combine
 import SwiftUI
 import UIKit
@@ -25,7 +27,12 @@ final class DummyCameraService: ObservableObject {
     
     func open(duration: TimeInterval = 2) {
         isShowing = true
-        createWindow()
+        
+        if dummyWindow == nil {
+            createWindow()
+        }
+        
+        createView()
         
         // (Re)Schedule closing the dummy camera
         closeWorkItem?.cancel()
@@ -44,26 +51,31 @@ final class DummyCameraService: ObservableObject {
         
         // Remove the dummy window
         dummyWindow?.isHidden = true
-        dummyWindow = nil
+        dummyWindow?.rootViewController = nil
         
         isShowing = false
     }
     
-    // Create the dummy camera window if it is not already shown
+    // Create the dummy window
     private func createWindow() {
-        guard dummyWindow == nil else { return }
         guard let scene = activeWindowScene() else { return }
         
         let window = PassThroughWindow(windowScene: scene)
         window.backgroundColor = .clear
         window.windowLevel = .statusBar + 1 // Put above status bar
         
+        dummyWindow = window
+    }
+    
+    // Set up the dummy camera view in the window
+    private func createView() {
+        guard let dummyWindow = dummyWindow else { return }
+        
         let hostingController = UIHostingController(rootView: DummyCameraView())
         hostingController.view.backgroundColor = .clear
         
-        window.rootViewController = hostingController
-        window.isHidden = false
-        dummyWindow = window
+        dummyWindow.rootViewController = hostingController
+        dummyWindow.isHidden = false
     }
     
     // Find the active window scene
@@ -83,3 +95,18 @@ final class DummyCameraService: ObservableObject {
         }
     }
 }
+
+#else
+
+import Combine
+import SwiftUI
+
+@MainActor
+final class DummyCameraService: ObservableObject {
+    static let shared = DummyCameraService()
+    private init() {}
+    func open(duration: TimeInterval = 2) {}
+    func close() {}
+}
+
+#endif
