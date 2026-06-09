@@ -8,32 +8,32 @@
 import SwiftUI
 
 struct TextEditView: View {
-    @StateObject private var viewModel: TextEditViewModel
+    @StateObject private var vm: TextEditViewModel
     
     init(url: URL) {
-        _viewModel = StateObject(wrappedValue: TextEditViewModel(url: url))
+        _vm = StateObject(wrappedValue: TextEditViewModel(url: url))
     }
     
     var body: some View {
         Group {
-            if viewModel.isLoading {
+            if vm.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, alignment: .center)
-            } else if viewModel.isFileEditable {
-                TextField("New Note", text: $viewModel.text, axis: .vertical)
-                    .onChange(of: viewModel.text) {
-                        viewModel.saveText()
+            } else if vm.isFileEditable {
+                TextField("New Note", text: $vm.text, axis: .vertical)
+                    .onChange(of: vm.text) {
+                        vm.saveText()
                     }
-                    .font(viewModel.textFont())
+                    .font(vm.textFont())
             } else {
-                AnyFileItem(url: viewModel.url)
+                AnyFileItem(url: vm.url)
             }
         }
         .onAppear {
-            viewModel.loadContent()
+            vm.loadContent()
         }
         .onReceive(NotificationCenter.default.publisher(for: .noteListRefreshAttempt)) { _ in
-            viewModel.loadContent()
+            vm.loadContent()
         }
     }
 }

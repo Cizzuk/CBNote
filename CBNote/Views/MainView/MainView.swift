@@ -13,7 +13,7 @@ import TemporaryScreenCurtain
 struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
-    @StateObject var viewModel = MainViewModel()
+    @StateObject var vm = MainViewModel()
     @ObservedObject private var userSettings = UserSettings.shared
     
     @State var previewURL: URL?
@@ -30,39 +30,39 @@ struct MainView: View {
         NavigationStack {
             fileListView()
                 // MARK: - View Config
-                .searchable(text: $viewModel.searchQuery, prompt: "Search Notes")
+                .searchable(text: $vm.searchQuery, prompt: "Search Notes")
                 .toolbar { toolbarContent }
                 .quickLookPreview($previewURL)
                 #if !targetEnvironment(macCatalyst)
-                .translationPresentation(isPresented: $viewModel.showTranslation, text: viewModel.translationText)
+                .translationPresentation(isPresented: $vm.showTranslation, text: vm.translationText)
                 #endif
                 // MARK: - Modals
-                .fullScreenCover(isPresented: $viewModel.showCamera) {
+                .fullScreenCover(isPresented: $vm.showCamera) {
                     CameraView(remainAfterCapture: userSettings.remainCameraAfterCapture) { data in
-                        viewModel.saveCapturedImage(data: data)
+                        vm.saveCapturedImage(data: data)
                     }
                 }
-                .sheet(isPresented: $viewModel.showRecorder) {
+                .sheet(isPresented: $vm.showRecorder) {
                     RecorderView { url in
-                        viewModel.saveRecordedAudio(from: url)
+                        vm.saveRecordedAudio(from: url)
                     }
                 }
-                .sheet(isPresented: $viewModel.showSettings) {
+                .sheet(isPresented: $vm.showSettings) {
                     SettingsView()
                         .navigationTransition(.zoom(
                             sourceID: id_openSettingsButton,
                             in: ns_settingsView
                         ))
                 }
-                .alert("Rename", isPresented: $viewModel.isRenaming) {
-                    TextField("New Name", text: $viewModel.newName)
+                .alert("Rename", isPresented: $vm.isRenaming) {
+                    TextField("New Name", text: $vm.newName)
                     Button("Cancel", role: .cancel) {}
                     Button("Rename", role: .confirm) {
-                        viewModel.renameFile()
+                        vm.renameFile()
                     }
-                    .disabled(!viewModel.isValidFileName(viewModel.newName))
+                    .disabled(!vm.isValidFileName(vm.newName))
                 }
-                .alert("Failed to Import File", isPresented: $viewModel.showFileImportError) {
+                .alert("Failed to Import File", isPresented: $vm.showFileImportError) {
                     Button("OK", role: .close) {}
                 }
                 .fileImporter(
@@ -70,36 +70,36 @@ struct MainView: View {
                     allowedContentTypes: [.item],
                     allowsMultipleSelection: true
                 ) { result in
-                    viewModel.handleFileImporter(result)
+                    vm.handleFileImporter(result)
                 }
                 // MARK: - Events
-                .onAppear { viewModel.onAppear() }
-                .onChange(of: scenePhase) { viewModel.onChange(scenePhase: scenePhase) }
+                .onAppear { vm.onAppear() }
+                .onChange(of: scenePhase) { vm.onChange(scenePhase: scenePhase) }
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
-                    viewModel.handleCameraControlAction()
+                    vm.handleCameraControlAction()
                 }
                 // Opening from Capture Extension
                 .onContinueUserActivity("net.cizzuk.cbnote.CaptureExtension.runCameraControlAction") { activity in
-                    viewModel.handleCameraControlAction(shouldOpenDummyCamera: false)
+                    vm.handleCameraControlAction(shouldOpenDummyCamera: false)
                 }
                 // Opening from App Intents (Shortcuts, Control Center, Home Screen Shortcut)
                 .onReceive(NotificationCenter.default.publisher(for: .openAppIntentPerformed)) { action in
                     if let option = action.object as? OpenAppOption {
-                        viewModel.openApp(with: option)
+                        vm.openApp(with: option)
                     }
                 }
                 // Keyboard Shortcuts
                 .onReceive(NotificationCenter.default.publisher(for: .customKeyboardShortcutPerformed)) { action in
                     if let shortcut = action.object as? CustomKeyboardShortcut {
-                        viewModel.handleKeyboardShortcut(shortcut: shortcut)
+                        vm.handleKeyboardShortcut(shortcut: shortcut)
                     }
                 }
                 .onOpenURL { url in
-                    viewModel.handleOpenURL(url: url)
+                    vm.handleOpenURL(url: url)
                 }
         } // NavigationStack
         // MARK: - Temporary Screen Curtain
-        .temporaryScreenCurtain(isPresented: $viewModel.showTmpCurtain)
+        .temporaryScreenCurtain(isPresented: $vm.showTmpCurtain)
     }
 }

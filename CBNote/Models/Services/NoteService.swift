@@ -1,14 +1,15 @@
 //
-//  NoteManager.swift
+//  NoteService.swift
 //  CBNote
 //
 //  Created by Cizzuk on 2025/12/07.
 //
 
 import Combine
-import Foundation
+import LockedCameraCapture
 
-class NoteManager: ObservableObject {
+class NoteService: ObservableObject {
+    private let userSettings = UserSettings.shared
     
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
@@ -32,8 +33,6 @@ class NoteManager: ObservableObject {
             loadFiles()
         }
     }
-
-    private let userSettings = UserSettings.shared
     
     init() {
         // Load userSettings
@@ -44,6 +43,8 @@ class NoteManager: ObservableObject {
         loadPinnedFiles()
         loadFiles()
     }
+    
+    // MARK: - File Management
     
     func loadFiles() {
         guard let documentsURL = documentDir.directory,
@@ -86,6 +87,8 @@ class NoteManager: ObservableObject {
         sortDirection = direction
     }
     
+    // MARK: Create files
+    
     func createFileURL(fileExtension: String) -> URL? {
         guard let documentsURL = documentDir.directory else { return nil }
         
@@ -101,11 +104,11 @@ class NoteManager: ObservableObject {
         repeat {
             counter += 1
             let counterNumber = counter > 1 ? "-\(counter)" : ""
-
+            
             let fileName = "\(baseName)\(counterNumber)\(extensionPart)"
             fileURL = documentsURL.appendingPathComponent(fileName)
         } while FileManager.default.fileExists(atPath: fileURL.path)
-                    
+        
         return fileURL
     }
     
@@ -151,11 +154,13 @@ class NoteManager: ObservableObject {
         return nil
     }
     
+    // MARK: Delete files
+    
     func deleteFile(at url: URL) {
         DispatchQueue.global(qos: .utility).async {
             do { try FileManager.default.removeItem(at: url) }
             catch { print("Error deleting file: \(error)") }
-                
+            
             if self.isPinned(url) {
                 self.togglePin(for: url)
             }
@@ -163,6 +168,8 @@ class NoteManager: ObservableObject {
             self.loadFiles()
         }
     }
+    
+    // MARK: Update files
     
     func renameFile(at url: URL, newName: String) {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -190,7 +197,7 @@ class NoteManager: ObservableObject {
         return name.rangeOfCharacter(from: invalidCharacters) == nil && !name.isEmpty
     }
     
-    // MARK: - Pinned Files
+    // MARK: - Pinned Files Management
     
     private func loadPinnedFiles() {
         guard let documentsURL = documentDir.directory else {
@@ -233,5 +240,35 @@ class NoteManager: ObservableObject {
             let filenames = self.pinnedFiles.map { $0.lastPathComponent }
             UserDefaults.standard.set(filenames, forKey: self.documentDir.pinnedKey)
         }
+    }
+    
+    // MARK: - Helpers
+    
+    // Handler for locked camera captures
+    func importLockedCameraCaptures() {
+        #if !targetEnvironment(macCatalyst)
+        DispatchQueue.global(qos: .utility).async {
+            let urls = LockedCameraCaptureManager.shared.sessionContentURLs
+            guard !urls.isEmpty else { return }
+            
+            for url in urls {
+                guard let fileURLs = try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil),
+                    !fileURLs.isEmpty
+                else { continue }
+                
+                for fileURL in fileURLs {
+                    if let data = try? Data(contentsOf: fileURL) {
+                        _ = self.saveCapturedImage(data: data)
+                    }
+                }
+                
+                DispatchQueue.global(qos: .background).async {
+                    Task { try? await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url) }
+                }
+            }
+            
+            self.loadFiles()
+        }
+        #endif
     }
 }

@@ -10,21 +10,21 @@ import SwiftUI
 
 struct RecorderView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = RecorderViewModel()
+    @StateObject private var vm = RecorderViewModel()
     
     let onRecordingFinished: (URL) -> Void
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text(viewModel.elapsedTimeText)
+                Text(vm.elapsedTimeText)
                     .font(.system(size: 24, weight: .semibold, design: .monospaced))
                     .padding(.top, 40)
                 
                 Group {
-                    if viewModel.isRecording {
+                    if vm.isRecording {
                         Button(role: .destructive) {
-                            finishRecordingAndDismiss()
+                            vm.finishRecording()
                         } label: {
                             Label("Recording", systemImage: "stop.circle")
                         }
@@ -40,19 +40,23 @@ struct RecorderView: View {
                 }
                 .font(.title2)
             }
-            .animation(.default, value: viewModel.isRecording)
+            .animation(.default, value: vm.isRecording)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-            .alert("Error", isPresented: $viewModel.showError) {
+            .alert("Error", isPresented: $vm.showError) {
                 Button("OK") { dismiss() }
             } message: {
-                Text(viewModel.errorMessage)
+                Text(vm.errorMessage)
             }
             // MARK: - Events
-            .onDisappear { finishRecording() }
-            .onReceive(viewModel.$shouldDismiss) { shouldDismiss in
-                if shouldDismiss {
-                    finishRecordingAndDismiss()
+            .onAppear { vm.startRecording() }
+            .onDisappear { vm.finishRecording() }
+            .onReceive(vm.$isFinished) { isFinished in
+                if isFinished {
+                    if let url = vm.recordedURL {
+                        onRecordingFinished(url)
+                    }
+                    dismiss()
                 }
             }
         }
@@ -63,23 +67,10 @@ struct RecorderView: View {
                 endPoint: .bottom
             )
             .ignoresSafeArea()
-            .opacity(0.25 * Double(viewModel.micLevel))
-            .animation(.smooth, value: viewModel.micLevel)
+            .opacity(0.25 * Double(vm.micLevel))
+            .animation(.smooth, value: vm.micLevel)
         )
         .presentationDetents([.fraction(0.3)])
-    }
-    
-    // MARK: - Methods
-    
-    private func finishRecording() {
-        if viewModel.isRecording,
-           let recordedURL = viewModel.stopRecording() {
-            onRecordingFinished(recordedURL)
-        }
-    }
-    
-    private func finishRecordingAndDismiss() {
-        finishRecording()
-        dismiss()
+        .interactiveDismissDisabled()
     }
 }

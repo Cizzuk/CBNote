@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct ImageView: View {
-    @StateObject private var viewModel: ImageViewModel
+    @StateObject private var vm: ImageViewModel
     @State private var maxHeight: CGFloat = .infinity
     
     init(url: URL) {
-        _viewModel = StateObject(wrappedValue: ImageViewModel(url: url))
+        _vm = StateObject(wrappedValue: ImageViewModel(url: url))
     }
     
     var body: some View {
         Group {
-            if viewModel.isLoading {
+            if vm.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity)
-            } else if let uiImage = viewModel.uiImage {
+            } else if let uiImage = vm.uiImage {
                 ZStack {
                     Image(uiImage: uiImage)
                         .resizable()
@@ -39,14 +39,14 @@ struct ImageView: View {
                     }
                 }
             } else {
-                AnyFileItem(url: viewModel.url)
+                AnyFileItem(url: vm.url)
             }
         }
         .transition(.opacity)
-        .animation(.easeOut(duration: 0.3), value: viewModel.isLoading)
-        .onAppear(perform: viewModel.loadImage)
+        .animation(.easeOut(duration: 0.3), value: vm.isLoading)
+        .onAppear(perform: vm.loadImage)
         .onReceive(NotificationCenter.default.publisher(for: .noteListRefreshAttempt)) { _ in
-            viewModel.loadImage()
+            vm.loadImage()
         }
     }
     

@@ -11,7 +11,7 @@ import UIKit
 
 struct CameraView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject private var camera = Camera()
+    @StateObject private var camera = CameraService()
     
     var isLockedMode: Bool = false
     var remainAfterCapture: Bool = false

@@ -38,7 +38,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             return
         }
         
-        let noteManager = NoteManager()
+        let noteManager = NoteService()
         
         switch request {
         case .getDirectoryList:
