@@ -24,7 +24,6 @@ struct RecorderView: View {
                 Group {
                     if vm.isRecording {
                         Button(role: .destructive) {
-                            dismiss()
                             vm.finishRecording()
                         } label: {
                             Label("Recording", systemImage: "stop.circle")
@@ -72,5 +71,6 @@ struct RecorderView: View {
             .animation(.smooth, value: vm.micLevel)
         )
         .presentationDetents([.fraction(0.3)])
+        .interactiveDismissDisabled()
     }
 }
