@@ -191,7 +191,9 @@ class MainViewModel: ObservableObject {
                     }
                 case .failure:
                     if !suppressError {
-                        self?.showPasteError = true
+                        DispatchQueue.main.async {
+                            self?.showPasteError = true
+                        }
                         UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
