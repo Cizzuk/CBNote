@@ -35,7 +35,9 @@ class AudioRecorderService: ObservableObject {
         
         // Check Flag
         if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
-            instance.finishRecording()
+            DispatchQueue.main.async {
+                instance.finishRecording()
+            }
             GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
         }
     }
