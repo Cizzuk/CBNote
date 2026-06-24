@@ -60,7 +60,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BEAF98682EE546A100488245"
             BuildableName = "CBNote Watch App.app"
-            BlueprintName = "CBNote Watch App"
             ReferencedContainer = "container:CBNote.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -77,7 +76,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BEAF98682EE546A100488245"
             BuildableName = "CBNote Watch App.app"
-            BlueprintName = "CBNote Watch App"
             ReferencedContainer = "container:CBNote.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
