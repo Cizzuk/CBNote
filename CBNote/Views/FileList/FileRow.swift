@@ -9,8 +9,10 @@ import SwiftUI
 
 struct FileRow: View {
     let url: URL
-    let imagePreviewMode: ImagePreviewMode
     let onPreview: () -> Void
+    
+    @ObservedObject private var userSettings = UserSettings.shared
+    private var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,7 +22,7 @@ struct FileRow: View {
                 TextEditView(url: url)
             } else if imagePreviewMode != .off && FileTypes.isPreviewableImage(url) {
                 Button(action: onPreview) {
-                    ImageView(url: url, imagePreviewMode: imagePreviewMode)
+                    ImageView(url: url)
                 }
                 .accessibility(addTraits: [.isImage, .isButton])
                 .accessibilityLabel(FileTypes.name(for: url))

@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ImageView: View {
     @StateObject private var vm: ImageViewModel
-    @State private var maxHeight: CGFloat = .infinity
-    private let imagePreviewMode: ImagePreviewMode
+    @ObservedObject private var userSettings = UserSettings.shared
     
-    init(url: URL, imagePreviewMode: ImagePreviewMode) {
+    @State private var maxHeight: CGFloat = .infinity
+    private var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
+    
+    init(url: URL) {
         _vm = StateObject(wrappedValue: ImageViewModel(url: url))
-        self.imagePreviewMode = imagePreviewMode
     }
     
     var body: some View {
@@ -32,21 +33,7 @@ struct ImageView: View {
                         .cornerRadius(16)
                 }
                 .frame(maxWidth: .infinity, maxHeight: maxHeight)
-                .onAppear {
-                    // Calculate max height from screen size
-                    if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                        maxHeight = window.screen.bounds.height * 0.8
-                        if imagePreviewMode == .small && maxHeight > 200 {
-                            maxHeight = 200
-                        }
-                    } else {
-                        if imagePreviewMode == .small {
-                            maxHeight = 200
-                        } else {
-                            maxHeight = .infinity
-                        }
-                    }
-                }
+                .onAppear(perform: updateMaxHeight)
             } else {
                 AnyFileItem(url: vm.url)
             }
@@ -54,6 +41,7 @@ struct ImageView: View {
         .transition(.opacity)
         .animation(.easeOut(duration: 0.3), value: vm.isLoading)
         .onAppear(perform: vm.loadImage)
+        .onChange(of: imagePreviewMode) { updateMaxHeight() }
         .onReceive(NotificationCenter.default.publisher(for: .noteListRefreshAttempt)) { _ in
             vm.loadImage()
         }
@@ -61,5 +49,21 @@ struct ImageView: View {
     
     private func shouldPixelate(_ image: UIImage) -> Bool {
         image.size.width <= 256 && image.size.height <= 256
+    }
+    
+    private func updateMaxHeight() {
+        // Calculate max height from screen size
+        if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            maxHeight = window.screen.bounds.height * 0.8
+            if imagePreviewMode == .small && maxHeight > 200 {
+                maxHeight = 200
+            }
+        } else {
+            if imagePreviewMode == .small {
+                maxHeight = 200
+            } else {
+                maxHeight = .infinity
+            }
+        }
     }
 }
