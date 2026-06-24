@@ -51,6 +51,7 @@ extension MainView {
             Menu {
                 Button(action: { vm.showSettings = true }) {
                     Label("App Settings", systemImage: "gearshape")
+                        .labelStyle(.titleAndIcon)
                 }
                 
                 Divider()
@@ -59,11 +60,12 @@ extension MainView {
                 Section {
                     ForEach(DocumentDir.availableDirs, id: \.self) { type in
                         Button(action: { vm.setDocumentDir(type: type) }) {
-                            HStack {
-                                if vm.documentDir == type {
-                                    Image(systemName: "checkmark")
-                                }
-                                Text(type.localizedName)
+                            if vm.documentDir == type {
+                                Label(type.localizedName, systemImage: "checkmark")
+                                    .labelStyle(.titleAndIcon)
+                            } else {
+                                Label(type.localizedName, image: "EmptySymbol")
+                                    .labelStyle(.titleAndIcon)
                             }
                         }
                         .accessibility(addTraits: vm.documentDir == type ? [.isSelected] : [])
@@ -78,11 +80,15 @@ extension MainView {
                 Section {
                     ForEach(SortKey.allCases, id: \.self) { key in
                         Button(action: { vm.toggleSort(key: key) }) {
-                            HStack {
-                                if vm.sortKey == key {
-                                    Image(systemName: vm.sortDirection == .descending ? "chevron.down" : "chevron.up")
-                                }
-                                Text(key.localizedName)
+                            if vm.sortKey == key {
+                                Label(
+                                    key.localizedName,
+                                    systemImage: vm.sortDirection == .descending ? "chevron.down" : "chevron.up"
+                                )
+                                .labelStyle(.titleAndIcon)
+                            } else {
+                                Label(key.localizedName, image: "EmptySymbol")
+                                    .labelStyle(.titleAndIcon)
                             }
                         }
                         .accessibility(addTraits: vm.sortKey == key ? [.isSelected] : [])
@@ -93,7 +99,9 @@ extension MainView {
                 }
             } label: {
                 Label("Settings", systemImage: "gearshape")
+                    .labelStyle(.iconOnly)
             }
+            .labelStyle(.titleAndIcon)
             .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
         }
         
