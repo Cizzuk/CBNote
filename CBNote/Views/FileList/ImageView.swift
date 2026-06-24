@@ -10,9 +10,11 @@ import SwiftUI
 struct ImageView: View {
     @StateObject private var vm: ImageViewModel
     @State private var maxHeight: CGFloat = .infinity
+    private let imagePreviewMode: ImagePreviewMode
     
-    init(url: URL) {
+    init(url: URL, imagePreviewMode: ImagePreviewMode) {
         _vm = StateObject(wrappedValue: ImageViewModel(url: url))
+        self.imagePreviewMode = imagePreviewMode
     }
     
     var body: some View {
@@ -34,8 +36,15 @@ struct ImageView: View {
                     // Calculate max height from screen size
                     if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                         maxHeight = window.screen.bounds.height * 0.8
+                        if imagePreviewMode == .small && maxHeight > 200 {
+                            maxHeight = 200
+                        }
                     } else {
-                        maxHeight = .infinity
+                        if imagePreviewMode == .small {
+                            maxHeight = 200
+                        } else {
+                            maxHeight = .infinity
+                        }
                     }
                 }
             } else {
