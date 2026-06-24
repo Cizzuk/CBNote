@@ -18,7 +18,7 @@ class UserSettings: ObservableObject {
         static let cameraControlActionOpenURL = "cameraControlActionOpenURL"
         static let remainCameraAfterCapture = "remainCameraAfterCapture"
         static let saveCapturedImageToPhotos = "saveCapturedImageToPhotos"
-        static let showImagePreview = "showImagePreview"
+        static let imagePreviewMode = "imagePreviewMode"
         static let showHiddenFiles = "showHiddenFiles"
         static let enableNoteListAnimations = "enableNoteListAnimations"
         static let nameFormat = "nameFormat"
@@ -65,12 +65,22 @@ class UserSettings: ObservableObject {
         }
     }
     
-    @Published var showImagePreview: Bool = {
-        let value = UserDefaults.standard.object(forKey: Keys.showImagePreview)
-        return value == nil ? true : UserDefaults.standard.bool(forKey: Keys.showImagePreview)
+    @Published var imagePreviewMode: ImagePreviewMode = {
+        if let rawValue = UserDefaults.standard.string(forKey: Keys.imagePreviewMode),
+           let mode = ImagePreviewMode(rawValue: rawValue) {
+            return mode
+        }
+        
+        // Migrate from old setting
+        let oldSettingKey = "showImagePreview"
+        if UserDefaults.standard.object(forKey: oldSettingKey) == nil {
+            return .default
+        } else {
+            return UserDefaults.standard.bool(forKey: oldSettingKey) ? .large : .off
+        }
     }() {
         didSet {
-            UserDefaults.standard.set(showImagePreview, forKey: Keys.showImagePreview)
+            UserDefaults.standard.set(imagePreviewMode.rawValue, forKey: Keys.imagePreviewMode)
         }
     }
     

@@ -62,7 +62,11 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    Toggle("Show Image Preview", isOn: $userSettings.showImagePreview)
+                    Picker("Image Preview", selection: $userSettings.imagePreviewMode) {
+                        ForEach(ImagePreviewMode.allCases) { mode in
+                            Text(mode.displayName).tag(mode)
+                        }
+                    }
                     Toggle("Show Hidden Files", isOn: $userSettings.showHiddenFiles)
                     Toggle("Enable Note List Animations", isOn: $userSettings.enableNoteListAnimations)
                 } header: {
