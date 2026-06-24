@@ -76,6 +76,7 @@ struct CBNoteApp: App {
                     )
                 } label: {
                     Label("Settings...", systemImage: "gearshape")
+                        .labelStyle(.titleAndIcon)
                 }
                 .keyboardShortcut(",", modifiers: [.command])
             }
