@@ -20,7 +20,7 @@ struct MainView: View {
     @State var isExpandPinnedSection = true
     @State var showFileImporter = false
     
-    var showImagePreview: Bool { userSettings.showImagePreview }
+    var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
     var enableNoteListAnimations: Bool { userSettings.enableNoteListAnimations }
     
     @Namespace var ns_settingsView

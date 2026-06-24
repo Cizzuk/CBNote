@@ -9,8 +9,10 @@ import SwiftUI
 
 struct FileRow: View {
     let url: URL
-    let showImagePreview: Bool
     let onPreview: () -> Void
+    
+    @ObservedObject private var userSettings = UserSettings.shared
+    private var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -18,7 +20,7 @@ struct FileRow: View {
                 AnyFileNotFoundItem(url: url)
             } else if FileTypes.isEditableText(url) {
                 TextEditView(url: url)
-            } else if showImagePreview && FileTypes.isPreviewableImage(url) {
+            } else if imagePreviewMode != .off && FileTypes.isPreviewableImage(url) {
                 Button(action: onPreview) {
                     ImageView(url: url)
                 }

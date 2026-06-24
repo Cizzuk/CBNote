@@ -114,9 +114,7 @@ class AudioRecorderService: ObservableObject {
             sessionOptions = [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
             #endif
             
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let self = self else { return }
-                
+            DispatchQueue.global(qos: .userInitiated).async {
                 do {
                     let session = AVAudioSession.sharedInstance()
                     try session.setCategory(.playAndRecord, mode: .default, options: sessionOptions)
@@ -126,22 +124,22 @@ class AudioRecorderService: ObservableObject {
                     recorder.isMeteringEnabled = true
                     
                     guard recorder.record() else {
-                        onError?(RecordError.recordingFailed)
+                        self.onError?(RecordError.recordingFailed)
                         return
                     }
                     
-                    audioRecorder = recorder
-                    recordingURL = tempURL
+                    self.audioRecorder = recorder
+                    self.recordingURL = tempURL
                     
                     DispatchQueue.main.async {
                         self.elapsedTime = 0
                         self.isRecording = true
                     }
                     
-                    startTimer()
+                    self.startTimer()
                     RecorderActivityManager.start()
                 } catch {
-                    stopTimer()
+                    self.stopTimer()
                     RecorderActivityManager.endAll()
                     
                     DispatchQueue.main.async {

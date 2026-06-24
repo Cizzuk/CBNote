@@ -10,7 +10,7 @@ import SwiftUI
 extension MainView {
     // MARK: - File Row View
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
-        FileRow(url: url, showImagePreview: showImagePreview, onPreview: onPreview)
+        FileRow(url: url, onPreview: onPreview)
             .id("\(url.absoluteString)")
             .onDrag() {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
