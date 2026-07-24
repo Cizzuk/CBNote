@@ -5,6 +5,7 @@
 //  Created by Cizzuk on 2026/02/11.
 //
 
+import PhotosUI
 import SwiftUI
 
 extension MainView {
@@ -43,6 +44,10 @@ extension MainView {
             
             Button(action: { showFileImporter = true }) {
                 Label("Import from Files", systemImage: "document")
+            }
+            
+            PhotosPicker(selection: $selectedPhoto) {
+                Label("Import from Photos", systemImage: "photo")
             }
         }
         

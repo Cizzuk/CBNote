@@ -6,6 +6,7 @@
 //
 
 import QuickLook
+import PhotosUI
 import SwiftUI
 import Translation
 import TemporaryScreenCurtain
@@ -19,6 +20,7 @@ struct MainView: View {
     @State var previewURL: URL?
     @State var isExpandPinnedSection = true
     @State var showFileImporter = false
+    @State var selectedPhoto: PhotosPickerItem? = nil
     
     var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
     var enableNoteListAnimations: Bool { userSettings.enableNoteListAnimations }
@@ -75,6 +77,12 @@ struct MainView: View {
                 // MARK: - Events
                 .onAppear { vm.onAppear() }
                 .onChange(of: scenePhase) { vm.onChange(scenePhase: scenePhase) }
+                .onChange(of: selectedPhoto) {
+                    if let selectedPhoto {
+                        vm.handlePhotoPickerSelection(selectedPhotos)
+                    }
+                    selectedPhoto = nil
+                }
                 // Opening from Camera Control
                 .onReceive(NotificationCenter.default.publisher(for: .cameraControlDidActivate)) { _ in
                     vm.handleCameraControlAction()

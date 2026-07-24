@@ -8,6 +8,7 @@
 import Combine
 import LockedCameraCapture
 import Photos
+import PhotosUI
 import SwiftUI
 import Translation
 import UniformTypeIdentifiers
@@ -379,6 +380,10 @@ class MainViewModel: ObservableObject {
             showFileImportError = true
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
+    }
+    
+    // Hande PhotoPicker selection
+    func handlePhotoPickerSelection(_ item: PhotosPickerItem) {
     }
     
     // Handler for keyboard shortcuts
