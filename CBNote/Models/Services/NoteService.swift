@@ -142,7 +142,7 @@ class NoteService: ObservableObject {
         }
     }
     
-    func saveCapturedImage(data: Data, fileExtension: String = "jpeg") -> URL? {
+    func saveImage(data: Data, fileExtension: String = "jpeg") -> URL? {
         guard let fileURL = self.createFileURL(fileExtension: fileExtension) else { return nil }
         do {
             try data.write(to: fileURL)
@@ -258,7 +258,7 @@ class NoteService: ObservableObject {
                 
                 for fileURL in fileURLs {
                     if let data = try? Data(contentsOf: fileURL) {
-                        _ = self.saveCapturedImage(data: data)
+                        _ = self.saveImage(data: data)
                     }
                 }
                 

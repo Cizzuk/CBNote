@@ -329,7 +329,7 @@ class MainViewModel: ObservableObject {
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
         // Save as new note
-        guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
+        guard let newImageURL = noteManager.saveImage(data: data) else {
             if !suppress {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
@@ -389,7 +389,7 @@ class MainViewModel: ObservableObject {
             case .success(let data):
                 let fileExtension = item.supportedContentTypes.first?.preferredFilenameExtension ?? ""
                 guard let imageData = data,
-                      let newImageURL = self?.noteManager.saveCapturedImage(data: imageData, fileExtension: fileExtension)
+                      let newImageURL = self?.noteManager.saveImage(data: imageData, fileExtension: fileExtension)
                 else {
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                     return
