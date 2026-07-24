@@ -79,7 +79,7 @@ struct MainView: View {
                 .onChange(of: scenePhase) { vm.onChange(scenePhase: scenePhase) }
                 .onChange(of: selectedPhoto) {
                     if let selectedPhoto {
-                        vm.handlePhotoPickerSelection(selectedPhotos)
+                        vm.handlePhotoPickerSelection(selectedPhoto)
                     }
                     selectedPhoto = nil
                 }

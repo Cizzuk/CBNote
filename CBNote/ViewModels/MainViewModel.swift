@@ -384,6 +384,27 @@ class MainViewModel: ObservableObject {
     
     // Hande PhotoPicker selection
     func handlePhotoPickerSelection(_ item: PhotosPickerItem) {
+        item.loadTransferable(type: Data.self) { [weak self] result in
+            switch result {
+            case .success(let data):
+                let fileExtension = item.supportedContentTypes.first?.preferredFilenameExtension ?? ""
+                guard let imageData = data,
+                      let newImageURL = self?.noteManager.saveCapturedImage(data: imageData, fileExtension: fileExtension)
+                else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    return
+                }
+                
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                DispatchQueue.main.async {
+                    self?.newFileURLToScroll = newImageURL
+                }
+                
+            case .failure(let error):
+                print("PhotoPicker load error: ", error)
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
     }
     
     // Handler for keyboard shortcuts

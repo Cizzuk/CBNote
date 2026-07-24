@@ -142,8 +142,8 @@ class NoteService: ObservableObject {
         }
     }
     
-    func saveCapturedImage(data: Data) -> URL? {
-        guard let fileURL = self.createFileURL(fileExtension: "jpeg") else { return nil }
+    func saveCapturedImage(data: Data, fileExtension: String = "jpeg") -> URL? {
+        guard let fileURL = self.createFileURL(fileExtension: fileExtension) else { return nil }
         do {
             try data.write(to: fileURL)
             self.loadFiles()
