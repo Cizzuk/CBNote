@@ -77,13 +77,19 @@ struct TrueDevice {
     }
     
     static let defaultSearchEngine: String = {
-        let defaultEngine: String
-        if let url = URL(string: "x-web-search://?test"),
-           UIApplication.shared.canOpenURL(url) {
-            defaultEngine = "x-web-search://?%s"
-        } else {
-            defaultEngine = "https://www.google.com/search?q=%s"
+        #if targetEnvironment(macCatalyst)
+        return false
+        
+        #else
+        switch userInterfaceIdiom {
+        case .phone:
+            return "x-web-search://?%s"
+        case .pad:
+            return "x-web-search://?%s"
+        default:
+            return "https://duckduckgo.com/?q=%s"
         }
-        return defaultEngine
+        
+        #endif
     }()
 }

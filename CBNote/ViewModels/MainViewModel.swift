@@ -278,12 +278,11 @@ class MainViewModel: ObservableObject {
     func openInBrowser(at url: URL) {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         
-        // If content is a valid URL, open directly
-        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
-        // Check only one line
-        if !trimmedContent.contains("\n") {
-            // Check valid URL
-            if let linkURL = URL(string: trimmedContent), UIApplication.shared.canOpenURL(linkURL) {
+        // If content is a valid URL and has allowed scheme, open it directly
+        if let linkURL = URL(string: content.trimmingCharacters(in: .whitespacesAndNewlines)),
+           let scheme = linkURL.scheme?.lowercased() {
+            let allowedSchemes = ["http", "https", "x-web-search", "mailto", "tel", "sms"]
+            if allowedSchemes.contains(scheme) {
                 UIApplication.shared.open(linkURL)
                 return
             }
