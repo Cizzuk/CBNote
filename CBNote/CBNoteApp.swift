@@ -59,6 +59,7 @@ struct CBNoteApp: App {
         // MARK: - Window Group
         WindowGroup {
             MainView()
+                .scrollDismissesKeyboard(.interactively)
                 #if targetEnvironment(macCatalyst)
                 .onAppear {
                     (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
