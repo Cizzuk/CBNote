@@ -78,7 +78,7 @@ struct TrueDevice {
     
     static let defaultSearchEngine: String = {
         #if targetEnvironment(macCatalyst)
-        return false
+        return "https://duckduckgo.com/?q=%s"
         
         #else
         switch userInterfaceIdiom {
