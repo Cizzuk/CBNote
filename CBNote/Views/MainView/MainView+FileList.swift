@@ -80,7 +80,6 @@ extension MainView {
                 // To reduce View jitter
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
-            .scrollDismissesKeyboard(.interactively)
             .onChange(of: vm.unpinnedFiles) {
                 guard let scrollPos = vm.newFileURLToScroll else { return }
                 DispatchQueue.main.async {

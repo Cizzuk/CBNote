@@ -493,6 +493,9 @@
         }
       }
     },
+    "Import from Photos" : {
+
+    },
     "iPhone needs to be unlocked after reboot." : {
       "localizations" : {
         "ja" : {

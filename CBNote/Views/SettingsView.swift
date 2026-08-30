@@ -19,6 +19,7 @@ struct SettingsView: View {
             List {
                 Section {
                     Toggle("Auto Paste from Clipboard", isOn: $userSettings.autoPasteWhenOpening)
+                        .tint(.accent)
                     if TrueDevice.isCamControlAvailable {
                         Picker("Camera Control Action", selection: $userSettings.cameraControlAction) {
                             ForEach(OpenAppOption.allCases) { action in
@@ -52,9 +53,11 @@ struct SettingsView: View {
                         }
                         
                         Toggle("Remain in Camera After Shooting", isOn: $userSettings.remainCameraAfterCapture)
+                            .tint(.accent)
                         
                         if TrueDevice.isSaveToPhotosAllowed() {
                             Toggle("Save Captured Image to Photos", isOn: $userSettings.saveCapturedImageToPhotos)
+                                .tint(.accent)
                         }
                     } header: {
                         Text("Camera")
@@ -68,7 +71,9 @@ struct SettingsView: View {
                         }
                     }
                     Toggle("Show Hidden Files", isOn: $userSettings.showHiddenFiles)
+                        .tint(.accent)
                     Toggle("Enable Note List Animations", isOn: $userSettings.enableNoteListAnimations)
+                        .tint(.accent)
                 } header: {
                     Text("Note List")
                 } footer: {
