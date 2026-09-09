@@ -8,6 +8,7 @@
 import Combine
 import LockedCameraCapture
 import Photos
+import PhotosUI
 import SwiftUI
 import Translation
 import UniformTypeIdentifiers
@@ -277,12 +278,11 @@ class MainViewModel: ObservableObject {
     func openInBrowser(at url: URL) {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         
-        // If content is a valid URL, open directly
-        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
-        // Check only one line
-        if !trimmedContent.contains("\n") {
-            // Check valid URL
-            if let linkURL = URL(string: trimmedContent), UIApplication.shared.canOpenURL(linkURL) {
+        // If content is a valid URL and has allowed scheme, open it directly
+        if let linkURL = URL(string: content.trimmingCharacters(in: .whitespacesAndNewlines)),
+           let scheme = linkURL.scheme?.lowercased() {
+            let allowedSchemes = ["http", "https", "x-web-search", "mailto", "tel", "sms"]
+            if allowedSchemes.contains(scheme) {
                 UIApplication.shared.open(linkURL)
                 return
             }
@@ -328,7 +328,7 @@ class MainViewModel: ObservableObject {
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
         // Save as new note
-        guard let newImageURL = noteManager.saveCapturedImage(data: data) else {
+        guard let newImageURL = noteManager.saveImage(data: data) else {
             if !suppress {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
@@ -378,6 +378,31 @@ class MainViewModel: ObservableObject {
             print("File import error: ", error)
             showFileImportError = true
             UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
+    }
+    
+    // Hande PhotoPicker selection
+    func handlePhotoPickerSelection(_ item: PhotosPickerItem) {
+        item.loadTransferable(type: Data.self) { [weak self] result in
+            switch result {
+            case .success(let data):
+                let fileExtension = item.supportedContentTypes.first?.preferredFilenameExtension ?? ""
+                guard let imageData = data,
+                      let newImageURL = self?.noteManager.saveImage(data: imageData, fileExtension: fileExtension)
+                else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    return
+                }
+                
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                DispatchQueue.main.async {
+                    self?.newFileURLToScroll = newImageURL
+                }
+                
+            case .failure(let error):
+                print("PhotoPicker load error: ", error)
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
         }
     }
     
