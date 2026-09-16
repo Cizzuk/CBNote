@@ -65,16 +65,9 @@ class RecorderActivityManager {
     static func endAll() {
         let activities = Activity<RecorderActivityAttributes>.activities
         
-        let contentState = RecorderActivityAttributes.ContentState()
-        
-        let content = ActivityContent(
-            state: contentState,
-            staleDate: nil
-        )
-        
         Task.detached(priority: .userInitiated) {
             for activity in activities {
-                await activity.end(content, dismissalPolicy: .immediate)
+                await activity.end(nil, dismissalPolicy: .immediate)
             }
         }
     }
