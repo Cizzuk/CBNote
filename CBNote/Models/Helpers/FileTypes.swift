@@ -22,7 +22,7 @@ struct FileTypes {
     }
     
     static func isPreviewableImage(_ url: URL) -> Bool {
-        let previewableImage = ["png", "jpg", "jpeg", "heic"]
+        let previewableImage = ["png", "jpg", "jpeg", "heic", "heif", "tif", "tiff"]
         return previewableImage.contains(url.pathExtension.lowercased())
     }
     
