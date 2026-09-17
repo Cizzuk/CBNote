@@ -12,13 +12,16 @@ struct FileTypes {
         let editableText = [
             "rtf", "xml", "html", "htm", "tex", "json", "yaml", "yml", "toml", "ahap"
         ]
-        let isEditableText: Bool = editableText.contains(url.pathExtension.lowercased())
+        
+        if editableText.contains(url.pathExtension.lowercased()) {
+            return true
+        }
         
         if let type = UTType(filenameExtension: url.pathExtension) {
-            return (type.conforms(to: .plainText) || isEditableText)
-        } else {
-            return isEditableText
+            return type.conforms(to: .plainText)
         }
+        
+        return false
     }
     
     static func isPreviewableImage(_ url: URL) -> Bool {
