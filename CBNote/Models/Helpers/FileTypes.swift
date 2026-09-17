@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 struct FileTypes {
     static func isEditableText(_ url: URL) -> Bool {
         let editableText = [
-            "rtf", "xml", "html", "htm", "tex", "json", "yaml", "yml", "toml", "ahap"
+            "rtf", "xml", "html", "htm", "tex", "json", "jsonc", "yaml", "yml", "toml", "ahap"
         ]
         
         if editableText.contains(url.pathExtension.lowercased()) {
@@ -41,7 +41,7 @@ struct FileTypes {
         }
         
         // Check Extensions
-        let trueExts: [String] = ["md", "markdown", "csv", "log", "tex", "yml", "yaml", "toml"]
+        let trueExts: [String] = ["md", "markdown", "csv", "log", "tex", "jsonc", "yml", "yaml", "toml"]
         if trueExts.contains(url.pathExtension.lowercased()) {
             return true
         }
