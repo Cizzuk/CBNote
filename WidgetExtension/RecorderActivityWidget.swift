@@ -21,7 +21,7 @@ struct RecorderActivityWidget: Widget {
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
-                .padding(3)
+                .padding(3.5)
                 .accessibilityLabel("CBNote")
                 .foregroundStyle(.white)
         }
@@ -31,11 +31,11 @@ struct RecorderActivityWidget: Widget {
         var size: CGFloat? = nil
 
         var body: some View {
-            Image(systemName: "waveform.badge.microphone")
+            Image(systemName: "record.circle")
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
-                .padding(2)
+                .padding(3)
                 .accessibilityLabel("Recording")
                 .foregroundStyle(.red)
         }
