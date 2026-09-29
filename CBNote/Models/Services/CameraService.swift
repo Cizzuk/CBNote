@@ -257,9 +257,10 @@ class CameraService: NSObject, ObservableObject {
     }
     
     func takePhoto() {
-        guard output.connection(with: .video)?.isActive != nil
-        else { return }
+        guard output.connection(with: .video)?.isActive != nil else { return }
         
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+
         updateRotationAngle()
         let settings = AVCapturePhotoSettings()
         if output.supportedFlashModes.contains(flashMode) {
@@ -291,8 +292,7 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         AudioServicesDisposeSystemSoundID(1108) // 1108: shutter sound
         
-        DispatchQueue.main.async {
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        Task { @MainActor in
             self.shouldFlashScreen = true
             withAnimation(.linear(duration: 0.1)) {
                 self.shouldFlashScreen = false
