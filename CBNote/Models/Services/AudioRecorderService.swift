@@ -139,7 +139,7 @@ class AudioRecorderService: ObservableObject {
         audioRecorder = nil
         recordingURL = nil
         
-        DispatchQueue.global(qos: .utility).async {
+        Task.detached(priority: .utility) {
             try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         }
         
