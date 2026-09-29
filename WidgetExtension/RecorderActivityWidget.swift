@@ -72,26 +72,6 @@ struct RecorderActivityWidget: Widget {
         }
     }
     
-    struct FinishRecordButtonIntent: AppIntent {
-        static let title: LocalizedStringResource = "Finish Record"
-        static var openAppWhenRun = false
-        static var isDiscoverable = false
-
-        @MainActor
-        func perform() async throws -> some IntentResult {
-            GroupUserDefaults.set(true, forKey: CFNotificationFlags.shouldFinishRecording)
-            CFNotificationCenterPostNotification(
-                CFNotificationCenterGetDarwinNotifyCenter(),
-                .shouldFinishRecording,
-                nil,
-                nil,
-                true
-            )
-            
-            return .result()
-        }
-    }
-    
     struct MainActivityView: View {
         @Environment(\.activityFamily) var activityFamily
         

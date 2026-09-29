@@ -29,30 +29,14 @@ class AudioRecorderService: ObservableObject {
     private var notificationCancellables = Set<AnyCancellable>()
     private var recordingURL: URL?
     
-    private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
-        guard let observer else { return }
-        let instance = Unmanaged<AudioRecorderService>.fromOpaque(observer).takeUnretainedValue()
-        
-        // Check Flag
-        if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
-            DispatchQueue.main.async {
-                instance.finishRecording()
-            }
-            GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
-        }
-    }
-    
     init() {
-        // Observe Darwin Notification for Finishing Recording from Live Activity
-        GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
-        CFNotificationCenterAddObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            AudioRecorderService.finishRecordDarwinCallback,
-            CFNotificationName.shouldFinishRecording.rawValue,
-            nil,
-            .deliverImmediately
-        )
+        // Observe Notification for Finishing Recording from Live Activity
+        NotificationCenter.default.publisher(for: .shouldFinishRecording)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.finishRecording()
+            }
+            .store(in: &notificationCancellables)
         
         // Observe AVAudioSession Interruptions
         NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)
@@ -75,16 +59,6 @@ class AudioRecorderService: ObservableObject {
                 self?.finishRecording()
             }
             .store(in: &notificationCancellables)
-    }
-    
-    deinit {
-        // Remove All Darwin Notification Observers
-        CFNotificationCenterRemoveObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            nil,
-            nil
-        )
     }
     
     @MainActor
