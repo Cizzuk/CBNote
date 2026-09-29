@@ -16,9 +16,9 @@ struct CameraPreview: UIViewControllerRepresentable {
         let controller = VideoPreviewController()
         let view = VideoPreviewView()
         
-        Task {
-            if !self.session.isRunning {
-                self.session.startRunning()
+        Task.detached(priority: .userInitiated) {
+            if await !self.session.isRunning {
+                await self.session.startRunning()
             }
             await MainActor.run {
                 view.videoPreviewLayer.videoGravity = .resizeAspect
