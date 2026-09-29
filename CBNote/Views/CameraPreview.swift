@@ -16,11 +16,11 @@ struct CameraPreview: UIViewControllerRepresentable {
         let controller = VideoPreviewController()
         let view = VideoPreviewView()
         
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task {
             if !self.session.isRunning {
                 self.session.startRunning()
             }
-            DispatchQueue.main.async {
+            await MainActor.run {
                 view.videoPreviewLayer.videoGravity = .resizeAspect
                 view.videoPreviewLayer.session = self.session
             }

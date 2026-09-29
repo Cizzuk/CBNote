@@ -114,7 +114,9 @@ class AudioRecorderService: ObservableObject {
             sessionOptions = [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
             #endif
             
-            DispatchQueue.global(qos: .userInitiated).async {
+            Task.detached(priority: .userInitiated) { [weak self = self] in
+                guard let self = self else { return }
+                
                 do {
                     let session = AVAudioSession.sharedInstance()
                     try session.setCategory(.playAndRecord, mode: .default, options: sessionOptions)
@@ -124,25 +126,24 @@ class AudioRecorderService: ObservableObject {
                     recorder.isMeteringEnabled = true
                     
                     guard recorder.record() else {
-                        self.onError?(RecordError.recordingFailed)
+                        await onError?(RecordError.recordingFailed)
                         return
                     }
                     
-                    self.audioRecorder = recorder
-                    self.recordingURL = tempURL
-                    
-                    DispatchQueue.main.async {
+                    await MainActor.run {
+                        self.audioRecorder = recorder
+                        self.recordingURL = tempURL
                         self.elapsedTime = 0
                         self.isRecording = true
                     }
                     
-                    self.startTimer()
-                    RecorderActivityManager.start()
+                    await startTimer()
+                    await RecorderActivityManager.start()
                 } catch {
-                    self.stopTimer()
-                    RecorderActivityManager.endAll()
+                    await stopTimer()
+                    await RecorderActivityManager.endAll()
                     
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         self.isRecording = false
                         self.onError?(RecordError.various(error))
                     }
