@@ -1,0 +1,161 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Camera access is denied. Please grant permission in Settings." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラにアクセスする権限がありません。設定から許可してください。"
+          }
+        }
+      }
+    },
+    "Camera access is restricted." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラは制限されています。"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
+          }
+        }
+      }
+    },
+    "Cannot access the camera." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラにアクセスできません。"
+          }
+        }
+      }
+    },
+    "CaptureIntent" : {
+      "shouldTranslate" : false
+    },
+    "Close Curtain" : {
+      "comment" : "TemporaryScreenCurtain",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カーテンを閉じる"
+          }
+        }
+      }
+    },
+    "Flash Auto" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュ自動"
+          }
+        }
+      }
+    },
+    "Flash Off" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュオフ"
+          }
+        }
+      }
+    },
+    "Flash On" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュオン"
+          }
+        }
+      }
+    },
+    "Please allow camera access to take photos." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を撮るにはカメラへのアクセスを許可する必要があります。"
+          }
+        }
+      }
+    },
+    "Switch Camera" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラを切り替え"
+          }
+        }
+      }
+    },
+    "Switch Lens" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レンズを切り替え"
+          }
+        }
+      }
+    },
+    "Take Photo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撮影"
+          }
+        }
+      }
+    },
+    "Toggle Flash" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュを切り替え"
+          }
+        }
+      }
+    },
+    "Unknown Flash Mode" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なフラッシュモード"
+          }
+        }
+      }
+    },
+    "You are on the lock screen. You can check photos taken after unlocking your device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ロック画面から起動しています。撮影した写真はロック解除したあとに確認できます。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

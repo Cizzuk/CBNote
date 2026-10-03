@@ -1,0 +1,161 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Cannot connect to iPhone." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneに接続できませんでした。"
+          }
+        }
+      }
+    },
+    "CBNote" : {
+      "shouldTranslate" : false
+    },
+    "Close Curtain" : {
+      "comment" : "TemporaryScreenCurtain",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カーテンを閉じる"
+          }
+        }
+      }
+    },
+    "Companion app is not installed on iPhone." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンパニオンアプリがiPhoneにインストールされていません"
+          }
+        }
+      }
+    },
+    "Connection is not activated." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続が有効になっていません。"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー"
+          }
+        }
+      }
+    },
+    "Failed to load content." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンテンツの読み込みに失敗しました。"
+          }
+        }
+      }
+    },
+    "Failed to load image." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像の読み込みに失敗しました"
+          }
+        }
+      }
+    },
+    "iPhone needs to be unlocked after reboot." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneを再起動した後に、ロックを解除する必要があります。"
+          }
+        }
+      }
+    },
+    "No locations available." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用可能な場所がありません。"
+          }
+        }
+      }
+    },
+    "No notes yet." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだノートがありません。"
+          }
+        }
+      }
+    },
+    "Note is empty" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空のノート"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Pinned Notes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めされたノート"
+          }
+        }
+      }
+    },
+    "Reload" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再読み込み"
+          }
+        }
+      }
+    },
+    "Unsupported file type." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないファイル形式です。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

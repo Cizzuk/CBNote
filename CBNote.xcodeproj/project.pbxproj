@@ -18,10 +18,6 @@
 		BEC15B1A2F3893AB002B7B82 /* TemporaryScreenCurtain in Frameworks */ = {isa = PBXBuildFile; productRef = BEC15B192F3893AB002B7B82 /* TemporaryScreenCurtain */; };
 		BEE666E02F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
 		BEE666E12F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
-		BEFA7AF12EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
-		BEFA7AF22EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
-		BEFA7AF32EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
-		BEFA7AF42EE572870023643B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BEFA7AF02EE572870023643B /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,7 +89,6 @@
 		BE994B5B2EDC522A008053C1 /* CaptureExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = CaptureExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEAF98692EE546A100488245 /* CBNote Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CBNote Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE666DE2F5C67C1008C8134 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		BEFA7AF02EE572870023643B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -247,7 +242,6 @@
 			children = (
 				BEE666DE2F5C67C1008C8134 /* Constants.swift */,
 				BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */,
-				BEFA7AF02EE572870023643B /* Localizable.xcstrings */,
 				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE8854792EDB01F20040399C /* CBNote */,
 				BE994B5C2EDC522A008053C1 /* CaptureExtension */,
@@ -424,7 +418,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEFA7AF32EE572870023643B /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,7 +425,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEFA7AF12EE572870023643B /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +432,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEFA7AF22EE572870023643B /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,7 +439,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEFA7AF42EE572870023643B /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
