@@ -1,6 +1,6 @@
 //
 //  CBNoteWatchApp.swift
-//  CBNote Watch App
+//  CBNote Watch
 //
 //  Created by Cizzuk on 2025/12/07.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct CBNoteWatchApp: App {
+struct CBNoteWatch: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -1,6 +1,6 @@
 //
 //  RecorderActivityWidget.swift
-//  WidgetExtension
+//  CBNote Widget Extension
 //
 //  Created by Cizzuk on 2026/03/03.
 //
