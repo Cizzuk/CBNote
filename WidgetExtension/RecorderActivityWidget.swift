@@ -1,6 +1,6 @@
 //
 //  RecorderActivityWidget.swift
-//  WidgetExtension
+//  CBNote Widget Extension
 //
 //  Created by Cizzuk on 2026/03/03.
 //
@@ -21,7 +21,7 @@ struct RecorderActivityWidget: Widget {
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
-                .padding(3)
+                .padding(3.5)
                 .accessibilityLabel("CBNote")
                 .foregroundStyle(.white)
         }
@@ -31,11 +31,11 @@ struct RecorderActivityWidget: Widget {
         var size: CGFloat? = nil
 
         var body: some View {
-            Image(systemName: "waveform.badge.microphone")
+            Image(systemName: "record.circle")
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
-                .padding(2)
+                .padding(3)
                 .accessibilityLabel("Recording")
                 .foregroundStyle(.red)
         }
@@ -69,26 +69,6 @@ struct RecorderActivityWidget: Widget {
             }
             .tint(.red)
             .padding(5)
-        }
-    }
-    
-    struct FinishRecordButtonIntent: AppIntent {
-        static let title: LocalizedStringResource = "Finish Record"
-        static var openAppWhenRun = false
-        static var isDiscoverable = false
-
-        @MainActor
-        func perform() async throws -> some IntentResult {
-            GroupUserDefaults.set(true, forKey: CFNotificationFlags.shouldFinishRecording)
-            CFNotificationCenterPostNotification(
-                CFNotificationCenterGetDarwinNotifyCenter(),
-                .shouldFinishRecording,
-                nil,
-                nil,
-                true
-            )
-            
-            return .result()
         }
     }
     

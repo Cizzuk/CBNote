@@ -1,0 +1,91 @@
+{
+  "features" : [
+    "specular-location"
+  ],
+  "fill" : "automatic",
+  "groups" : [
+    {
+      "blur-material" : null,
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.00000,0.00000,0.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "extended-gray:1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:1.00000,1.00000"
+              }
+            }
+          ],
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "cam.png",
+          "name" : "cam"
+        }
+      ],
+      "name" : "Cam",
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          -8
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : "inside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.2
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "srgb:0.20000,0.40000,1.00000,1.00000"
+          },
+          "glass" : true,
+          "image-name" : "glare.png",
+          "name" : "glare"
+        }
+      ],
+      "name" : "Glare",
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          -8
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : "inside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.25
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

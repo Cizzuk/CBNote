@@ -146,16 +146,6 @@
         }
       }
     },
-    "Cannot connect to iPhone." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iPhoneに接続できませんでした。"
-          }
-        }
-      }
-    },
     "CaptureIntent" : {
       "shouldTranslate" : false
     },
@@ -216,26 +206,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "折りたたまれています"
-          }
-        }
-      }
-    },
-    "Companion app is not installed on iPhone." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コンパニオンアプリがiPhoneにインストールされていません"
-          }
-        }
-      }
-    },
-    "Connection is not activated." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接続が有効になっていません。"
           }
         }
       }
@@ -360,26 +330,6 @@
         }
       }
     },
-    "Failed to load content." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コンテンツの読み込みに失敗しました。"
-          }
-        }
-      }
-    },
-    "Failed to load image." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画像の読み込みに失敗しました"
-          }
-        }
-      }
-    },
     "Failed to start recording." : {
       "localizations" : {
         "ja" : {
@@ -494,14 +444,11 @@
       }
     },
     "Import from Photos" : {
-
-    },
-    "iPhone needs to be unlocked after reboot." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhoneを再起動した後に、ロックを解除する必要があります。"
+            "value" : "“写真”からインポート"
           }
         }
       }
@@ -568,7 +515,7 @@
         }
       }
     },
-    "MIT License\n\nCopyright (c) 2025 Cizzuk\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE." : {
+    "MIT License\n\nCopyright (c) 2025 Cizzuk\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n \nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. \n \nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE." : {
       "shouldTranslate" : false
     },
     "Name" : {
@@ -601,16 +548,6 @@
         }
       }
     },
-    "No locations available." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "利用可能な場所がありません。"
-          }
-        }
-      }
-    },
     "No notes yet." : {
       "localizations" : {
         "ja" : {
@@ -637,16 +574,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "利用可能なコンテンツがクリップボードにありません。"
-          }
-        }
-      }
-    },
-    "Note is empty" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空のノート"
           }
         }
       }
@@ -1261,16 +1188,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべてのピン留めを解除"
-          }
-        }
-      }
-    },
-    "Unsupported file type." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サポートされていないファイル形式です。"
           }
         }
       }

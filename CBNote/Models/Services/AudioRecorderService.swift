@@ -29,30 +29,14 @@ class AudioRecorderService: ObservableObject {
     private var notificationCancellables = Set<AnyCancellable>()
     private var recordingURL: URL?
     
-    private static let finishRecordDarwinCallback: CFNotificationCallback = { _, observer, _, _, _ in
-        guard let observer else { return }
-        let instance = Unmanaged<AudioRecorderService>.fromOpaque(observer).takeUnretainedValue()
-        
-        // Check Flag
-        if GroupUserDefaults.bool(forKey: CFNotificationFlags.shouldFinishRecording) {
-            DispatchQueue.main.async {
-                instance.finishRecording()
-            }
-            GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
-        }
-    }
-    
     init() {
-        // Observe Darwin Notification for Finishing Recording from Live Activity
-        GroupUserDefaults.set(false, forKey: CFNotificationFlags.shouldFinishRecording)
-        CFNotificationCenterAddObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            AudioRecorderService.finishRecordDarwinCallback,
-            CFNotificationName.shouldFinishRecording.rawValue,
-            nil,
-            .deliverImmediately
-        )
+        // Observe Notification for Finishing Recording from Live Activity
+        NotificationCenter.default.publisher(for: .shouldFinishRecording)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.finishRecording()
+            }
+            .store(in: &notificationCancellables)
         
         // Observe AVAudioSession Interruptions
         NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)
@@ -75,16 +59,6 @@ class AudioRecorderService: ObservableObject {
                 self?.finishRecording()
             }
             .store(in: &notificationCancellables)
-    }
-    
-    deinit {
-        // Remove All Darwin Notification Observers
-        CFNotificationCenterRemoveObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            nil,
-            nil
-        )
     }
     
     @MainActor
@@ -114,7 +88,9 @@ class AudioRecorderService: ObservableObject {
             sessionOptions = [.mixWithOthers, .allowBluetoothA2DP, .bluetoothHighQualityRecording]
             #endif
             
-            DispatchQueue.global(qos: .userInitiated).async {
+            Task.detached(priority: .userInitiated) { [weak self = self] in
+                guard let self = self else { return }
+                
                 do {
                     let session = AVAudioSession.sharedInstance()
                     try session.setCategory(.playAndRecord, mode: .default, options: sessionOptions)
@@ -124,25 +100,24 @@ class AudioRecorderService: ObservableObject {
                     recorder.isMeteringEnabled = true
                     
                     guard recorder.record() else {
-                        self.onError?(RecordError.recordingFailed)
+                        await onError?(RecordError.recordingFailed)
                         return
                     }
                     
-                    self.audioRecorder = recorder
-                    self.recordingURL = tempURL
-                    
-                    DispatchQueue.main.async {
+                    await MainActor.run {
+                        self.audioRecorder = recorder
+                        self.recordingURL = tempURL
                         self.elapsedTime = 0
                         self.isRecording = true
                     }
                     
-                    self.startTimer()
-                    RecorderActivityManager.start()
+                    await startTimer()
+                    await RecorderActivityManager.start()
                 } catch {
-                    self.stopTimer()
-                    RecorderActivityManager.endAll()
+                    await stopTimer()
+                    await RecorderActivityManager.endAll()
                     
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         self.isRecording = false
                         self.onError?(RecordError.various(error))
                     }
@@ -164,7 +139,7 @@ class AudioRecorderService: ObservableObject {
         audioRecorder = nil
         recordingURL = nil
         
-        DispatchQueue.global(qos: .utility).async {
+        Task.detached(priority: .utility) {
             try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         }
         

@@ -1,6 +1,6 @@
 //
 //  WidgetExtensionBundle.swift
-//  WidgetExtension
+//  CBNote Widget Extension
 //
 //  Created by Cizzuk on 2025/12/05.
 //

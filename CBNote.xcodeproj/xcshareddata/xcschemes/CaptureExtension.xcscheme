@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BE994B5A2EDC522A008053C1"
-               BuildableName = "CaptureExtension.appex"
-               BlueprintName = "CaptureExtension"
+               BuildableName = "CBNote Capture Extension.appex"
+               BlueprintName = "CBNote Capture Extension"
                ReferencedContainer = "container:CBNote.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

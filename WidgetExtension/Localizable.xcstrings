@@ -1,0 +1,182 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Add New Note" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規ノートを追加"
+          }
+        }
+      }
+    },
+    "CBNote" : {
+      "shouldTranslate" : false
+    },
+    "Close Curtain" : {
+      "comment" : "TemporaryScreenCurtain",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カーテンを閉じる"
+          }
+        }
+      }
+    },
+    "Finish Record" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音を終了"
+          }
+        }
+      }
+    },
+    "Flash Auto" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュ自動"
+          }
+        }
+      }
+    },
+    "Flash Off" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュオフ"
+          }
+        }
+      }
+    },
+    "Flash On" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フラッシュオン"
+          }
+        }
+      }
+    },
+    "Launch Camera" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラを起動"
+          }
+        }
+      }
+    },
+    "Launch CBNote Camera" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CBNoteでカメラを起動"
+          }
+        }
+      }
+    },
+    "Open App Only" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開くのみ"
+          }
+        }
+      }
+    },
+    "Open App Option" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開くときのオプション"
+          }
+        }
+      }
+    },
+    "Open CBNote" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CBNoteを開く"
+          }
+        }
+      }
+    },
+    "Open URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URLを開く"
+          }
+        }
+      }
+    },
+    "Paste from Clipboard" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードから貼り付け"
+          }
+        }
+      }
+    },
+    "Recording" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音中"
+          }
+        }
+      }
+    },
+    "Start Recording" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音を開始"
+          }
+        }
+      }
+    },
+    "Unknown Flash Mode" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なフラッシュモード"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

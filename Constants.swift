@@ -10,12 +10,9 @@ import Foundation
 
 let GroupUserDefaults = UserDefaults(suiteName: "group.net.cizzuk.cbnote")!
 
-enum CFNotificationFlags {
-    static let shouldFinishRecording = "CFNotification.shouldFinishRecording"
-}
-
-extension CFNotificationName {
-    static let shouldFinishRecording = CFNotificationName("net.cizzuk.cbnote.CFNotification.shouldFinishRecording" as CFString)
+extension Notification.Name {
+    static let assistantDidActivate = Notification.Name("assistantDidActivate")
+    static let shouldFinishRecording = Notification.Name("shouldFinishRecording")
 }
 
 extension AVCaptureDevice.FlashMode {

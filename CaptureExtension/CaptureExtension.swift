@@ -1,6 +1,6 @@
 //
 //  CaptureExtension.swift
-//  CaptureExtension
+//  CBNote Capture Extension
 //
 //  Created by Cizzuk on 2025/11/30.
 //

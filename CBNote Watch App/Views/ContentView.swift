@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  CBNote Watch App
+//  CBNote Watch
 //
 //  Created by Cizzuk on 2025/12/07.
 //
