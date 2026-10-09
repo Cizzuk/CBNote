@@ -134,17 +134,13 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(action: { dismiss() }) {
-                        Label("Close", systemImage: "xmark")
-                    }
-                    .keyboardShortcut(.cancelAction)
+                    Button(role: .close, action: { dismiss() })
+                        .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button {
+                    Button(role: .close) {
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    } label: {
-                        Label("Done", systemImage: "checkmark")
                     }
                 }
             }

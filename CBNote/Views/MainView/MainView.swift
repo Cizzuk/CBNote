@@ -20,7 +20,7 @@ struct MainView: View {
     @State var previewURL: URL?
     @State var isExpandPinnedSection = true
     @State var showFileImporter = false
-    @State var selectedPhoto: PhotosPickerItem? = nil
+    @State var selectedPhoto: PhotosPickerItem?
     
     var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
     var enableNoteListAnimations: Bool { userSettings.enableNoteListAnimations }

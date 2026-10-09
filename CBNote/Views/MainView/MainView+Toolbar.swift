@@ -52,7 +52,7 @@ extension MainView {
         }
         
         // MARK: - Top Left
-        ToolbarItem(placement: .topBarLeading) {
+        ToolbarItem(placement: .navigation) {
             Menu {
                 Button(action: { vm.showSettings = true }) {
                     Label("App Settings", systemImage: "gearshape")
@@ -113,10 +113,8 @@ extension MainView {
         // MARK: - Keyboard
         ToolbarItemGroup(placement: .keyboard) {
             Spacer()
-            Button {
+            Button(role: .close) {
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-            } label: {
-                Label("Done", systemImage: "checkmark")
             }
         }
     }

@@ -58,7 +58,7 @@ struct CameraView: View {
                     ZStack {
                         Circle()
                             .glassEffect()
-                        Button(action: { camera.takePhoto() }) {
+                        Button(role: .confirm, action: { camera.takePhoto() }) {
                             Circle()
                                 .inset(by: 8)
                                 .fill(.white)
@@ -73,13 +73,11 @@ struct CameraView: View {
             .toolbar {
                 if !isLockedMode {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel", systemImage: "xmark") {
-                            dismiss()
-                        }
+                        Button(role: .close, action: { dismiss() })
                     }
                 }
                 
-                ToolbarItemGroup(placement: .topBarTrailing) {
+                ToolbarItemGroup {
                     Group {
                         Button("Toggle Flash", systemImage: camera.flashMode.systemImage) {
                             camera.toggleFlash()

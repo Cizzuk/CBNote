@@ -178,16 +178,6 @@
         }
       }
     },
-    "Close" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閉じる"
-          }
-        }
-      }
-    },
     "Close Curtain" : {
       "comment" : "TemporaryScreenCurtain",
       "extractionState" : "manual",
@@ -266,16 +256,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開発者"
-          }
-        }
-      }
-    },
-    "Done" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了"
           }
         }
       }
