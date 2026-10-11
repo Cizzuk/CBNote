@@ -6,7 +6,7 @@ This is a simple note app linked with the file system. You can quickly check and
 
 **[Download on the App Store](https://apps.apple.com/app/cbnote/id6756120567)**
 
-**[AltStore PAL Source](https://i.cizzuk.net/altstore/)**
+**[AltStore PAL Source](https://cizzuk.net/altstore/)**
 
 ## Features
 
