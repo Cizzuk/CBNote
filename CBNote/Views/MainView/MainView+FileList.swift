@@ -14,7 +14,8 @@ extension MainView {
             List {
                 // Empty State
                 if vm.pinnedFiles.isEmpty && vm.unpinnedFiles.isEmpty {
-                    Section {} footer: {
+                    Section {
+                    } footer: {
                         if vm.searchQuery.isEmpty {
                             Text("No notes yet.")
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -31,7 +32,7 @@ extension MainView {
                         }
                     }
                 }
-                
+
                 // Pinned Files
                 if !vm.pinnedFiles.isEmpty {
                     Section {
@@ -54,7 +55,7 @@ extension MainView {
                         pinnedSectionHeader
                     }
                 }
-                
+
                 // Unpinned Files
                 Section {
                     ForEach(vm.unpinnedFiles, id: \.self) { url in
@@ -71,7 +72,7 @@ extension MainView {
                             }
                     }
                 }
-            } // List
+            }  // List
             // MARK: - List Config
             .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.pinnedFiles)
             .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.unpinnedFiles)
@@ -89,9 +90,9 @@ extension MainView {
                     self.vm.newFileURLToScroll = nil
                 }
             }
-        } // ScrollViewReader
+        }  // ScrollViewReader
     }
-    
+
     // MARK: - Pinned Section Header
     @ViewBuilder
     private var pinnedSectionHeader: some View {

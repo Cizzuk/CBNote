@@ -7,56 +7,56 @@
 
 #if !targetEnvironment(macCatalyst)
 
-import AVKit
-import SwiftUI
+    import AVKit
+    import SwiftUI
 
-struct DummyCameraView: View {
-    @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var camera = CameraService()
-    
-    var body: some View {
-        DummyCameraPreview(session: camera.session)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
-            .opacity(0)
-            .frame(width: 0, height: 0)
-            .onChange(of: scenePhase) {
-                if scenePhase == .background {
+    struct DummyCameraView: View {
+        @Environment(\.scenePhase) private var scenePhase
+        @StateObject private var camera = CameraService()
+
+        var body: some View {
+            DummyCameraPreview(session: camera.session)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+                .opacity(0)
+                .frame(width: 0, height: 0)
+                .onChange(of: scenePhase) {
+                    if scenePhase == .background {
+                        camera.stopSession()
+                        DummyCameraService.shared.close()
+                    }
+                }
+                .onAppear {
+                    camera.startSession()
+                }
+                .onDisappear {
                     camera.stopSession()
                     DummyCameraService.shared.close()
                 }
-            }
-            .onAppear {
-                camera.startSession()
-            }
-            .onDisappear {
-                camera.stopSession()
-                DummyCameraService.shared.close()
-            }
-            .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }
-    }
-    
-    struct DummyCameraPreview: UIViewRepresentable {
-        let session: AVCaptureSession
-        
-        func makeUIView(context: Context) -> UIView {
-            return UIView(frame: .zero)
+                .onCameraCaptureEvent(defaultSoundDisabled: true) { _ in }
         }
-        
-        func updateUIView(_ uiView: UIView, context: Context) { }
+
+        struct DummyCameraPreview: UIViewRepresentable {
+            let session: AVCaptureSession
+
+            func makeUIView(context: Context) -> UIView {
+                return UIView(frame: .zero)
+            }
+
+            func updateUIView(_ uiView: UIView, context: Context) {}
+        }
     }
-}
 
 #else
 
-// MARK: - Mac Catalyst Fall Back
+    // MARK: - Mac Catalyst Fall Back
 
-import SwiftUI
+    import SwiftUI
 
-struct DummyCameraView: View {
-    var body: some View {
-        EmptyView()
+    struct DummyCameraView: View {
+        var body: some View {
+            EmptyView()
+        }
     }
-}
 
 #endif

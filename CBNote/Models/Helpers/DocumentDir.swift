@@ -10,7 +10,7 @@ import UIKit
 enum DocumentDir: String, CaseIterable {
     case onDevice
     case iCloud
-    
+
     var localizedName: LocalizedStringResource {
         switch self {
         case .onDevice:
@@ -34,7 +34,7 @@ enum DocumentDir: String, CaseIterable {
             return "iCloud Drive"
         }
     }
-    
+
     var systemImage: String {
         switch self {
         case .onDevice:
@@ -56,7 +56,7 @@ enum DocumentDir: String, CaseIterable {
             return "icloud"
         }
     }
-    
+
     var directory: URL? {
         switch self {
         case .onDevice:
@@ -65,7 +65,7 @@ enum DocumentDir: String, CaseIterable {
             return iCloudSupport.directoryURL
         }
     }
-    
+
     var isAvailable: Bool {
         switch self {
         case .onDevice:
@@ -74,11 +74,11 @@ enum DocumentDir: String, CaseIterable {
             return iCloudSupport.isAvailable
         }
     }
-    
+
     static var availableDirs: [DocumentDir] {
         return DocumentDir.allCases.filter { $0.isAvailable }
     }
-    
+
     static var defaultDir: DocumentDir {
         if DocumentDir.iCloud.isAvailable {
             return .iCloud

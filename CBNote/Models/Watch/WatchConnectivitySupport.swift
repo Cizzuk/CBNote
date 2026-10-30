@@ -16,7 +16,7 @@ struct WatchFileItem: Identifiable, Codable, Hashable {
     let systemImage: String
     let preview: String?
     let isPinned: Bool
-    
+
     init(url: URL, preview: String? = nil, isPinned: Bool = false) {
         self.id = url
         self.name = url.lastPathComponent
@@ -27,8 +27,8 @@ struct WatchFileItem: Identifiable, Codable, Hashable {
 }
 
 struct WatchDirectoryInfo: Identifiable, Codable, Hashable {
-    let id: String // Raw value of DocumentDir
-    let name: String // Localized name
+    let id: String  // Raw value of DocumentDir
+    let name: String  // Localized name
     let systemImage: String
 }
 

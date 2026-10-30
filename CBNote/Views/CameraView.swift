@@ -12,18 +12,18 @@ import UIKit
 struct CameraView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var camera = CameraService()
-    
+
     var isLockedMode: Bool = false
     var remainAfterCapture: Bool = false
     var onSave: (Data) -> Void
-    
+
     @State private var alertMessage: LocalizedStringResource? = nil
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.black.ignoresSafeArea()
-                
+
                 if camera.cameraPermission == .authorized {
                     CameraPreview(session: camera.session) { point in
                         camera.focus(at: point)
@@ -36,10 +36,10 @@ struct CameraView: View {
                         }
                     }
                 }
-                
+
                 VStack {
                     Spacer()
-                    
+
                     // Display alert message if it exists
                     if let message = alertMessage {
                         HStack {
@@ -53,7 +53,7 @@ struct CameraView: View {
                         }
                         .padding(.bottom, 10)
                     }
-                    
+
                     // Capture Button
                     ZStack {
                         Circle()
@@ -76,33 +76,33 @@ struct CameraView: View {
                         Button(role: .close, action: { dismiss() })
                     }
                 }
-                
+
                 ToolbarItemGroup {
                     Group {
                         Button("Toggle Flash", systemImage: camera.flashMode.systemImage) {
                             camera.toggleFlash()
                         }
                         .accessibilityValue(camera.flashMode.accessibilityValue)
-                        
+
                         Button("Switch Lens", systemImage: "camera.aperture") {
                             camera.switchLens()
                         }
-                        
+
                         Button("Switch Camera", systemImage: "arrow.triangle.2.circlepath.camera") {
                             camera.switchCamera()
                         }
                     }
                 }
-            } // toolbar
+            }  // toolbar
             .accessibilityAction(.escape) { dismiss() }
-        } // NavigationStack
+        }  // NavigationStack
         .accessibilityAction(.magicTap) { camera.takePhoto() }
         .onChange(of: camera.cameraPermission) {
             updateAlertMessage()
         }
         .onAppear {
             #if !EXTENSION
-            UIApplication.shared.isIdleTimerDisabled = true
+                UIApplication.shared.isIdleTimerDisabled = true
             #endif
             camera.startSession()
             camera.onPhotoCaptured = { data in
@@ -117,12 +117,12 @@ struct CameraView: View {
         }
         .onDisappear {
             #if !EXTENSION
-            UIApplication.shared.isIdleTimerDisabled = false
+                UIApplication.shared.isIdleTimerDisabled = false
             #endif
             camera.stopSession()
         }
     }
-    
+
     // Set permission error messages
     private func updateAlertMessage() {
         switch camera.cameraPermission {

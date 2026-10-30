@@ -9,11 +9,11 @@ import SwiftUI
 
 struct TextEditView: View {
     @StateObject private var vm: TextEditViewModel
-    
+
     init(url: URL) {
         _vm = StateObject(wrappedValue: TextEditViewModel(url: url))
     }
-    
+
     var body: some View {
         Group {
             if vm.isLoading {

@@ -20,24 +20,24 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
     case openURL = "Open URL"
 
     var id: String { rawValue }
-    
+
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
         TypeDisplayRepresentation(name: "Open App Option")
     }
-    
-    static var caseDisplayRepresentations: [OpenAppOption : DisplayRepresentation] = [
+
+    static var caseDisplayRepresentations: [OpenAppOption: DisplayRepresentation] = [
         .launchCamera: "Launch Camera",
         .pasteFromClipboard: "Paste from Clipboard",
         .addNewNote: "Add New Note",
         .startRecording: "Start Recording",
         .openAppOnly: "Open App Only",
-        .openURL: "Open URL"
+        .openURL: "Open URL",
     ]
-    
+
     var displayName: LocalizedStringResource {
         return Self.caseDisplayRepresentations[self]?.title ?? ""
     }
-    
+
     var shouldOpenDummyCamera: Bool {
         switch self {
         case .launchCamera, .openURL:
@@ -53,12 +53,12 @@ extension OpenAppOption {
         // Get App URL Schemes
         let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
         let urlSchemes = appURLSchemes?.compactMap { $0["CFBundleURLSchemes"] as? [String] }.flatMap { $0 } ?? []
-        
+
         // Check URL Scheme
         guard let scheme = url.scheme,
-              urlSchemes.contains(scheme)
+            urlSchemes.contains(scheme)
         else { return nil }
-        
+
         // Parse URL
         switch url.host {
         case "open":
@@ -77,7 +77,7 @@ extension OpenAppOption {
         default:
             break
         }
-        
+
         return .openAppOnly
     }
 }

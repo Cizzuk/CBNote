@@ -5,8 +5,8 @@
 //  Created by Cizzuk on 2026/06/05.
 //
 
-import UniformTypeIdentifiers
 import UIKit
+import UniformTypeIdentifiers
 
 class ClipboardSupport {
     static func copyFile(at url: URL, completion: @escaping () -> Void) {
@@ -27,11 +27,11 @@ class ClipboardSupport {
             DispatchQueue.main.async { completion() }
         }
     }
-    
+
     enum PasteError: Error {
         case noValidContent
     }
-    
+
     static func newNoteFromClipboard(
         noteManager: NoteService,
         completion: @escaping (Result<URL, Error>) -> Void
@@ -39,13 +39,13 @@ class ClipboardSupport {
         DispatchQueue.global(qos: .userInitiated).async {
             var lastHandled: URL?
             let pasteboard = UIPasteboard.general
-            
+
             for (index, item) in pasteboard.items.enumerated() {
                 let indexSet = IndexSet(integer: index)
                 func getData(for type: String) -> Data? {
                     pasteboard.data(forPasteboardType: type, inItemSet: indexSet)?.first
                 }
-                
+
                 // 1. Text or URL -> .txt
                 var textContent: String?
                 let textTypes = [
@@ -54,13 +54,15 @@ class ClipboardSupport {
                     UTType.text.identifier,
                     UTType.rtf.identifier,
                 ]
-                
+
                 if let matchedType = textTypes.first(where: { item.keys.contains($0) }),
-                   let data = getData(for: matchedType) {
+                    let data = getData(for: matchedType)
+                {
                     textContent = String(data: data, encoding: .utf8)
-                    
+
                 } else if item.keys.contains(UTType.url.identifier),
-                          let data = getData(for: UTType.url.identifier) {
+                    let data = getData(for: UTType.url.identifier)
+                {
                     // This URL is maybe bplist, so need to convert to string
                     // Parse to [Any]
                     if let dict = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [Any] {
@@ -68,8 +70,9 @@ class ClipboardSupport {
                         for entry in dict {
                             // Try parse as String
                             if let urlString = entry as? String,
-                               // Try convert to URL
-                               let url = URL(string: urlString) {
+                                // Try convert to URL
+                                let url = URL(string: urlString)
+                            {
                                 // Use absoluteString as text content
                                 textContent = url.absoluteString
                                 break
@@ -77,19 +80,20 @@ class ClipboardSupport {
                         }
                     }
                 }
-                
+
                 if let text = textContent {
                     guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
                     try? text.write(to: destURL, atomically: true, encoding: .utf8)
                     lastHandled = destURL
                     continue
                 }
-                
+
                 // 2. File URL
                 if item.keys.contains(UTType.fileURL.identifier),
-                   let data = getData(for: UTType.fileURL.identifier),
-                   let url = URL(dataRepresentation: data, relativeTo: nil) {
-                    
+                    let data = getData(for: UTType.fileURL.identifier),
+                    let url = URL(dataRepresentation: data, relativeTo: nil)
+                {
+
                     guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
                     if let fileData = try? Data(contentsOf: url) {
                         try? fileData.write(to: destURL)
@@ -97,12 +101,13 @@ class ClipboardSupport {
                         continue
                     }
                 }
-                
+
                 // 3. Generic Data (Fallback) (No extension)
                 for typeIdentifier in item.keys.sorted() {
                     guard let type = UTType(typeIdentifier),
-                          let data = getData(for: typeIdentifier) else { continue }
-                    
+                        let data = getData(for: typeIdentifier)
+                    else { continue }
+
                     let ext = type.preferredFilenameExtension ?? ""
                     guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
                     try? data.write(to: destURL)
@@ -110,7 +115,7 @@ class ClipboardSupport {
                     break
                 }
             }
-            
+
             if let handledURL = lastHandled {
                 completion(.success(handledURL))
             } else {
@@ -119,4 +124,3 @@ class ClipboardSupport {
         }
     }
 }
-

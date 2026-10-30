@@ -18,18 +18,18 @@ extension Notification.Name {
 extension AVCaptureDevice.FlashMode {
     var accessibilityValue: LocalizedStringResource {
         switch self {
-        case .off:  return "Flash Off"
-        case .on:   return "Flash On"
+        case .off: return "Flash Off"
+        case .on: return "Flash On"
         case .auto: return "Flash Auto"
         @unknown default:
             return "Unknown Flash Mode"
         }
     }
-    
+
     var systemImage: String {
         switch self {
-        case .off:  return "bolt.slash"
-        case .on:   return "bolt.fill"
+        case .off: return "bolt.slash"
+        case .on: return "bolt.fill"
         case .auto: return "bolt.badge.automatic.fill"
         @unknown default:
             return "bolt.trianglebadge.exclamationmark.fill"

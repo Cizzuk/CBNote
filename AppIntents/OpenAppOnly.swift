@@ -5,13 +5,13 @@
 //  Created by Cizzuk on 2025/12/05.
 //
 
-import WidgetKit
 import AppIntents
 import SwiftUI
+import WidgetKit
 
 struct OpenAppOpenAppOnlyIntent: AppIntent {
     static let title: LocalizedStringResource = "Open CBNote"
-    
+
     static var openAppWhenRun = true
     static var isDiscoverable = true
 

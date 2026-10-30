@@ -5,13 +5,13 @@
 //  Created by Cizzuk on 2025/12/05.
 //
 
-import WidgetKit
 import AppIntents
 import SwiftUI
+import WidgetKit
 
 struct OpenAppAddNewNoteIntent: AppIntent {
     static let title: LocalizedStringResource = "Add New Note"
-    
+
     static var openAppWhenRun = true
     static var isDiscoverable = true
 

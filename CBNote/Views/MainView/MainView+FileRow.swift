@@ -12,7 +12,7 @@ extension MainView {
     func fileRow(url: URL, onPreview: @escaping () -> Void) -> some View {
         FileRow(url: url, onPreview: onPreview)
             .id("\(url.absoluteString)")
-            .onDrag() {
+            .onDrag {
                 return NSItemProvider(contentsOf: url) ?? NSItemProvider()
             }
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -29,7 +29,7 @@ extension MainView {
                 fileContextMenu(url: url)
             }
     }
-    
+
     // MARK: - Context Menu
     @ViewBuilder
     private func fileContextMenu(url: URL) -> some View {
@@ -41,13 +41,13 @@ extension MainView {
             }
         }
         Divider()
-        
+
         if FileTypes.isEditableText(url) {
             #if !targetEnvironment(macCatalyst)
-            // Translate
-            Button(action: { vm.translateFile(at: url) }) {
-                Label("Translate", systemImage: "translate")
-            }
+                // Translate
+                Button(action: { vm.translateFile(at: url) }) {
+                    Label("Translate", systemImage: "translate")
+                }
             #endif
             // Open in Browser
             Button(action: { vm.openInBrowser(at: url) }) {
@@ -55,7 +55,7 @@ extension MainView {
             }
             Divider()
         }
-        
+
         if FileTypes.isPreviewableImage(url) && TrueDevice.isSaveToPhotosAllowed() {
             // Save to Photos
             Button(action: { vm.saveImageToPhotos(at: url) }) {
@@ -63,7 +63,7 @@ extension MainView {
             }
             Divider()
         }
-        
+
         Button(action: { vm.copyFile(at: url) }) {
             Label("Copy", systemImage: "document.on.document")
         }
@@ -74,7 +74,7 @@ extension MainView {
             Label("Quick Look", systemImage: "eye")
         }
         Divider()
-        
+
         Button(action: { vm.startRenaming(at: url) }) {
             Label("Rename", systemImage: "pencil")
         }

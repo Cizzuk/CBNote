@@ -10,45 +10,45 @@ import LockedCameraCapture
 
 class NoteService: ObservableObject {
     private let userSettings = UserSettings.shared
-    
+
     @Published var files: [URL] = []
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
-    
+
     @Published var documentDir: DocumentDir {
         didSet {
             loadPinnedFiles()
             loadFiles()
         }
     }
-    
+
     @Published var sortKey: SortKey {
         didSet {
             loadFiles()
         }
     }
-    
+
     @Published var sortDirection: SortDirection {
         didSet {
             loadFiles()
         }
     }
-    
+
     init() {
         // Load userSettings
         self.documentDir = userSettings.documentDir
         self.sortKey = userSettings.sortKey
         self.sortDirection = userSettings.sortDirection
-        
+
         loadPinnedFiles()
         loadFiles()
     }
-    
+
     // MARK: - File Management
-    
+
     func loadFiles() {
         guard let documentsURL = documentDir.directory,
-              let fileURLs = try? FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
+            let fileURLs = try? FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
         else {
             files = []
             pinnedFiles = []
@@ -56,17 +56,17 @@ class NoteService: ObservableObject {
             print("Error loading files from directory: \(documentDir.rawValue)")
             return
         }
-        
+
         // Sort & Filter
         files = sortFiles(fileURLs)
         pinnedFiles = files.filter { self.isPinned($0) }
         unpinnedFiles = files.filter { !self.isPinned($0) }
     }
-    
+
     func setDocumentDir(type: DocumentDir) {
         documentDir = type
     }
-    
+
     func sortFiles(_ urls: [URL]) -> [URL] {
         return urls.sorted { url1, url2 in
             switch sortKey {
@@ -81,37 +81,37 @@ class NoteService: ObservableObject {
             }
         }
     }
-    
+
     func setSort(key: SortKey, direction: SortDirection) {
         sortKey = key
         sortDirection = direction
     }
-    
+
     // MARK: Create files
-    
+
     func createFileURL(fileExtension: String) -> URL? {
         guard let documentsURL = documentDir.directory else { return nil }
-        
+
         let dateFormatter = DateFormatter()
         let dateFormat = userSettings.nameFormat
         dateFormatter.dateFormat = dateFormat
         let baseName = dateFormatter.string(from: Date())
         let extensionPart = fileExtension.isEmpty ? "" : ".\(fileExtension)"
-        
+
         // Ensure unique filename
         var counter = 0
         var fileURL: URL
         repeat {
             counter += 1
             let counterNumber = counter > 1 ? "-\(counter)" : ""
-            
+
             let fileName = "\(baseName)\(counterNumber)\(extensionPart)"
             fileURL = documentsURL.appendingPathComponent(fileName)
         } while FileManager.default.fileExists(atPath: fileURL.path)
-        
+
         return fileURL
     }
-    
+
     func createNewNote() -> URL? {
         guard let fileURL = createFileURL(fileExtension: "txt") else { return nil }
         do {
@@ -123,15 +123,15 @@ class NoteService: ObservableObject {
         }
         return nil
     }
-    
+
     func saveNewFile(from url: URL) -> URL? {
         guard url.startAccessingSecurityScopedResource() else { return nil }
         defer { url.stopAccessingSecurityScopedResource() }
-        
+
         // Create destination URL
         guard let destURL = createFileURL(fileExtension: url.pathExtension)
         else { return nil }
-        
+
         do {
             try FileManager.default.copyItem(at: url, to: destURL)
             loadFiles()
@@ -141,7 +141,7 @@ class NoteService: ObservableObject {
             return nil
         }
     }
-    
+
     func saveImage(data: Data, fileExtension: String = "jpeg") -> URL? {
         guard let fileURL = self.createFileURL(fileExtension: fileExtension) else { return nil }
         do {
@@ -153,33 +153,32 @@ class NoteService: ObservableObject {
         }
         return nil
     }
-    
+
     // MARK: Delete files
-    
+
     func deleteFile(at url: URL) {
         DispatchQueue.global(qos: .utility).async {
-            do { try FileManager.default.removeItem(at: url) }
-            catch { print("Error deleting file: \(error)") }
-            
+            do { try FileManager.default.removeItem(at: url) } catch { print("Error deleting file: \(error)") }
+
             if self.isPinned(url) {
                 self.togglePin(for: url)
             }
-            
+
             self.loadFiles()
         }
     }
-    
+
     // MARK: Update files
-    
+
     func renameFile(at url: URL, newName: String) {
         DispatchQueue.global(qos: .userInitiated).async {
             let folder = url.deletingLastPathComponent()
             let newURL = folder.appendingPathComponent(newName)
             let wasPinned = self.isPinned(url)
-            
+
             do {
                 try FileManager.default.moveItem(at: url, to: newURL)
-                
+
                 // Re pin
                 if wasPinned {
                     self.pinnedFiles.removeAll { $0.path == url.path }
@@ -187,88 +186,88 @@ class NoteService: ObservableObject {
                     self.savePinnedFiles()
                 }
             } catch { print("Error renaming file: \(error)") }
-            
+
             self.loadFiles()
         }
     }
-    
+
     func isValidFileName(_ name: String) -> Bool {
         let invalidCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>:")
         return name.rangeOfCharacter(from: invalidCharacters) == nil && !name.isEmpty
     }
-    
+
     // MARK: - Pinned Files Management
-    
+
     private func loadPinnedFiles() {
         guard let documentsURL = documentDir.directory else {
             pinnedFiles = []
             return
         }
-        
+
         let savedStrings = UserDefaults.standard.array(forKey: documentDir.pinnedKey) as? [String] ?? []
         let loadedFiles = savedStrings.map { documentsURL.appendingPathComponent($0) }
         pinnedFiles = sortFiles(loadedFiles)
     }
-    
+
     func isPinned(_ url: URL) -> Bool {
         let filename = url.lastPathComponent
         return pinnedFiles.contains(where: { $0.lastPathComponent == filename })
     }
-    
+
     func togglePin(for url: URL) {
         if isPinned(url) {
             pinnedFiles.removeAll { $0.lastPathComponent == url.lastPathComponent }
         } else {
             pinnedFiles.append(url)
         }
-        
+
         // Re sort and update
         pinnedFiles = sortFiles(pinnedFiles)
         unpinnedFiles = files.filter { !isPinned($0) }
-        
+
         savePinnedFiles()
     }
-    
+
     func unpinAll() {
         pinnedFiles = []
         unpinnedFiles = files
         savePinnedFiles()
     }
-    
+
     private func savePinnedFiles() {
         DispatchQueue.global(qos: .background).async {
             let filenames = self.pinnedFiles.map { $0.lastPathComponent }
             UserDefaults.standard.set(filenames, forKey: self.documentDir.pinnedKey)
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     // Handler for locked camera captures
     func importLockedCameraCaptures() {
         #if !targetEnvironment(macCatalyst)
-        DispatchQueue.global(qos: .utility).async {
-            let urls = LockedCameraCaptureManager.shared.sessionContentURLs
-            guard !urls.isEmpty else { return }
-            
-            for url in urls {
-                guard let fileURLs = try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil),
-                    !fileURLs.isEmpty
-                else { continue }
-                
-                for fileURL in fileURLs {
-                    if let data = try? Data(contentsOf: fileURL) {
-                        _ = self.saveImage(data: data)
+            DispatchQueue.global(qos: .utility).async {
+                let urls = LockedCameraCaptureManager.shared.sessionContentURLs
+                guard !urls.isEmpty else { return }
+
+                for url in urls {
+                    guard let fileURLs = try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil),
+                        !fileURLs.isEmpty
+                    else { continue }
+
+                    for fileURL in fileURLs {
+                        if let data = try? Data(contentsOf: fileURL) {
+                            _ = self.saveImage(data: data)
+                        }
+                    }
+
+                    DispatchQueue.global(qos: .background).async {
+                        Task { try? await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url) }
                     }
                 }
-                
-                DispatchQueue.global(qos: .background).async {
-                    Task { try? await LockedCameraCaptureManager.shared.invalidateSessionContent(at: url) }
-                }
+
+                self.loadFiles()
             }
-            
-            self.loadFiles()
-        }
         #endif
     }
 }

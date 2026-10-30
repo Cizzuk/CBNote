@@ -12,15 +12,16 @@ class ImageViewModel: ObservableObject {
     let url: URL
     @Published var uiImage: UIImage?
     @Published var isLoading: Bool = true
-    
+
     init(url: URL) {
         self.url = url
     }
-    
+
     func loadImage() {
         DispatchQueue.global(qos: .userInteractive).async {
             if let data = try? Data(contentsOf: self.url),
-               let image = UIImage(data: data) {
+                let image = UIImage(data: data)
+            {
                 DispatchQueue.main.async {
                     self.uiImage = image
                 }

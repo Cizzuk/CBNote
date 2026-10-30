@@ -9,10 +9,10 @@ import SwiftUI
 
 struct FileListView: View {
     @StateObject private var model = WatchConnectionModel.shared
-    
+
     let name: String
     let directoryId: String
-    
+
     var body: some View {
         Group {
             if model.isLoading {
@@ -31,7 +31,7 @@ struct FileListView: View {
                             Label("Pinned Notes", systemImage: "pin.fill")
                         }
                     }
-                    
+
                     Section {
                         ForEach(model.unpinnedFiles) { file in
                             fileRow(file: file)
@@ -53,13 +53,14 @@ struct FileListView: View {
             model.fetchFiles(directoryId: directoryId)
         }
         .alert(isPresented: $model.showError) {
-            Alert(title: Text("Error"),
-                  message: Text(model.errorMessage ?? "Unknown error"),
-                  dismissButton: .default(Text("OK"))
+            Alert(
+                title: Text("Error"),
+                message: Text(model.errorMessage ?? "Unknown error"),
+                dismissButton: .default(Text("OK"))
             )
         }
     }
-    
+
     private func fileRow(file: WatchFileItem) -> some View {
         NavigationLink(destination: FileDetailView(file: file)) {
             VStack(alignment: .leading) {

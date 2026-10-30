@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var model = WatchConnectionModel.shared
-    
+
     var body: some View {
         NavigationStack {
             Group {
@@ -40,9 +40,10 @@ struct ContentView: View {
                 }
             }
             .alert(isPresented: $model.showError) {
-                Alert(title: Text("Error"),
-                      message: Text(model.errorMessage ?? "Unknown error"),
-                      dismissButton: .default(Text("OK"))
+                Alert(
+                    title: Text("Error"),
+                    message: Text(model.errorMessage ?? "Unknown error"),
+                    dismissButton: .default(Text("OK"))
                 )
             }
         }
@@ -51,4 +52,3 @@ struct ContentView: View {
         }
     }
 }
-

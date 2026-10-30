@@ -23,7 +23,7 @@ struct CaptureExtension: LockedCameraCaptureExtension {
 struct ExtensionContentView: View {
     let session: LockedCameraCaptureSession
     @State private var launchAction: CaptureContext.LaunchAction?
-    
+
     var body: some View {
         ZStack {
             if let action = launchAction {
@@ -65,12 +65,12 @@ struct ExtensionContentView: View {
             }
         }
     }
-    
+
     private func saveToSession(_ session: LockedCameraCaptureSession, data: Data) {
         let timestamp = Int(Date().timeIntervalSince1970)
         let filename = "\(timestamp).jpeg"
         let url = session.sessionContentURL.appendingPathComponent(filename)
-        
+
         do {
             try data.write(to: url)
         } catch {

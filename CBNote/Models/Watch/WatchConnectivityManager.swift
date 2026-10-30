@@ -11,7 +11,7 @@ import WatchConnectivity
 
 class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
     static let shared = WatchConnectivityManager()
-    
+
     override private init() {
         super.init()
         if WCSession.isSupported() {
@@ -19,27 +19,28 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             WCSession.default.activate()
         }
     }
-    
+
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         print("WCSession activated: \(activationState.rawValue)")
     }
-    
-    func sessionDidBecomeInactive(_ session: WCSession) { }
-    
+
+    func sessionDidBecomeInactive(_ session: WCSession) {}
+
     func sessionDidDeactivate(_ session: WCSession) {
         WCSession.default.activate()
     }
-    
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
-        
+
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
+
         // Parse request
         guard let data = message["payload"] as? Data,
-              let request = try? JSONDecoder().decode(WatchConnectivityRequest.self, from: data) else {
+            let request = try? JSONDecoder().decode(WatchConnectivityRequest.self, from: data)
+        else {
             return
         }
-        
+
         let noteManager = NoteService()
-        
+
         switch request {
         case .getDirectoryList:
             let dirs = DocumentDir.availableDirs.map { dir -> WatchDirectoryInfo in
@@ -49,7 +50,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 return WatchDirectoryInfo(id: dir.rawValue, name: name, systemImage: systemImage)
             }
             sendResponse(.directoryList(dirs), replyHandler: replyHandler)
-            
+
         case .getFileList(let directoryRawValue):
             // Prepare NoteManager
             guard let dir = DocumentDir(rawValue: directoryRawValue) else {
@@ -58,7 +59,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             }
             noteManager.setDocumentDir(type: dir)
             noteManager.loadFiles()
-            
+
             // Map files to WatchFileItem
             let mapFile: (URL) -> WatchFileItem = { url in
                 var preview: String?
@@ -71,12 +72,12 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 }
                 return WatchFileItem(url: url, preview: preview, isPinned: noteManager.isPinned(url))
             }
-            
+
             let pinned = noteManager.pinnedFiles.map(mapFile)
             let unpinned = noteManager.unpinnedFiles.map(mapFile)
-            
+
             sendResponse(.fileList(pinned: pinned, unpinned: unpinned), replyHandler: replyHandler)
-            
+
         case .getFileContent(let directoryRawValue, let fileName):
             // Resolve directory
             guard let dir = DocumentDir(rawValue: directoryRawValue), let documentsURL = dir.directory else {
@@ -84,7 +85,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 return
             }
             let fileURL = documentsURL.appendingPathComponent(fileName)
-            
+
             if FileTypes.isPreviewableImage(fileURL) {
                 // Compress to lower quality JPEG
                 if let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
@@ -111,8 +112,8 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             }
         }
     }
-    
-    private func sendResponse(_ response: WatchConnectivityResponse, replyHandler: @escaping ([String : Any]) -> Void) {
+
+    private func sendResponse(_ response: WatchConnectivityResponse, replyHandler: @escaping ([String: Any]) -> Void) {
         if let data = try? JSONEncoder().encode(response) {
             replyHandler(["payload": data])
         }

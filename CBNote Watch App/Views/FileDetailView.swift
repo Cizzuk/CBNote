@@ -9,11 +9,11 @@ import SwiftUI
 
 struct FileDetailView: View {
     @StateObject private var model = WatchConnectionModel.shared
-    
+
     let file: WatchFileItem
     @State private var content: WatchFileContent?
     @State private var isLoading = true
-    
+
     var body: some View {
         Group {
             if isLoading {
@@ -61,9 +61,10 @@ struct FileDetailView: View {
             }
         }
         .alert(isPresented: $model.showError) {
-            Alert(title: Text("Error"),
-                  message: Text(model.errorMessage ?? "Unknown error"),
-                  dismissButton: .default(Text("OK"))
+            Alert(
+                title: Text("Error"),
+                message: Text(model.errorMessage ?? "Unknown error"),
+                dismissButton: .default(Text("OK"))
             )
         }
     }

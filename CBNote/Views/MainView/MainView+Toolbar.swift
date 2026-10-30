@@ -16,7 +16,7 @@ extension MainView {
             Button(action: { vm.createNewNote() }) {
                 Label("Add New Note", systemImage: "square.and.pencil")
             }
-            
+
             Button(action: { vm.addAndPaste() }) {
                 Label("Paste", systemImage: "document.on.clipboard")
             }
@@ -29,7 +29,7 @@ extension MainView {
                 Text("No valid content found in clipboard to paste.")
             }
         }
-        
+
         // MARK: - Secondary Actions
         ToolbarItemGroup(placement: .secondaryAction) {
             if TrueDevice.isCameraAvailable {
@@ -37,20 +37,20 @@ extension MainView {
                     Label("Take Photo", systemImage: "camera")
                 }
             }
-            
+
             Button(action: { vm.showRecorder = true }) {
                 Label("Record Audio", systemImage: "waveform.badge.microphone")
             }
-            
+
             Button(action: { showFileImporter = true }) {
                 Label("Import from Files", systemImage: "document")
             }
-            
+
             PhotosPicker(selection: $selectedPhoto) {
                 Label("Import from Photos", systemImage: "photo")
             }
         }
-        
+
         // MARK: - Top Left
         ToolbarItem(placement: .navigation) {
             Menu {
@@ -58,9 +58,9 @@ extension MainView {
                     Label("App Settings", systemImage: "gearshape")
                         .labelStyle(.titleAndIcon)
                 }
-                
+
                 Divider()
-                
+
                 // iCloud/On-Device
                 Section {
                     ForEach(DocumentDir.availableDirs, id: \.self) { type in
@@ -78,9 +78,9 @@ extension MainView {
                 } header: {
                     Text("Location")
                 }
-                
+
                 Divider()
-                
+
                 // Sort
                 Section {
                     ForEach(SortKey.allCases, id: \.self) { key in
@@ -109,7 +109,7 @@ extension MainView {
             .labelStyle(.titleAndIcon)
             .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
         }
-        
+
         // MARK: - Keyboard
         ToolbarItemGroup(placement: .keyboard) {
             Spacer()

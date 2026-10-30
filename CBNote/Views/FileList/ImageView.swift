@@ -10,14 +10,14 @@ import SwiftUI
 struct ImageView: View {
     @StateObject private var vm: ImageViewModel
     @ObservedObject private var userSettings = UserSettings.shared
-    
+
     @State private var maxHeight: CGFloat = .infinity
     private var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
-    
+
     init(url: URL) {
         _vm = StateObject(wrappedValue: ImageViewModel(url: url))
     }
-    
+
     var body: some View {
         Group {
             if vm.isLoading {
@@ -46,11 +46,11 @@ struct ImageView: View {
             vm.loadImage()
         }
     }
-    
+
     private func shouldPixelate(_ image: UIImage) -> Bool {
         image.size.width <= 256 && image.size.height <= 256
     }
-    
+
     private func updateMaxHeight() {
         // Calculate max height from screen size
         if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene {

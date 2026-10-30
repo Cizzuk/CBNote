@@ -5,26 +5,26 @@
 //  Created by Cizzuk on 2025/12/02.
 //
 
-import QuickLook
 import PhotosUI
+import QuickLook
 import SwiftUI
-import Translation
 import TemporaryScreenCurtain
+import Translation
 
 struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.accessibilityReduceMotion) var accessibilityReduceMotion
     @StateObject var vm = MainViewModel()
     @ObservedObject private var userSettings = UserSettings.shared
-    
+
     @State var previewURL: URL?
     @State var isExpandPinnedSection = true
     @State var showFileImporter = false
     @State var selectedPhoto: PhotosPickerItem?
-    
+
     var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
     var enableNoteListAnimations: Bool { userSettings.enableNoteListAnimations }
-    
+
     @Namespace var ns_settingsView
     let id_openSettingsButton = "openSettingsButton"
 
@@ -36,7 +36,7 @@ struct MainView: View {
                 .toolbar { toolbarContent }
                 .quickLookPreview($previewURL)
                 #if !targetEnvironment(macCatalyst)
-                .translationPresentation(isPresented: $vm.showTranslation, text: vm.translationText)
+                    .translationPresentation(isPresented: $vm.showTranslation, text: vm.translationText)
                 #endif
                 // MARK: - Modals
                 .fullScreenCover(isPresented: $vm.showCamera) {
@@ -51,10 +51,11 @@ struct MainView: View {
                 }
                 .sheet(isPresented: $vm.showSettings) {
                     SettingsView()
-                        .navigationTransition(.zoom(
-                            sourceID: id_openSettingsButton,
-                            in: ns_settingsView
-                        ))
+                        .navigationTransition(
+                            .zoom(
+                                sourceID: id_openSettingsButton,
+                                in: ns_settingsView
+                            ))
                 }
                 .alert("Rename", isPresented: $vm.isRenaming) {
                     TextField("New Name", text: $vm.newName)
@@ -106,7 +107,7 @@ struct MainView: View {
                 .onOpenURL { url in
                     vm.handleOpenURL(url: url)
                 }
-        } // NavigationStack
+        }  // NavigationStack
         // MARK: - Temporary Screen Curtain
         .temporaryScreenCurtain(isPresented: $vm.showTmpCurtain)
     }

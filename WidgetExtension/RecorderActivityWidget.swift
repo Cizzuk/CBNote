@@ -12,7 +12,7 @@ import WidgetKit
 
 struct RecorderActivityWidget: Widget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.RecorderActivityWidget"
-    
+
     struct IconImage: View {
         var size: CGFloat? = nil
 
@@ -26,7 +26,7 @@ struct RecorderActivityWidget: Widget {
                 .foregroundStyle(.white)
         }
     }
-    
+
     struct RecordImage: View {
         var size: CGFloat? = nil
 
@@ -40,10 +40,10 @@ struct RecorderActivityWidget: Widget {
                 .foregroundStyle(.red)
         }
     }
-    
+
     struct DescriptionText: View {
         var showSubtitle: Bool = true
-        
+
         var body: some View {
             VStack(alignment: .leading) {
                 Text("Recording")
@@ -58,7 +58,7 @@ struct RecorderActivityWidget: Widget {
             }
         }
     }
-    
+
     struct FinishRecordButton: View {
         var body: some View {
             Button(intent: FinishRecordButtonIntent()) {
@@ -71,10 +71,10 @@ struct RecorderActivityWidget: Widget {
             .padding(5)
         }
     }
-    
+
     struct MainActivityView: View {
         @Environment(\.activityFamily) var activityFamily
-        
+
         var body: some View {
             switch activityFamily {
             case .small:
@@ -96,12 +96,12 @@ struct RecorderActivityWidget: Widget {
             }
         }
     }
-    
+
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: RecorderActivityAttributes.self) { context in
             MainActivityView()
                 .activitySystemActionForegroundColor(.red)
-            
+
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {

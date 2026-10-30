@@ -5,14 +5,14 @@
 //  Created by Cizzuk on 2026/03/28.
 //
 
-import WidgetKit
 import AppIntents
 import SwiftUI
+import WidgetKit
 
 struct OpenAppLaunchCameraControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppLaunchCameraControl"
     static let title: LocalizedStringResource = "Launch CBNote Camera"
-    
+
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppLaunchCameraControl.kind) {
             ControlWidgetButton(action: OpenAppLaunchCameraIntent()) {
@@ -26,7 +26,7 @@ struct OpenAppLaunchCameraControl: ControlWidget {
 struct OpenAppPasteFromClipboardControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppPasteFromClipboardControl"
     static let title: LocalizedStringResource = "Paste from Clipboard"
-    
+
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppPasteFromClipboardControl.kind) {
             ControlWidgetButton(action: OpenAppPasteFromClipboardIntent()) {
@@ -40,7 +40,7 @@ struct OpenAppPasteFromClipboardControl: ControlWidget {
 struct OpenAppAddNewNoteControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppAddNewNoteControl"
     static let title: LocalizedStringResource = "Add New Note"
-    
+
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppAddNewNoteControl.kind) {
             ControlWidgetButton(action: OpenAppAddNewNoteIntent()) {
@@ -54,7 +54,7 @@ struct OpenAppAddNewNoteControl: ControlWidget {
 struct OpenAppStartRecordingControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppStartRecordingControl"
     static let title: LocalizedStringResource = "Start Recording"
-    
+
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppStartRecordingControl.kind) {
             ControlWidgetButton(action: OpenAppStartRecordingIntent()) {
@@ -68,7 +68,7 @@ struct OpenAppStartRecordingControl: ControlWidget {
 struct OpenAppOpenAppOnlyControl: ControlWidget {
     static let kind = "net.cizzuk.cbnote.WidgetExtension.OpenAppOpenAppOnlyControl"
     static let title: LocalizedStringResource = "Open CBNote"
-    
+
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: OpenAppOpenAppOnlyControl.kind) {
             ControlWidgetButton(action: OpenAppOpenAppOnlyIntent()) {

@@ -10,10 +10,10 @@ import SwiftUI
 struct FileRow: View {
     let url: URL
     let onPreview: () -> Void
-    
+
     @ObservedObject private var userSettings = UserSettings.shared
     private var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             if !FileManager.default.fileExists(atPath: url.path) {
@@ -31,7 +31,7 @@ struct FileRow: View {
                     AnyFileItem(url: url)
                 }
             }
-            
+
             Spacer()
             HStack {
                 Text(url.lastPathComponent)
@@ -46,7 +46,7 @@ struct FileRow: View {
 
 struct AnyFileItem: View {
     var url: URL
-    
+
     var body: some View {
         HStack {
             Image(systemName: FileTypes.systemImage(for: url))
@@ -61,7 +61,7 @@ struct AnyFileItem: View {
 
 struct AnyFileNotFoundItem: View {
     var url: URL
-    
+
     var body: some View {
         HStack {
             Image(systemName: FileTypes.systemImageQuestionmark(for: url))
