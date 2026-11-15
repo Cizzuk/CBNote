@@ -67,12 +67,8 @@ struct SettingsView: View {
                     }
                     Toggle("Show Hidden Files", isOn: $userSettings.showHiddenFiles)
                         .tint(.accent)
-                    Toggle("Enable Note List Animations", isOn: $userSettings.enableNoteListAnimations)
-                        .tint(.accent)
                 } header: {
                     Text("Note List")
-                } footer: {
-                    Text("To avoid display issues, some animations in note list are disabled by default.")
                 }
 
                 Section {

@@ -20,7 +20,6 @@ class UserSettings: ObservableObject {
         static let saveCapturedImageToPhotos = "saveCapturedImageToPhotos"
         static let imagePreviewMode = "imagePreviewMode"
         static let showHiddenFiles = "showHiddenFiles"
-        static let enableNoteListAnimations = "enableNoteListAnimations"
         static let nameFormat = "nameFormat"
         static let searchEngine = "searchEngine"
         static let documentDir = "documentDir"
@@ -96,12 +95,6 @@ class UserSettings: ObservableObject {
     @Published var showHiddenFiles: Bool = UserDefaults.standard.bool(forKey: Keys.showHiddenFiles) {
         didSet {
             UserDefaults.standard.set(showHiddenFiles, forKey: Keys.showHiddenFiles)
-        }
-    }
-
-    @Published var enableNoteListAnimations: Bool = UserDefaults.standard.bool(forKey: Keys.enableNoteListAnimations) {
-        didSet {
-            UserDefaults.standard.set(enableNoteListAnimations, forKey: Keys.enableNoteListAnimations)
         }
     }
 

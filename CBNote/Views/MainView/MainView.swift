@@ -23,7 +23,6 @@ struct MainView: View {
     @State var selectedPhoto: PhotosPickerItem?
 
     var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
-    var enableNoteListAnimations: Bool { userSettings.enableNoteListAnimations }
 
     @Namespace var ns_settingsView
     let id_openSettingsButton = "openSettingsButton"

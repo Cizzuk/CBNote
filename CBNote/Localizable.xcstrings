@@ -270,16 +270,6 @@
         }
       }
     },
-    "Enable Note List Animations" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ノートリストのアニメーションを有効にする"
-          }
-        }
-      }
-    },
     "Error" : {
       "localizations" : {
         "ja" : {
@@ -1098,16 +1088,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "撮影"
-          }
-        }
-      }
-    },
-    "To avoid display issues, some animations in note list are disabled by default." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "表示上の問題を避けるために、ノートリストのアニメーションの一部はデフォルトで無効になっています。"
           }
         }
       }

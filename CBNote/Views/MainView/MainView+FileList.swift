@@ -73,8 +73,6 @@ extension MainView {
                 }
             }  // List
             // MARK: - List Config
-            .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.pinnedFiles)
-            .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.unpinnedFiles)
             .refreshable {
                 vm.refreshFiles()
                 // To reduce View jitter
@@ -122,7 +120,7 @@ extension MainView {
     }
 
     func folderScreen(_ directory: URL) -> some View {
-        FolderFileList(directory: directory, vm: vm, enableAnimations: enableNoteListAnimations) { url in
+        FolderFileList(directory: directory, vm: vm) { url in
             fileRow(url: url, onPreview: { previewURL = url }, allowsPin: false)
         }
         .toolbar { toolbarContent(showsNavigationItem: false) }
@@ -134,7 +132,6 @@ extension MainView {
 private struct FolderFileList<RowContent: View>: View {
     let directory: URL
     @ObservedObject var vm: MainViewModel
-    let enableAnimations: Bool
     let rowContent: (URL) -> RowContent
 
     @State private var files: [URL] = []
@@ -175,7 +172,6 @@ private struct FolderFileList<RowContent: View>: View {
                     }
                 }
             }
-            .animation(enableAnimations ? .easeOut : nil, value: visibleFiles)
             .refreshable {
                 vm.refreshFiles()
                 // To reduce View jitter
