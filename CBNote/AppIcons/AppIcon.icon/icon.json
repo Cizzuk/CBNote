@@ -16,25 +16,6 @@
               }
             },
             {
-              "appearance" : "dark",
-              "value" : {
-                "linear-gradient" : [
-                  "display-p3:0.20000,0.40000,1.00000,1.00000",
-                  "extended-gray:1.00000,1.00000"
-                ],
-                "orientation" : {
-                  "start" : {
-                    "x" : 0.5,
-                    "y" : 2
-                  },
-                  "stop" : {
-                    "x" : 0.5,
-                    "y" : 0.3
-                  }
-                }
-              }
-            },
-            {
               "appearance" : "tinted",
               "value" : {
                 "solid" : "extended-gray:1.00000,1.00000"
@@ -70,8 +51,8 @@
         {
           "appearance" : "dark",
           "value" : {
-            "enabled" : false,
-            "value" : 0.4
+            "enabled" : true,
+            "value" : 0.75
           }
         }
       ]
@@ -88,7 +69,7 @@
             {
               "appearance" : "dark",
               "value" : {
-                "solid" : "srgb:0.20000,0.40000,1.00000,1.00000"
+                "solid" : "extended-gray:1.00000,1.00000"
               }
             },
             {
