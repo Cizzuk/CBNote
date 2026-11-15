@@ -476,8 +476,6 @@ class MainViewModel: ObservableObject {
         shouldOpenDummyCamera: Bool = false,
         allowCBNoteURLScheme: Bool = true
     ) {
-        folderPath = []
-
         func openDummyCameraIfNeeded() {
             if shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
                 dummyCameraManager.open()
