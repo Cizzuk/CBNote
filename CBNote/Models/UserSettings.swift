@@ -46,12 +46,24 @@ class UserSettings: ObservableObject {
         didSet {
             UserDefaults.standard.set(cameraControlAction.rawValue, forKey: Keys.cameraControlAction)
             CaptureContext.syncContextSettings()
+            if let schemeURL = cameraControlAction.schemeURL {
+                cameraControlActionOpenURL = schemeURL
+            } else {
+                cameraControlActionOpenURL = ""
+            }
         }
     }
 
     @Published var cameraControlActionOpenURL: String = UserDefaults.standard.string(forKey: Keys.cameraControlActionOpenURL) ?? "" {
         didSet {
             UserDefaults.standard.set(cameraControlActionOpenURL, forKey: Keys.cameraControlActionOpenURL)
+            if let option = OpenAppOption.urlToOption(cameraControlActionOpenURL) {
+                if cameraControlAction != option {
+                    cameraControlAction = option
+                }
+            } else if cameraControlAction != .openURL {
+                cameraControlAction = .openURL
+            }
         }
     }
 

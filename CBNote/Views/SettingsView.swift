@@ -26,19 +26,12 @@ struct SettingsView: View {
                                 Text(action.displayName).tag(action)
                             }
                         }
-                        if userSettings.cameraControlAction == .openURL {
-                            TextField("URL", text: $userSettings.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
-                                .disableAutocorrection(true)
-                                .keyboardType(.URL)
-                                .textInputAutocapitalization(.never)
-                                .environment(\.layoutDirection, .leftToRight)
-                                .submitLabel(.done)
-                        }
-                    }
-                } footer: {
-                    if userSettings.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
-                        let actionName = OpenAppOption.launchCamera.displayName
-                        Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
+                        TextField("URL", text: $userSettings.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
+                            .disableAutocorrection(true)
+                            .keyboardType(.URL)
+                            .textInputAutocapitalization(.never)
+                            .environment(\.layoutDirection, .leftToRight)
+                            .submitLabel(.done)
                     }
                 }
 

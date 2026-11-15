@@ -280,16 +280,6 @@
         }
       }
     },
-    "Even when setting something other than %@, the camera will temporarily launch in the background." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「%@」以外を設定した場合でも、カメラが一時的にバックグラウンドで起動します。"
-          }
-        }
-      }
-    },
     "Expanded" : {
       "localizations" : {
         "ja" : {

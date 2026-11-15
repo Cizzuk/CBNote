@@ -71,6 +71,8 @@ extension OpenAppOption {
                 return .addNewNote
             case "record":
                 return .startRecording
+            case "app":
+                return .openAppOnly
             default:
                 break
             }
@@ -79,5 +81,29 @@ extension OpenAppOption {
         }
 
         return .openAppOnly
+    }
+
+    var schemeURL: String? {
+        switch self {
+        case .launchCamera:
+            return "cbnote://open/camera"
+        case .pasteFromClipboard:
+            return "cbnote://open/paste"
+        case .addNewNote:
+            return "cbnote://open/newnote"
+        case .startRecording:
+            return "cbnote://open/record"
+        case .openAppOnly:
+            return "cbnote://open/app"
+        case .openURL:
+            return nil
+        }
+    }
+
+    static func urlToOption(_ urlString: String) -> OpenAppOption? {
+        return allCases.first { option in
+            guard let schemeURL = option.schemeURL else { return false }
+            return schemeURL.caseInsensitiveCompare(urlString) == .orderedSame
+        }
     }
 }
