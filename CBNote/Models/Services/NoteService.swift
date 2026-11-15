@@ -230,6 +230,9 @@ class NoteService: ObservableObject {
     }
 
     func isValidFileName(_ name: String) -> Bool {
+        if name == "." || name == ".." {
+            return false
+        }
         let invalidCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>:")
         return name.rangeOfCharacter(from: invalidCharacters) == nil && !name.isEmpty
     }
