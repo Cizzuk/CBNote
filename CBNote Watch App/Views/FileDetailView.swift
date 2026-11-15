@@ -55,7 +55,7 @@ struct FileDetailView: View {
         }
         .navigationTitle(file.name)
         .onAppear {
-            model.fetchFileContent(fileName: file.name) { result in
+            model.fetchFileContent(fileName: file.relativePath) { result in
                 self.content = result
                 self.isLoading = false
             }

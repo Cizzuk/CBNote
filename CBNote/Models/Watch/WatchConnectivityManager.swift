@@ -51,32 +51,41 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             }
             sendResponse(.directoryList(dirs), replyHandler: replyHandler)
 
-        case .getFileList(let directoryRawValue):
+        case .getFileList(let directoryRawValue, let relativePath):
             // Prepare NoteManager
-            guard let dir = DocumentDir(rawValue: directoryRawValue) else {
+            guard let dir = DocumentDir(rawValue: directoryRawValue), let documentsURL = dir.directory else {
                 sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
                 return
             }
             noteManager.setDocumentDir(type: dir)
-            noteManager.loadFiles()
 
-            // Map files to WatchFileItem
-            let mapFile: (URL) -> WatchFileItem = { url in
+            let mapFile: (URL, Bool) -> WatchFileItem = { url, isPinned in
                 var preview: String?
-                if FileTypes.isEditableText(url) {
+                if !FileTypes.isDirectory(url), FileTypes.isEditableText(url) {
                     if let content = try? String(contentsOf: url, encoding: .utf8) {
                         if !content.isEmpty {
                             preview = content.components(separatedBy: .newlines).first
                         }
                     }
                 }
-                return WatchFileItem(url: url, preview: preview, isPinned: noteManager.isPinned(url))
+                return WatchFileItem(
+                    url: url,
+                    relativePath: self.relativePath(from: documentsURL, to: url),
+                    preview: preview,
+                    isPinned: isPinned
+                )
             }
 
-            let pinned = noteManager.pinnedFiles.map(mapFile)
-            let unpinned = noteManager.unpinnedFiles.map(mapFile)
-
-            sendResponse(.fileList(pinned: pinned, unpinned: unpinned), replyHandler: replyHandler)
+            if relativePath.isEmpty {
+                noteManager.loadFiles()
+                let pinned = noteManager.pinnedFiles.map { mapFile($0, true) }
+                let unpinned = noteManager.unpinnedFiles.map { mapFile($0, false) }
+                sendResponse(.fileList(pinned: pinned, unpinned: unpinned), replyHandler: replyHandler)
+            } else {
+                let folderURL = self.fileURL(in: documentsURL, relativePath: relativePath)
+                let files = noteManager.files(in: folderURL).map { mapFile($0, false) }
+                sendResponse(.fileList(pinned: [], unpinned: files), replyHandler: replyHandler)
+            }
 
         case .getFileContent(let directoryRawValue, let fileName):
             // Resolve directory
@@ -84,7 +93,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
                 return
             }
-            let fileURL = documentsURL.appendingPathComponent(fileName)
+            let fileURL = fileURL(in: documentsURL, relativePath: fileName)
 
             if FileTypes.isPreviewableImage(fileURL) {
                 // Compress to lower quality JPEG
@@ -111,6 +120,20 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 sendResponse(.fileContent(.unsupported), replyHandler: replyHandler)
             }
         }
+    }
+
+    private func fileURL(in root: URL, relativePath: String) -> URL {
+        relativePath.split(separator: "/").reduce(root) { partial, component in
+            partial.appendingPathComponent(String(component))
+        }
+    }
+
+    private func relativePath(from root: URL, to url: URL) -> String {
+        let rootPath = NoteService.normalizedDirectoryPath(root)
+        let path = NoteService.normalizedDirectoryPath(url)
+        let prefix = rootPath + "/"
+        guard path.hasPrefix(prefix) else { return url.lastPathComponent }
+        return String(path.dropFirst(prefix.count))
     }
 
     private func sendResponse(_ response: WatchConnectivityResponse, replyHandler: @escaping ([String: Any]) -> Void) {

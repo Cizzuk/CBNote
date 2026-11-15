@@ -17,8 +17,6 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
 
     // Current directory
     @Published var currentDirectoryId: String?
-    @Published var pinnedFiles: [WatchFileItem] = []
-    @Published var unpinnedFiles: [WatchFileItem] = []
 
     // Watch state
     @Published var isLoading = false
@@ -63,7 +61,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 case .directoryList(let dirs):
                     self.directories = dirs
                 case .error(let msg):
-                    self.setError(msg)
+                    if !msg.isEmpty { self.setError(msg) }
                 default:
                     break
                 }
@@ -71,20 +69,22 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
         }
     }
 
-    func fetchFiles(directoryId: String) {
-        isLoading = true
+    func fetchFiles(
+        directoryId: String,
+        relativePath: String = "",
+        completion: @escaping (_ pinned: [WatchFileItem], _ unpinned: [WatchFileItem]) -> Void
+    ) {
         currentDirectoryId = directoryId
-        sendRequest(.getFileList(directory: directoryId)) { response in
+        sendRequest(.getFileList(directory: directoryId, relativePath: relativePath)) { response in
             DispatchQueue.main.async {
-                self.isLoading = false
                 switch response {
                 case .fileList(let pinned, let unpinned):
-                    self.pinnedFiles = pinned
-                    self.unpinnedFiles = unpinned
+                    completion(pinned, unpinned)
                 case .error(let msg):
-                    self.setError(msg)
+                    if !msg.isEmpty { self.setError(msg) }
+                    completion([], [])
                 default:
-                    break
+                    completion([], [])
                 }
             }
         }
@@ -100,7 +100,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 case .fileContent(let content):
                     completion(content)
                 case .error(let msg):
-                    self.setError(msg)
+                    if !msg.isEmpty { self.setError(msg) }
                     completion(nil)
                 default:
                     completion(nil)
@@ -113,11 +113,18 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
         guard connectabilityCheck() else {
             DispatchQueue.main.async {
                 self.isLoading = false
+                completion(.error(""))
             }
             return
         }
 
-        guard let data = try? JSONEncoder().encode(request) else { return }
+        guard let data = try? JSONEncoder().encode(request) else {
+            DispatchQueue.main.async {
+                self.isLoading = false
+                completion(.error("Failed to encode request."))
+            }
+            return
+        }
 
         WCSession.default.sendMessage(
             ["payload": data],
@@ -127,11 +134,15 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                     let response = try? JSONDecoder().decode(WatchConnectivityResponse.self, from: data)
                 {
                     completion(response)
+                } else {
+                    DispatchQueue.main.async {
+                        completion(.error("Invalid response."))
+                    }
                 }
             },
             errorHandler: { error in
                 DispatchQueue.main.async {
-                    self.setError(error.localizedDescription)
+                    completion(.error(error.localizedDescription))
                 }
             })
     }
