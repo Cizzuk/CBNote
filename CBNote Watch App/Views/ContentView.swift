@@ -42,7 +42,7 @@ struct ContentView: View {
             .alert(isPresented: $model.showError) {
                 Alert(
                     title: Text("Error"),
-                    message: Text(model.errorMessage ?? "Unknown error"),
+                    message: Text(verbatim: model.errorMessage ?? String(localized: "Unknown error")),
                     dismissButton: .default(Text("OK"))
                 )
             }

@@ -54,7 +54,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         case .getFileList(let directoryRawValue, let relativePath):
             // Prepare NoteManager
             guard let dir = DocumentDir(rawValue: directoryRawValue), let documentsURL = dir.directory else {
-                sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
+                sendError("Invalid directory", replyHandler: replyHandler)
                 return
             }
             noteManager.setDocumentDir(type: dir)
@@ -85,17 +85,17 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 let files = noteManager.files(in: folderURL).map { mapFile($0, false) }
                 sendResponse(.fileList(pinned: [], unpinned: files), replyHandler: replyHandler)
             } else {
-                sendResponse(.error("Invalid path"), replyHandler: replyHandler)
+                sendError("Invalid path", replyHandler: replyHandler)
             }
 
         case .getFileContent(let directoryRawValue, let fileName):
             // Resolve directory
             guard let dir = DocumentDir(rawValue: directoryRawValue), let documentsURL = dir.directory else {
-                sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
+                sendError("Invalid directory", replyHandler: replyHandler)
                 return
             }
             guard let fileURL = fileURL(in: documentsURL, relativePath: fileName) else {
-                sendResponse(.error("Invalid path"), replyHandler: replyHandler)
+                sendError("Invalid path", replyHandler: replyHandler)
                 return
             }
 
@@ -113,10 +113,10 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                     if let jpegData = resizedImage.jpegData(compressionQuality: 0.3) {
                         sendResponse(.fileContent(.image(jpegData)), replyHandler: replyHandler)
                     } else {
-                        sendResponse(.error("Could not process image"), replyHandler: replyHandler)
+                        sendError("Could not process image", replyHandler: replyHandler)
                     }
                 } else {
-                    sendResponse(.error("Could not load image"), replyHandler: replyHandler)
+                    sendError("Could not load image", replyHandler: replyHandler)
                 }
             } else if let text = try? String(contentsOf: fileURL, encoding: .utf8) {
                 sendResponse(.fileContent(.text(text)), replyHandler: replyHandler)
@@ -142,6 +142,10 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         let prefix = rootPath + "/"
         guard path.hasPrefix(prefix) else { return url.lastPathComponent }
         return String(path.dropFirst(prefix.count))
+    }
+
+    private func sendError(_ message: String.LocalizationValue, replyHandler: @escaping ([String: Any]) -> Void) {
+        sendResponse(.message(String(localized: message)), replyHandler: replyHandler)
     }
 
     private func sendResponse(_ response: WatchConnectivityResponse, replyHandler: @escaping ([String: Any]) -> Void) {

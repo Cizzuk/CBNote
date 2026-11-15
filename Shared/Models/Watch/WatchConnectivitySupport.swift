@@ -51,6 +51,7 @@ enum WatchConnectivityResponse: Codable {
     case fileList(pinned: [WatchFileItem], unpinned: [WatchFileItem])
     case fileContent(WatchFileContent)
     case error(LocalizedStringResource)
+    case message(String)
 }
 
 // Supported content

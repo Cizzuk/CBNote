@@ -20,7 +20,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
 
     // Watch state
     @Published var isLoading = false
-    @Published var errorMessage: LocalizedStringResource?
+    @Published var errorMessage: String?
     @Published var showError = false
 
     override private init() {
@@ -34,7 +34,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         if let error = error {
             DispatchQueue.main.async {
-                self.setLocalizedError(LocalizedStringResource(stringLiteral: error.localizedDescription))
+                self.setErrorMessage(error.localizedDescription)
             }
         } else {
             // Initial fetch
@@ -60,8 +60,10 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 switch response {
                 case .directoryList(let dirs):
                     self.directories = dirs
-                case .error(let msg):
-                    if !msg.key.isEmpty { self.setLocalizedError(msg) }
+                case .error(let message):
+                    if !message.key.isEmpty { self.setLocalizedError(message) }
+                case .message(let message):
+                    if !message.isEmpty { self.setErrorMessage(message) }
                 default:
                     break
                 }
@@ -80,8 +82,11 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 switch response {
                 case .fileList(let pinned, let unpinned):
                     completion(pinned, unpinned)
-                case .error(let msg):
-                    if !msg.key.isEmpty { self.setLocalizedError(msg) }
+                case .error(let message):
+                    if !message.key.isEmpty { self.setLocalizedError(message) }
+                    completion([], [])
+                case .message(let message):
+                    if !message.isEmpty { self.setErrorMessage(message) }
                     completion([], [])
                 default:
                     completion([], [])
@@ -99,8 +104,11 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 switch response {
                 case .fileContent(let content):
                     completion(content)
-                case .error(let msg):
-                    if !msg.key.isEmpty { self.setLocalizedError(msg) }
+                case .error(let message):
+                    if !message.key.isEmpty { self.setLocalizedError(message) }
+                    completion(nil)
+                case .message(let message):
+                    if !message.isEmpty { self.setErrorMessage(message) }
                     completion(nil)
                 default:
                     completion(nil)
@@ -142,7 +150,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
             },
             errorHandler: { error in
                 DispatchQueue.main.async {
-                    completion(.error(LocalizedStringResource(stringLiteral: error.localizedDescription)))
+                    completion(.message(error.localizedDescription))
                 }
             })
     }
@@ -185,6 +193,10 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     }
 
     private func setLocalizedError(_ message: LocalizedStringResource) {
+        setErrorMessage(String(localized: message))
+    }
+
+    private func setErrorMessage(_ message: String) {
         self.errorMessage = message
         self.showError = true
     }
