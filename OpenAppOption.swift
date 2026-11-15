@@ -49,6 +49,13 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
 }
 
 extension OpenAppOption {
+    static func urlToOption(_ urlString: String) -> OpenAppOption? {
+        if let url = URL(string: urlString) {
+            return urlToOption(url)
+        }
+        return nil
+    }
+
     static func urlToOption(_ url: URL) -> OpenAppOption? {
         // Get App URL Schemes
         let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
@@ -97,13 +104,6 @@ extension OpenAppOption {
             return "cbnote://open/app"
         case .openURL:
             return nil
-        }
-    }
-
-    static func urlToOption(_ urlString: String) -> OpenAppOption? {
-        return allCases.first { option in
-            guard let schemeURL = option.schemeURL else { return false }
-            return schemeURL.caseInsensitiveCompare(urlString) == .orderedSame
         }
     }
 }
