@@ -2,9 +2,7 @@
   "features" : [
     "specular-location"
   ],
-  "fill" : {
-    "solid" : "srgb:0.00000,0.00000,0.00000,1.00000"
-  },
+  "fill" : "automatic",
   "groups" : [
     {
       "blur-material" : null,

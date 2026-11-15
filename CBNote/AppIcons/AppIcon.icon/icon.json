@@ -2,31 +2,45 @@
   "features" : [
     "specular-location"
   ],
-  "fill" : {
-    "solid" : "srgb:0.00000,0.00000,0.00000,1.00000"
-  },
+  "fill" : "automatic",
   "groups" : [
     {
       "blur-material" : null,
       "hidden" : false,
       "layers" : [
         {
-          "fill" : {
-            "linear-gradient" : [
-              "display-p3:0.20000,0.40000,1.00000,1.00000",
-              "extended-gray:1.00000,1.00000"
-            ],
-            "orientation" : {
-              "start" : {
-                "x" : 0.5,
-                "y" : 2
-              },
-              "stop" : {
-                "x" : 0.5,
-                "y" : 0.3
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.20000,0.40000,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "linear-gradient" : [
+                  "display-p3:0.20000,0.40000,1.00000,1.00000",
+                  "extended-gray:1.00000,1.00000"
+                ],
+                "orientation" : {
+                  "start" : {
+                    "x" : 0.5,
+                    "y" : 2
+                  },
+                  "stop" : {
+                    "x" : 0.5,
+                    "y" : 0.3
+                  }
+                }
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:1.00000,1.00000"
               }
             }
-          },
+          ],
           "glass" : true,
           "hidden" : false,
           "image-name" : "cam.png",
@@ -46,17 +60,44 @@
         "opacity" : 0.5
       },
       "specular" : "inside",
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.2
-      }
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.4
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.4
+          }
+        }
+      ]
     },
     {
       "layers" : [
         {
-          "fill" : {
-            "solid" : "srgb:0.20000,0.60000,1.00000,1.00000"
-          },
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "extended-gray:0.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "srgb:0.20000,0.40000,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:1.00000,1.00000"
+              }
+            }
+          ],
           "glass" : true,
           "image-name" : "glare.png",
           "name" : "glare"
@@ -77,7 +118,7 @@
       "specular" : "inside",
       "translucency" : {
         "enabled" : true,
-        "value" : 0.25
+        "value" : 0.3
       }
     }
   ],

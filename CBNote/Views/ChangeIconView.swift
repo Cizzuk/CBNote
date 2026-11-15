@@ -12,9 +12,10 @@ struct ChangeIconView: View {
         List {
             Section {
                 iconItem(iconName: "CBNote", iconID: "AppIcon")
-                iconItem(iconName: "Invert", iconID: "Invert")
                 iconItem(iconName: "Pride", iconID: "Pride")
                 iconItem(iconName: "Unity", iconID: "Unity")
+                iconItem(iconName: "OG", iconID: "AppIcon")
+                iconItem(iconName: "Invert", iconID: "Invert")
             }
         }
         .navigationTitle("Change App Icon")
