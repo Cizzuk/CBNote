@@ -45,6 +45,7 @@ struct FileRow: View {
                     .truncationMode(.middle)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(FileTypes.isDirectory(url))
             }
         }
     }
