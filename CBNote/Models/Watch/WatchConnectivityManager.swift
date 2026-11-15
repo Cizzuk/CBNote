@@ -81,10 +81,11 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 let pinned = noteManager.pinnedFiles.map { mapFile($0, true) }
                 let unpinned = noteManager.unpinnedFiles.map { mapFile($0, false) }
                 sendResponse(.fileList(pinned: pinned, unpinned: unpinned), replyHandler: replyHandler)
-            } else {
-                let folderURL = self.fileURL(in: documentsURL, relativePath: relativePath)
+            } else if let folderURL = self.fileURL(in: documentsURL, relativePath: relativePath) {
                 let files = noteManager.files(in: folderURL).map { mapFile($0, false) }
                 sendResponse(.fileList(pinned: [], unpinned: files), replyHandler: replyHandler)
+            } else {
+                sendResponse(.error("Invalid path"), replyHandler: replyHandler)
             }
 
         case .getFileContent(let directoryRawValue, let fileName):
@@ -93,7 +94,10 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 sendResponse(.error("Invalid directory"), replyHandler: replyHandler)
                 return
             }
-            let fileURL = fileURL(in: documentsURL, relativePath: fileName)
+            guard let fileURL = fileURL(in: documentsURL, relativePath: fileName) else {
+                sendResponse(.error("Invalid path"), replyHandler: replyHandler)
+                return
+            }
 
             if FileTypes.isPreviewableImage(fileURL) {
                 // Compress to lower quality JPEG
@@ -122,10 +126,14 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         }
     }
 
-    private func fileURL(in root: URL, relativePath: String) -> URL {
-        relativePath.split(separator: "/").reduce(root) { partial, component in
+    private func fileURL(in root: URL, relativePath: String) -> URL? {
+        let url = relativePath.split(separator: "/").reduce(root) { partial, component in
             partial.appendingPathComponent(String(component))
         }
+        let rootPath = NoteService.normalizedDirectoryPath(root)
+        let path = NoteService.normalizedDirectoryPath(url)
+        guard path == rootPath || path.hasPrefix(rootPath + "/") else { return nil }
+        return url
     }
 
     private func relativePath(from root: URL, to url: URL) -> String {
