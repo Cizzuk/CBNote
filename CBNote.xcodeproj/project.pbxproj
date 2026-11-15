@@ -10,14 +10,9 @@
 		BE2DD7EB2EE25FEC00F13CF0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE5E92162EE1278500C2241E /* WidgetKit.framework */; };
 		BE2DD7EC2EE25FEC00F13CF0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE5E92182EE1278500C2241E /* SwiftUI.framework */; };
 		BE2DD7F92EE25FED00F13CF0 /* CBNote Widget Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BE2DD7EA2EE25FEC00F13CF0 /* CBNote Widget Extension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		BE2FD0972F8500F300C1D817 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
-		BE3285E52F776D7A00D66CCB /* OpenAppOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */; };
-		BE3286082F776D7A00D66CCB /* OpenAppOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */; };
 		BE994B642EDC522A008053C1 /* CBNote Capture Extension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = BE994B5B2EDC522A008053C1 /* CBNote Capture Extension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEAF98732EE546A300488245 /* CBNote Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BEAF98692EE546A100488245 /* CBNote Watch.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEC15B1A2F3893AB002B7B82 /* TemporaryScreenCurtain in Frameworks */ = {isa = PBXBuildFile; productRef = BEC15B192F3893AB002B7B82 /* TemporaryScreenCurtain */; };
-		BEE666E02F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
-		BEE666E12F5C67C2008C8134 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE666DE2F5C67C1008C8134 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,24 +77,14 @@
 
 /* Begin PBXFileReference section */
 		BE2DD7EA2EE25FEC00F13CF0 /* CBNote Widget Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CBNote Widget Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAppOption.swift; sourceTree = "<group>"; };
 		BE5E92162EE1278500C2241E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		BE5E92182EE1278500C2241E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		BE8854772EDB01F20040399C /* CBNote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBNote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE994B5B2EDC522A008053C1 /* CBNote Capture Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "CBNote Capture Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEAF98692EE546A100488245 /* CBNote Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CBNote Watch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEE666DE2F5C67C1008C8134 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "CBNote Widget Extension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				SetCameraControlAction.swift,
-				SetURLForOpenURLAction.swift,
-			);
-			target = BE2DD7E92EE25FEC00F13CF0 /* CBNote Widget Extension */;
-		};
 		BE0BF7E32EDC3CEA00E228F0 /* Exceptions for "CBNote" folder in "CBNote" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -115,23 +100,23 @@
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* CBNote Widget Extension */;
 		};
-		BE49CBE82EE6618E0058D021 /* Exceptions for "CBNote" folder in "CBNote Widget Extension" target */ = {
+		BE51A0022F11000100A00002 /* Exceptions for "Shared" folder in "CBNote Widget Extension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/RecorderActivity.swift,
+				Models/CaptureExtension/CaptureContext.swift,
+				Models/CaptureExtension/CaptureIntent.swift,
+				Models/Helpers/FileTypes.swift,
+				Models/Services/CameraService.swift,
+				Models/Watch/WatchConnectivitySupport.swift,
+				Views/CameraPreview.swift,
+				Views/CameraView.swift,
 			);
 			target = BE2DD7E92EE25FEC00F13CF0 /* CBNote Widget Extension */;
 		};
-		BE994B692EDC522A008053C1 /* Exceptions for "CaptureExtension" folder in "CBNote Capture Extension" target */ = {
+		BE51A0032F11000100A00003 /* Exceptions for "Shared" folder in "CBNote Capture Extension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
-			);
-			target = BE994B5A2EDC522A008053C1 /* CBNote Capture Extension */;
-		};
-		BEF0D9AB2EDFDB900059DFA3 /* Exceptions for "CBNote" folder in "CBNote Capture Extension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
+				Constants.swift,
 				Models/CaptureExtension/CaptureContext.swift,
 				Models/CaptureExtension/CaptureIntent.swift,
 				Models/Services/CameraService.swift,
@@ -140,7 +125,7 @@
 			);
 			target = BE994B5A2EDC522A008053C1 /* CBNote Capture Extension */;
 		};
-		BEFA7AE92EE55FCB0023643B /* Exceptions for "CBNote" folder in "CBNote Watch" target */ = {
+		BE51A0042F11000100A00004 /* Exceptions for "Shared" folder in "CBNote Watch" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/Helpers/FileTypes.swift,
@@ -148,17 +133,16 @@
 			);
 			target = BEAF98682EE546A100488245 /* CBNote Watch */;
 		};
+		BE994B692EDC522A008053C1 /* Exceptions for "CaptureExtension" folder in "CBNote Capture Extension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BE994B5A2EDC522A008053C1 /* CBNote Capture Extension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BE0BD3D22F7763DB0056E6BC /* AppIntents */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BE0BD5922F77692E0056E6BC /* Exceptions for "AppIntents" folder in "CBNote Widget Extension" target */,
-			);
-			path = AppIntents;
-			sourceTree = "<group>";
-		};
 		BE2DD7ED2EE25FEC00F13CF0 /* WidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -167,13 +151,20 @@
 			path = WidgetExtension;
 			sourceTree = "<group>";
 		};
+		BE51A0012F11000100A00001 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BE51A0032F11000100A00003 /* Exceptions for "Shared" folder in "CBNote Capture Extension" target */,
+				BE51A0022F11000100A00002 /* Exceptions for "Shared" folder in "CBNote Widget Extension" target */,
+				BE51A0042F11000100A00004 /* Exceptions for "Shared" folder in "CBNote Watch" target */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		BE8854792EDB01F20040399C /* CBNote */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				BE0BF7E32EDC3CEA00E228F0 /* Exceptions for "CBNote" folder in "CBNote" target */,
-				BEF0D9AB2EDFDB900059DFA3 /* Exceptions for "CBNote" folder in "CBNote Capture Extension" target */,
-				BE49CBE82EE6618E0058D021 /* Exceptions for "CBNote" folder in "CBNote Widget Extension" target */,
-				BEFA7AE92EE55FCB0023643B /* Exceptions for "CBNote" folder in "CBNote Watch" target */,
 			);
 			path = CBNote;
 			sourceTree = "<group>";
@@ -240,12 +231,10 @@
 		BE88546E2EDB01F20040399C = {
 			isa = PBXGroup;
 			children = (
-				BEE666DE2F5C67C1008C8134 /* Constants.swift */,
-				BE3285B92F776D7A00D66CCB /* OpenAppOption.swift */,
-				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE994B5C2EDC522A008053C1 /* CaptureExtension */,
 				BE8854792EDB01F20040399C /* CBNote */,
 				BEAF986A2EE546A100488245 /* CBNote Watch App */,
+				BE51A0012F11000100A00001 /* Shared */,
 				BE2DD7ED2EE25FEC00F13CF0 /* WidgetExtension */,
 				BE5E92152EE1278500C2241E /* Frameworks */,
 				BE8854782EDB01F20040399C /* Products */,
@@ -279,8 +268,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
 				BE2DD7ED2EE25FEC00F13CF0 /* WidgetExtension */,
+				BE51A0012F11000100A00001 /* Shared */,
 			);
 			name = "CBNote Widget Extension";
 			packageProductDependencies = (
@@ -308,7 +297,7 @@
 				BEAF98722EE546A300488245 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				BE0BD3D22F7763DB0056E6BC /* AppIntents */,
+				BE51A0012F11000100A00001 /* Shared */,
 				BE8854792EDB01F20040399C /* CBNote */,
 			);
 			name = CBNote;
@@ -449,8 +438,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE3286082F776D7A00D66CCB /* OpenAppOption.swift in Sources */,
-				BEE666E02F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,8 +445,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE3285E52F776D7A00D66CCB /* OpenAppOption.swift in Sources */,
-				BEE666E12F5C67C2008C8134 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,7 +452,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE2FD0972F8500F300C1D817 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
