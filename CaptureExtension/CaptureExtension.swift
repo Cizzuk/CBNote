@@ -40,14 +40,6 @@ struct ExtensionContentView: View {
                     CameraView(isLockedMode: true) { data in
                         saveToSession(session, data: data)
                     }
-                case .openAppOnly:
-                    Color.black
-                        .ignoresSafeArea()
-                        .task {
-                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension.openAppOnly")
-                            try? await session.openApplication(for: activity)
-                            exit(0)
-                        }
                 }
             } else {
                 Color.black.ignoresSafeArea()

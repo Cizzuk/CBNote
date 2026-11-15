@@ -13,7 +13,6 @@ nonisolated
     enum LaunchAction: String, Codable, CaseIterable, Identifiable {
         case runCameraControlAction
         case launchCamera
-        case openAppOnly
 
         var id: String { rawValue }
     }
@@ -45,8 +44,6 @@ nonisolated
             switch cameraControlAction {
             case .launchCamera:
                 launchAction = .launchCamera
-            case .openAppOnly:
-                launchAction = .openAppOnly
             default:
                 launchAction = .runCameraControlAction
             }
