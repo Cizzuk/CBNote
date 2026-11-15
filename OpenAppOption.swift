@@ -86,6 +86,7 @@ extension OpenAppOption {
         return .openAppOnly
     }
 
+    // Camera Control Action should be set to this URL using openURL
     var autoSetURL: String? {
         switch self {
         case .launchCamera:
