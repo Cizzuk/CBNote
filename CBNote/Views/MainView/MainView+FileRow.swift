@@ -27,7 +27,7 @@ extension MainView {
                     .tint(.indigo)
                 }
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            .swipeActions(edge: .trailing, allowsFullSwipe: !FileTypes.isDirectory(url)) {
                 if allowsPin && vm.isFilePinned(url) {
                     Button(action: { vm.pinUnpinFile(at: url) }) {
                         Label("Unpin", systemImage: "pin.slash")
