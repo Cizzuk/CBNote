@@ -34,7 +34,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         if let error = error {
             DispatchQueue.main.async {
-                self.setError(error.localizedDescription)
+                self.setLocalizedError(LocalizedStringResource(stringLiteral: error.localizedDescription))
             }
         } else {
             // Initial fetch
@@ -182,10 +182,6 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
         }
 
         return true
-    }
-
-    private func setError(_ message: String) {
-        setLocalizedError(LocalizedStringResource(stringLiteral: message))
     }
 
     private func setLocalizedError(_ message: LocalizedStringResource) {
