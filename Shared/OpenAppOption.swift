@@ -63,9 +63,9 @@ extension OpenAppOption {
         else { return nil }
 
         // Parse URL
-        switch url.host {
+        switch url.host?.lowercased() {
         case "open":
-            switch url.pathComponents.dropFirst().first {
+            switch url.pathComponents.dropFirst().first?.lowercased() {
             case "camera":
                 return .launchCamera
             case "paste":
