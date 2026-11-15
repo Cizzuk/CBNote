@@ -12,12 +12,12 @@ extension Notification.Name {
 }
 
 enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
+    case openURL = "Open URL"
     case launchCamera = "Launch Camera"
     case pasteFromClipboard = "Paste from Clipboard"
     case addNewNote = "Add New Note"
     case startRecording = "Start Recording"
     case openAppOnly = "Open App Only"
-    case openURL = "Open URL"
 
     var id: String { rawValue }
 
@@ -26,12 +26,12 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
     }
 
     static var caseDisplayRepresentations: [OpenAppOption: DisplayRepresentation] = [
+        .openURL: "Open URL",
         .launchCamera: "Launch Camera",
         .pasteFromClipboard: "Paste from Clipboard",
         .addNewNote: "Add New Note",
         .startRecording: "Start Recording",
         .openAppOnly: "Open App Only",
-        .openURL: "Open URL",
     ]
 
     var displayName: LocalizedStringResource {
@@ -40,7 +40,7 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
 
     var shouldOpenDummyCamera: Bool {
         switch self {
-        case .launchCamera, .openURL:
+        case .openURL, .launchCamera:
             return false
         case .pasteFromClipboard, .addNewNote, .startRecording, .openAppOnly:
             return true
@@ -86,10 +86,10 @@ extension OpenAppOption {
         return .openAppOnly
     }
 
-    var schemeURL: String? {
+    var autoSetURL: String? {
         switch self {
         case .launchCamera:
-            return "cbnote://open/camera"
+            return nil
         case .pasteFromClipboard:
             return "cbnote://open/paste"
         case .addNewNote:

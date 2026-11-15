@@ -26,12 +26,14 @@ struct SettingsView: View {
                                 Text(action.displayName).tag(action)
                             }
                         }
-                        TextField("URL", text: $userSettings.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
-                            .disableAutocorrection(true)
-                            .keyboardType(.URL)
-                            .textInputAutocapitalization(.never)
-                            .environment(\.layoutDirection, .leftToRight)
-                            .submitLabel(.done)
+                        if userSettings.cameraControlAction == .openURL {
+                            TextField("URL", text: $userSettings.cameraControlActionOpenURL, prompt: Text(verbatim: "cbnote://open/camera"))
+                                .disableAutocorrection(true)
+                                .keyboardType(.URL)
+                                .textInputAutocapitalization(.never)
+                                .environment(\.layoutDirection, .leftToRight)
+                                .submitLabel(.done)
+                        }
                     }
                 }
 
