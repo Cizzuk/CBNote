@@ -167,16 +167,12 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
         }
 
         guard !WCSession.default.iOSDeviceNeedsUnlockAfterRebootForReachability else {
-            if !WCSession.default.iOSDeviceNeedsUnlockAfterRebootForReachability {
-                self.setLocalizedError("iPhone needs to be unlocked after reboot.")
-            }
+            self.setLocalizedError("iPhone needs to be unlocked after reboot.")
             return false
         }
 
         guard WCSession.default.isCompanionAppInstalled else {
-            if WCSession.default.isCompanionAppInstalled {
-                self.setLocalizedError("Companion app is not installed on iPhone.")
-            }
+            self.setLocalizedError("Companion app is not installed on iPhone.")
             return false
         }
 
