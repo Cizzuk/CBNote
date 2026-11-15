@@ -59,7 +59,7 @@ extension OpenAppOption {
     static func urlToOption(_ url: URL) -> OpenAppOption? {
         // Check URL Scheme
         guard let scheme = url.scheme,
-            AppURLSchemes.contains(scheme)
+            AppURLSchemes.contains(scheme.lowercased())
         else { return nil }
 
         // Parse URL
