@@ -220,6 +220,26 @@
         }
       }
     },
+    "Could not load image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を読み込めませんでした"
+          }
+        }
+      }
+    },
+    "Could not process image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を処理できませんでした"
+          }
+        }
+      }
+    },
     "Currently sorted in %@ order." : {
       "localizations" : {
         "ja" : {
@@ -419,6 +439,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“写真”からインポート"
+          }
+        }
+      }
+    },
+    "Invalid directory" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なディレクトリ"
+          }
+        }
+      }
+    },
+    "Invalid path" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なパス"
           }
         }
       }

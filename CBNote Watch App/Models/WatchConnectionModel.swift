@@ -20,7 +20,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
 
     // Watch state
     @Published var isLoading = false
-    @Published var errorMessage: String?
+    @Published var errorMessage: LocalizedStringResource?
     @Published var showError = false
 
     override private init() {
@@ -61,7 +61,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 case .directoryList(let dirs):
                     self.directories = dirs
                 case .error(let msg):
-                    if !msg.isEmpty { self.setError(msg) }
+                    if !msg.key.isEmpty { self.setLocalizedError(msg) }
                 default:
                     break
                 }
@@ -81,7 +81,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 case .fileList(let pinned, let unpinned):
                     completion(pinned, unpinned)
                 case .error(let msg):
-                    if !msg.isEmpty { self.setError(msg) }
+                    if !msg.key.isEmpty { self.setLocalizedError(msg) }
                     completion([], [])
                 default:
                     completion([], [])
@@ -100,7 +100,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
                 case .fileContent(let content):
                     completion(content)
                 case .error(let msg):
-                    if !msg.isEmpty { self.setError(msg) }
+                    if !msg.key.isEmpty { self.setLocalizedError(msg) }
                     completion(nil)
                 default:
                     completion(nil)
@@ -142,7 +142,7 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
             },
             errorHandler: { error in
                 DispatchQueue.main.async {
-                    completion(.error(error.localizedDescription))
+                    completion(.error(LocalizedStringResource(stringLiteral: error.localizedDescription)))
                 }
             })
     }
@@ -185,12 +185,11 @@ class WatchConnectionModel: NSObject, ObservableObject, WCSessionDelegate {
     }
 
     private func setError(_ message: String) {
-        self.errorMessage = message
-        self.showError = true
+        setLocalizedError(LocalizedStringResource(stringLiteral: message))
     }
 
     private func setLocalizedError(_ message: LocalizedStringResource) {
-        let message = String(localized: message)
-        setError(message)
+        self.errorMessage = message
+        self.showError = true
     }
 }
