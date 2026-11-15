@@ -36,6 +36,12 @@ class MainViewModel: ObservableObject {
     @Published var showSettings = false
     @Published var showFileImportError = false
 
+    @Published var folderPath: [URL] = [] {
+        didSet {
+            noteManager.creationDirectory = folderPath.last
+        }
+    }
+
     @Published var renamingURL: URL?
     @Published var newName = ""
     @Published var isRenaming = false
@@ -94,7 +100,7 @@ class MainViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    private func filterFiles(_ files: [URL], query: String) -> [URL] {
+    func filterFiles(_ files: [URL], query: String) -> [URL] {
         var filteredFiles = files
 
         // Hidden file filter
@@ -112,7 +118,7 @@ class MainViewModel: ObservableObject {
                 }
 
                 // File content search
-                if FileTypes.isEditableText(url) {
+                if !FileTypes.isDirectory(url), FileTypes.isEditableText(url) {
                     if let content = try? String(contentsOf: url, encoding: .utf8),
                         content.localizedCaseInsensitiveContains(query)
                     {
@@ -164,6 +170,9 @@ class MainViewModel: ObservableObject {
     }
 
     func setDocumentDir(type: DocumentDir) {
+        if documentDir != type {
+            folderPath = []
+        }
         noteManager.setDocumentDir(type: type)
     }
 
@@ -226,6 +235,30 @@ class MainViewModel: ObservableObject {
         newFileURLToScroll = newNoteURL
 
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
+    func createNewFolder() {
+        guard let newFolderURL = noteManager.createNewFolder() else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+
+        newFileURLToScroll = newFolderURL
+
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
+    func files(in directory: URL) -> [URL] {
+        noteManager.files(in: directory)
+    }
+
+    func isFile(_ url: URL, in directory: URL) -> Bool {
+        NoteService.normalizedDirectoryPath(url.deletingLastPathComponent()) == NoteService.normalizedDirectoryPath(directory)
+    }
+
+    func isFileInDocumentRoot(_ url: URL) -> Bool {
+        guard let root = documentDir.directory else { return false }
+        return isFile(url, in: root)
     }
 
     func saveNewFile(from url: URL) {
@@ -446,6 +479,8 @@ class MainViewModel: ObservableObject {
         shouldOpenDummyCamera: Bool = false,
         allowCBNoteURLScheme: Bool = true
     ) {
+        folderPath = []
+
         func openDummyCameraIfNeeded() {
             if shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
                 dummyCameraManager.open()

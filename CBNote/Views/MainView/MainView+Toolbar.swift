@@ -10,7 +10,7 @@ import SwiftUI
 
 extension MainView {
     @ToolbarContentBuilder
-    var toolbarContent: some ToolbarContent {
+    func toolbarContent(showsNavigationItem: Bool = true) -> some ToolbarContent {
         // MARK: - Primary Actions
         ToolbarItemGroup(placement: .primaryAction) {
             Button(action: { vm.createNewNote() }) {
@@ -19,14 +19,6 @@ extension MainView {
 
             Button(action: { vm.addAndPaste() }) {
                 Label("Paste", systemImage: "document.on.clipboard")
-            }
-            .confirmationDialog(
-                "Paste Failed",
-                isPresented: $vm.showPasteError
-            ) {
-                Button("OK", role: .close) {}
-            } message: {
-                Text("No valid content found in clipboard to paste.")
             }
         }
 
@@ -49,65 +41,71 @@ extension MainView {
             PhotosPicker(selection: $selectedPhoto) {
                 Label("Import from Photos", systemImage: "photo")
             }
+
+            Button(action: { vm.createNewFolder() }) {
+                Label("Add New Folder", systemImage: "folder.badge.plus")
+            }
         }
 
         // MARK: - Top Left
-        ToolbarItem(placement: .navigation) {
-            Menu {
-                Button(action: { vm.showSettings = true }) {
-                    Label("App Settings", systemImage: "gearshape")
-                        .labelStyle(.titleAndIcon)
-                }
-
-                Divider()
-
-                // iCloud/On-Device
-                Section {
-                    ForEach(DocumentDir.availableDirs, id: \.self) { type in
-                        Button(action: { vm.setDocumentDir(type: type) }) {
-                            if vm.documentDir == type {
-                                Label(type.localizedName, systemImage: "checkmark")
-                                    .labelStyle(.titleAndIcon)
-                            } else {
-                                Label(type.localizedName, image: "EmptySymbol")
-                                    .labelStyle(.titleAndIcon)
-                            }
-                        }
-                        .accessibility(addTraits: vm.documentDir == type ? [.isSelected] : [])
+        if showsNavigationItem {
+            ToolbarItem(placement: .navigation) {
+                Menu {
+                    Button(action: { vm.showSettings = true }) {
+                        Label("App Settings", systemImage: "gearshape")
+                            .labelStyle(.titleAndIcon)
                     }
-                } header: {
-                    Text("Location")
-                }
 
-                Divider()
+                    Divider()
 
-                // Sort
-                Section {
-                    ForEach(SortKey.allCases, id: \.self) { key in
-                        Button(action: { vm.toggleSort(key: key) }) {
-                            if vm.sortKey == key {
-                                Label(
-                                    key.localizedName,
-                                    systemImage: vm.sortDirection == .descending ? "chevron.down" : "chevron.up"
-                                )
-                                .labelStyle(.titleAndIcon)
-                            } else {
-                                Label(key.localizedName, image: "EmptySymbol")
-                                    .labelStyle(.titleAndIcon)
+                    // iCloud/On-Device
+                    Section {
+                        ForEach(DocumentDir.availableDirs, id: \.self) { type in
+                            Button(action: { vm.setDocumentDir(type: type) }) {
+                                if vm.documentDir == type {
+                                    Label(type.localizedName, systemImage: "checkmark")
+                                        .labelStyle(.titleAndIcon)
+                                } else {
+                                    Label(type.localizedName, image: "EmptySymbol")
+                                        .labelStyle(.titleAndIcon)
+                                }
                             }
+                            .accessibility(addTraits: vm.documentDir == type ? [.isSelected] : [])
                         }
-                        .accessibility(addTraits: vm.sortKey == key ? [.isSelected] : [])
-                        .accessibilityHint(vm.sortKey == key ? "Currently sorted in \(vm.sortDirection.localizedName) order." : "")
+                    } header: {
+                        Text("Location")
                     }
-                } header: {
-                    Text("Sort By")
+
+                    Divider()
+
+                    // Sort
+                    Section {
+                        ForEach(SortKey.allCases, id: \.self) { key in
+                            Button(action: { vm.toggleSort(key: key) }) {
+                                if vm.sortKey == key {
+                                    Label(
+                                        key.localizedName,
+                                        systemImage: vm.sortDirection == .descending ? "chevron.down" : "chevron.up"
+                                    )
+                                    .labelStyle(.titleAndIcon)
+                                } else {
+                                    Label(key.localizedName, image: "EmptySymbol")
+                                        .labelStyle(.titleAndIcon)
+                                }
+                            }
+                            .accessibility(addTraits: vm.sortKey == key ? [.isSelected] : [])
+                            .accessibilityHint(vm.sortKey == key ? "Currently sorted in \(vm.sortDirection.localizedName) order." : "")
+                        }
+                    } header: {
+                        Text("Sort By")
+                    }
+                } label: {
+                    Label("Settings", systemImage: "gearshape")
+                        .labelStyle(.iconOnly)
                 }
-            } label: {
-                Label("Settings", systemImage: "gearshape")
-                    .labelStyle(.iconOnly)
+                .labelStyle(.titleAndIcon)
+                .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
             }
-            .labelStyle(.titleAndIcon)
-            .matchedTransitionSource(id: id_openSettingsButton, in: ns_settingsView)
         }
 
         // MARK: - Keyboard

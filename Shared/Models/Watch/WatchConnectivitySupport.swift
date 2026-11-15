@@ -13,15 +13,19 @@ import UniformTypeIdentifiers
 struct WatchFileItem: Identifiable, Codable, Hashable {
     let id: URL
     let name: String
+    let relativePath: String
     let systemImage: String
     let preview: String?
     let isPinned: Bool
+    let isDirectory: Bool
 
-    init(url: URL, preview: String? = nil, isPinned: Bool = false) {
+    init(url: URL, relativePath: String, preview: String? = nil, isPinned: Bool = false) {
         self.id = url
         self.name = url.lastPathComponent
+        self.relativePath = relativePath
         self.preview = preview
         self.isPinned = isPinned
+        self.isDirectory = FileTypes.isDirectory(url)
         self.systemImage = FileTypes.systemImage(for: url)
     }
 }
@@ -37,7 +41,7 @@ struct WatchDirectoryInfo: Identifiable, Codable, Hashable {
 // Requests sent from Watch to iPhone
 enum WatchConnectivityRequest: Codable {
     case getDirectoryList
-    case getFileList(directory: String)
+    case getFileList(directory: String, relativePath: String)
     case getFileContent(directory: String, fileName: String)
 }
 

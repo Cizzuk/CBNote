@@ -22,6 +22,8 @@ class NoteService: ObservableObject {
         }
     }
 
+    var creationDirectory: URL?
+
     @Published var sortKey: SortKey {
         didSet {
             loadFiles()
@@ -48,7 +50,7 @@ class NoteService: ObservableObject {
 
     func loadFiles() {
         guard let documentsURL = documentDir.directory,
-            let fileURLs = try? FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey])
+            let fileURLs = directoryContents(at: documentsURL)
         else {
             files = []
             pinnedFiles = []
@@ -61,6 +63,29 @@ class NoteService: ObservableObject {
         files = sortFiles(fileURLs)
         pinnedFiles = files.filter { self.isPinned($0) }
         unpinnedFiles = files.filter { !self.isPinned($0) }
+    }
+
+    func files(in directory: URL) -> [URL] {
+        guard let fileURLs = directoryContents(at: directory) else { return [] }
+        return sortFiles(fileURLs)
+    }
+
+    private func directoryContents(at directory: URL) -> [URL]? {
+        guard
+            let fileURLs = try? FileManager.default.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: [.contentModificationDateKey, .isDirectoryKey]
+            )
+        else { return nil }
+
+        return fileURLs.map { normalizedURL($0) }
+    }
+
+    private func normalizedURL(_ url: URL) -> URL {
+        let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
+        guard isDirectory, !url.hasDirectoryPath else { return url }
+        // Add a / at the end
+        return url.appendingPathComponent("x").deletingLastPathComponent()
     }
 
     func setDocumentDir(type: DocumentDir) {
@@ -90,7 +115,7 @@ class NoteService: ObservableObject {
     // MARK: Create files
 
     func createFileURL(fileExtension: String) -> URL? {
-        guard let documentsURL = documentDir.directory else { return nil }
+        guard let documentsURL = creationDirectory ?? documentDir.directory else { return nil }
 
         let dateFormatter = DateFormatter()
         let dateFormat = userSettings.nameFormat
@@ -122,6 +147,18 @@ class NoteService: ObservableObject {
             print("Error creating file: \(error)")
         }
         return nil
+    }
+
+    func createNewFolder() -> URL? {
+        guard let folderURL = createFileURL(fileExtension: "") else { return nil }
+        do {
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: false)
+            loadFiles()
+            return normalizedURL(folderURL)
+        } catch {
+            print("Error creating folder: \(error)")
+            return nil
+        }
     }
 
     func saveNewFile(from url: URL) -> URL? {
@@ -158,9 +195,10 @@ class NoteService: ObservableObject {
 
     func deleteFile(at url: URL) {
         DispatchQueue.global(qos: .utility).async {
+            let shouldUnpin = self.isPinned(url) && self.isInDocumentRoot(url)
             do { try FileManager.default.removeItem(at: url) } catch { print("Error deleting file: \(error)") }
 
-            if self.isPinned(url) {
+            if shouldUnpin {
                 self.togglePin(for: url)
             }
 
@@ -174,7 +212,7 @@ class NoteService: ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async {
             let folder = url.deletingLastPathComponent()
             let newURL = folder.appendingPathComponent(newName)
-            let wasPinned = self.isPinned(url)
+            let wasPinned = self.isPinned(url) && self.isInDocumentRoot(url)
 
             do {
                 try FileManager.default.moveItem(at: url, to: newURL)
@@ -232,6 +270,19 @@ class NoteService: ObservableObject {
         pinnedFiles = []
         unpinnedFiles = files
         savePinnedFiles()
+    }
+
+    private func isInDocumentRoot(_ url: URL) -> Bool {
+        guard let root = documentDir.directory else { return false }
+        return Self.normalizedDirectoryPath(url.deletingLastPathComponent()) == Self.normalizedDirectoryPath(root)
+    }
+
+    static func normalizedDirectoryPath(_ url: URL) -> String {
+        var path = url.standardizedFileURL.resolvingSymlinksInPath().path
+        if path.count > 1, path.hasSuffix("/") {
+            path.removeLast()
+        }
+        return path
     }
 
     private func savePinnedFiles() {

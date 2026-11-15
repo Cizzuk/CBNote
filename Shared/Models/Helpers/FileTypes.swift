@@ -49,8 +49,13 @@ struct FileTypes {
         return false
     }
 
+    static func isDirectory(_ url: URL) -> Bool {
+        if url.hasDirectoryPath { return true }
+        return (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+    }
+
     static func name(for url: URL) -> String {
-        if url.hasDirectoryPath {
+        if isDirectory(url) {
             return "Folder"
         }
 
@@ -63,8 +68,8 @@ struct FileTypes {
     }
 
     static func systemImage(for url: URL) -> String {
-        if url.hasDirectoryPath {
-            return "folder"
+        if isDirectory(url) {
+            return "folder.fill"
         }
 
         guard let type = UTType(filenameExtension: url.pathExtension) else {

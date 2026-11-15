@@ -46,6 +46,16 @@
         }
       }
     },
+    "Add New Folder" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規フォルダを追加"
+          }
+        }
+      }
+    },
     "Add New Note" : {
       "localizations" : {
         "ja" : {
