@@ -35,6 +35,8 @@ struct MainView: View {
                     folderScreen(directory)
                 }
                 // MARK: - View Config
+                .navigationTitle(vm.documentDir.localizedName)
+                .navigationBarTitleDisplayMode(.inline)
                 .searchable(text: $vm.searchQuery, prompt: "Search Notes")
                 .toolbar { toolbarContent() }
         }
