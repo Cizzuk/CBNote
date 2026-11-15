@@ -49,6 +49,11 @@ struct CBNote: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
+        // Migrate camera control action
+        if let autoSetURL = UserSettings.shared.cameraControlAction.autoSetURL {
+            UserSettings.shared.cameraControlActionOpenURL = autoSetURL
+            UserSettings.shared.cameraControlAction = .openURL
+        }
         // Initialize Watch Connectivity Manager
         _ = WatchConnectivityManager.shared
         // Update Capture Context
