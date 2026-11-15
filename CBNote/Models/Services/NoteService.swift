@@ -116,6 +116,19 @@ class NoteService: ObservableObject {
 
     func createFileURL(fileExtension: String) -> URL? {
         guard let documentsURL = creationDirectory ?? documentDir.directory else { return nil }
+        return makeFileURL(fileExtension: fileExtension, in: documentsURL)
+    }
+
+    func createFileURLInDocumentRoot(fileExtension: String) -> URL? {
+        guard let documentsURL = documentDir.directory else { return nil }
+        return makeFileURL(fileExtension: fileExtension, in: documentsURL)
+    }
+
+    func fileURL(fileExtension: String, inRoot: Bool) -> URL? {
+        inRoot ? createFileURLInDocumentRoot(fileExtension: fileExtension) : createFileURL(fileExtension: fileExtension)
+    }
+
+    private func makeFileURL(fileExtension: String, in documentsURL: URL) -> URL? {
 
         let dateFormatter = DateFormatter()
         let dateFormat = userSettings.nameFormat
@@ -179,8 +192,8 @@ class NoteService: ObservableObject {
         }
     }
 
-    func saveImage(data: Data, fileExtension: String = "jpeg") -> URL? {
-        guard let fileURL = self.createFileURL(fileExtension: fileExtension) else { return nil }
+    func saveImage(data: Data, fileExtension: String = "jpeg", inRoot: Bool = false) -> URL? {
+        guard let fileURL = inRoot ? createFileURLInDocumentRoot(fileExtension: fileExtension) : createFileURL(fileExtension: fileExtension) else { return nil }
         do {
             try data.write(to: fileURL)
             self.loadFiles()
@@ -311,7 +324,7 @@ class NoteService: ObservableObject {
 
                     for fileURL in fileURLs {
                         if let data = try? Data(contentsOf: fileURL) {
-                            _ = self.saveImage(data: data)
+                            _ = self.saveImage(data: data, inRoot: true)
                         }
                     }
 

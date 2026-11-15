@@ -34,6 +34,7 @@ class ClipboardSupport {
 
     static func newNoteFromClipboard(
         noteManager: NoteService,
+        inRoot: Bool = false,
         completion: @escaping (Result<URL, Error>) -> Void
     ) {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -82,7 +83,7 @@ class ClipboardSupport {
                 }
 
                 if let text = textContent {
-                    guard let destURL = noteManager.createFileURL(fileExtension: "txt") else { continue }
+                    guard let destURL = noteManager.fileURL(fileExtension: "txt", inRoot: inRoot) else { continue }
                     try? text.write(to: destURL, atomically: true, encoding: .utf8)
                     lastHandled = destURL
                     continue
@@ -94,7 +95,7 @@ class ClipboardSupport {
                     let url = URL(dataRepresentation: data, relativeTo: nil)
                 {
 
-                    guard let destURL = noteManager.createFileURL(fileExtension: url.pathExtension) else { continue }
+                    guard let destURL = noteManager.fileURL(fileExtension: url.pathExtension, inRoot: inRoot) else { continue }
                     if let fileData = try? Data(contentsOf: url) {
                         try? fileData.write(to: destURL)
                         lastHandled = destURL
@@ -109,7 +110,7 @@ class ClipboardSupport {
                     else { continue }
 
                     let ext = type.preferredFilenameExtension ?? ""
-                    guard let destURL = noteManager.createFileURL(fileExtension: ext) else { continue }
+                    guard let destURL = noteManager.fileURL(fileExtension: ext, inRoot: inRoot) else { continue }
                     try? data.write(to: destURL)
                     lastHandled = destURL
                     break

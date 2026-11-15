@@ -188,9 +188,10 @@ class MainViewModel: ObservableObject {
 
     // MARK: - Clipboard Management
 
-    func addAndPaste(suppressError: Bool = false) {
+    func addAndPaste(suppressError: Bool = false, savesInRoot: Bool = false) {
         ClipboardSupport.newNoteFromClipboard(
             noteManager: noteManager,
+            inRoot: savesInRoot,
             completion: { [weak self] result in
                 switch result {
                 case .success(let url):
@@ -214,7 +215,7 @@ class MainViewModel: ObservableObject {
 
     func checkAutoPaste() {
         if userSettings.autoPasteWhenOpening && lastPasteboardChangeCount != UIPasteboard.general.changeCount {
-            addAndPaste(suppressError: true)
+            addAndPaste(suppressError: true, savesInRoot: true)
         }
     }
 
