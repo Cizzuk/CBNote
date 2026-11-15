@@ -462,6 +462,33 @@ class MainViewModel: ObservableObject {
         showRecorder = false
 
         switch action {
+        case .openURL:
+            guard let url = URL(string: userSettings.cameraControlActionOpenURL)
+            else {
+                // Open app only if URL is invalid
+                openDummyCameraIfNeeded()
+                return
+            }
+
+            // If URL is CBNote's URL scheme
+            if let option = OpenAppOption.urlToOption(url) {
+                if allowCBNoteURLScheme {
+                    openApp(
+                        with: option,
+                        shouldOpenDummyCamera: shouldOpenDummyCamera,
+                        allowCBNoteURLScheme: false  // Prevent infinite loop
+                    )
+                } else {
+                    // Open app only
+                    openDummyCameraIfNeeded()
+                }
+                return
+            } else {
+                // Else open URL normally
+                showTmpCurtain = true
+                UIApplication.shared.open(url)
+            }
+
         case .launchCamera:
             showCamera = true
 
@@ -476,34 +503,6 @@ class MainViewModel: ObservableObject {
 
         case .openAppOnly:
             break
-
-        case .openURL:
-            guard !userSettings.cameraControlActionOpenURL.isEmpty,
-                let url = URL(string: userSettings.cameraControlActionOpenURL)
-            else {
-                openDummyCameraIfNeeded()
-                return
-            }
-
-            // If URL is CBNote's URL scheme
-            if let option = OpenAppOption.urlToOption(url) {
-                guard allowCBNoteURLScheme else {
-                    openDummyCameraIfNeeded()
-                    return
-                }
-                openApp(
-                    with: option,
-                    shouldOpenDummyCamera: shouldOpenDummyCamera,
-                    allowCBNoteURLScheme: false  // Prevent infinite loop
-                )
-
-            } else {
-                // Else open URL normally
-                // Show temporary screen curtain
-                showTmpCurtain = true
-                // Open URL
-                UIApplication.shared.open(url)
-            }
         }
     }
 }
