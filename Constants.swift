@@ -10,6 +10,11 @@ import Foundation
 
 let GroupUserDefaults = UserDefaults(suiteName: "group.net.cizzuk.cbnote")!
 
+let AppURLSchemes = {
+    let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
+    return appURLSchemes?.compactMap { $0["CFBundleURLSchemes"] as? [String] }.flatMap { $0 } ?? []
+}()
+
 extension Notification.Name {
     static let assistantDidActivate = Notification.Name("assistantDidActivate")
     static let shouldFinishRecording = Notification.Name("shouldFinishRecording")

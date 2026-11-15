@@ -57,13 +57,9 @@ extension OpenAppOption {
     }
 
     static func urlToOption(_ url: URL) -> OpenAppOption? {
-        // Get App URL Schemes
-        let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
-        let urlSchemes = appURLSchemes?.compactMap { $0["CFBundleURLSchemes"] as? [String] }.flatMap { $0 } ?? []
-
         // Check URL Scheme
         guard let scheme = url.scheme,
-            urlSchemes.contains(scheme)
+            AppURLSchemes.contains(scheme)
         else { return nil }
 
         // Parse URL
