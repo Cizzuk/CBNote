@@ -14,7 +14,7 @@ struct ChangeIconView: View {
                 iconItem(iconName: "CBNote", iconID: "AppIcon")
                 iconItem(iconName: "Pride", iconID: "Pride")
                 iconItem(iconName: "Unity", iconID: "Unity")
-                iconItem(iconName: "OG", iconID: "AppIcon")
+                iconItem(iconName: "OG", iconID: "OG")
                 iconItem(iconName: "Invert", iconID: "Invert")
             }
         }
