@@ -47,6 +47,7 @@ class UserSettings: ObservableObject {
             if let autoSetURL = cameraControlAction.autoSetURL {
                 cameraControlActionOpenURL = autoSetURL
                 cameraControlAction = .openURL
+                return
             }
             UserDefaults.standard.set(cameraControlAction.rawValue, forKey: Keys.cameraControlAction)
             CaptureContext.syncContextSettings()
