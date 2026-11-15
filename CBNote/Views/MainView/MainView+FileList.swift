@@ -8,6 +8,24 @@
 import Combine
 import SwiftUI
 
+private func scrollToNewFile(in files: [URL], proxy: ScrollViewProxy, vm: MainViewModel) {
+    guard let target = vm.newFileURLToScroll,
+        let rowURL = vm.listedFile(matching: target, in: files)
+    else { return }
+
+    let rowID = rowURL.absoluteString
+    DispatchQueue.main.async {
+        withAnimation(.easeOut) {
+            proxy.scrollTo(rowID)
+        }
+        if let current = vm.newFileURLToScroll,
+            NoteService.normalizedDirectoryPath(current) == NoteService.normalizedDirectoryPath(rowURL)
+        {
+            vm.newFileURLToScroll = nil
+        }
+    }
+}
+
 extension MainView {
     @ViewBuilder
     func fileListView() -> some View {
@@ -63,13 +81,10 @@ extension MainView {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
             .onChange(of: vm.unpinnedFiles) {
-                guard let scrollPos = vm.newFileURLToScroll, vm.isFileInDocumentRoot(scrollPos) else { return }
-                DispatchQueue.main.async {
-                    withAnimation(.easeOut) {
-                        proxy.scrollTo("\(scrollPos.absoluteString)")
-                    }
-                    self.vm.newFileURLToScroll = nil
-                }
+                scrollToNewFile(in: vm.unpinnedFiles, proxy: proxy, vm: vm)
+            }
+            .onChange(of: vm.newFileURLToScroll) {
+                scrollToNewFile(in: vm.unpinnedFiles, proxy: proxy, vm: vm)
             }
         }  // ScrollViewReader
     }
@@ -167,13 +182,10 @@ private struct FolderFileList<RowContent: View>: View {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
             .onChange(of: files) {
-                guard let scrollPos = vm.newFileURLToScroll, vm.isFile(scrollPos, in: directory) else { return }
-                DispatchQueue.main.async {
-                    withAnimation(.easeOut) {
-                        proxy.scrollTo("\(scrollPos.absoluteString)")
-                    }
-                    vm.newFileURLToScroll = nil
-                }
+                scrollToNewFile(in: visibleFiles, proxy: proxy, vm: vm)
+            }
+            .onChange(of: vm.newFileURLToScroll) {
+                scrollToNewFile(in: visibleFiles, proxy: proxy, vm: vm)
             }
         }
         .searchable(text: $searchQuery, prompt: "Search Notes")

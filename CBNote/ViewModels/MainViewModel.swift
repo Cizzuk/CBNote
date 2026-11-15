@@ -252,13 +252,9 @@ class MainViewModel: ObservableObject {
         noteManager.files(in: directory)
     }
 
-    func isFile(_ url: URL, in directory: URL) -> Bool {
-        NoteService.normalizedDirectoryPath(url.deletingLastPathComponent()) == NoteService.normalizedDirectoryPath(directory)
-    }
-
-    func isFileInDocumentRoot(_ url: URL) -> Bool {
-        guard let root = documentDir.directory else { return false }
-        return isFile(url, in: root)
+    func listedFile(matching url: URL, in files: [URL]) -> URL? {
+        let target = NoteService.normalizedDirectoryPath(url)
+        return files.first { NoteService.normalizedDirectoryPath($0) == target }
     }
 
     func saveNewFile(from url: URL) {
