@@ -2,29 +2,19 @@
 
 Replace Camera Control with Note app.
 
-This is a simple note app linked with the file system. You can quickly check and edit your notes using the device's buttons or shortcuts.
+A simple note app integrated with the file system. You can quickly view and edit notes using your device's buttons or Shortcuts.
 
 **[Download on the App Store](https://apps.apple.com/app/cbnote/id6756120567)**
 
 **[AltStore PAL Source](https://cizzuk.net/altstore/)**
 
-## Features
+## Key Features
 
-In app settings, you can choose the action for launching from Camera Control from the following options:
-
-- Launch In-App Camera
-- Paste from Clipboard
-- Add New Note
-- Start Audio Recording
-- Open CBNote Only
-- Open Custom URL
-
-And other features:
-
-- Quick access to notes by launching from the Action Button, Camera Control, Control Center and other shortcut actions
-- Easily add new notes by pasting from the clipboard
-- Notes can be easily copied to the clipboard with a swipe gesture
-- Compatible with many file formats
+- Customize what happens when launched from Camera Control
+- View & edit notes from Action Button, Camera Control, etc.
+- Create notes by pasting from the clipboard
+- Easily copy notes with a swipe
+- Supports many file formats
 
 ## License
 
