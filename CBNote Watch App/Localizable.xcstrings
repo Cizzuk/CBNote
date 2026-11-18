@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
     "Cannot connect to iPhone." : {
       "localizations" : {
         "ja" : {
@@ -56,6 +59,16 @@
         }
       }
     },
+    "Failed to encode request." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リクエストのエンコードに失敗しました。"
+          }
+        }
+      }
+    },
     "Failed to load content." : {
       "localizations" : {
         "ja" : {
@@ -72,6 +85,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像の読み込みに失敗しました"
+          }
+        }
+      }
+    },
+    "Invalid response." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効な応答です。"
           }
         }
       }
@@ -142,6 +165,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再読み込み"
+          }
+        }
+      }
+    },
+    "Unknown error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なエラー"
           }
         }
       }

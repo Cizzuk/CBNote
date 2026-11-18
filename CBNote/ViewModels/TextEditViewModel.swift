@@ -13,11 +13,11 @@ class TextEditViewModel: ObservableObject {
     @Published var text: String = ""
     @Published var isLoading: Bool = true
     @Published var isFileEditable: Bool = false
-    
+
     init(url: URL) {
         self.url = url
     }
-    
+
     func loadContent() {
         DispatchQueue.global(qos: .userInteractive).async {
             // Check permissions
@@ -27,7 +27,7 @@ class TextEditViewModel: ObservableObject {
                 }
                 return
             }
-            
+
             // Load content
             if let content = try? String(contentsOf: self.url, encoding: .utf8) {
                 DispatchQueue.main.async {
@@ -40,11 +40,11 @@ class TextEditViewModel: ObservableObject {
             }
         }
     }
-    
+
     func saveText() {
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let self = self else { return }
-            
+
             do {
                 try text.write(to: url, atomically: true, encoding: .utf8)
             } catch {
@@ -59,7 +59,7 @@ class TextEditViewModel: ObservableObject {
             }
         }
     }
-    
+
     func textFont() -> Font {
         if FileTypes.shouldMonospaceFont(url) {
             return .system(.body, design: .monospaced)

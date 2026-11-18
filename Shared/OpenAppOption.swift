@@ -12,35 +12,35 @@ extension Notification.Name {
 }
 
 enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
+    case openURL = "Open URL"
     case launchCamera = "Launch Camera"
     case pasteFromClipboard = "Paste from Clipboard"
     case addNewNote = "Add New Note"
     case startRecording = "Start Recording"
     case openAppOnly = "Open App Only"
-    case openURL = "Open URL"
 
     var id: String { rawValue }
-    
+
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
         TypeDisplayRepresentation(name: "Open App Option")
     }
-    
-    static var caseDisplayRepresentations: [OpenAppOption : DisplayRepresentation] = [
+
+    static var caseDisplayRepresentations: [OpenAppOption: DisplayRepresentation] = [
+        .openURL: "Open URL",
         .launchCamera: "Launch Camera",
         .pasteFromClipboard: "Paste from Clipboard",
         .addNewNote: "Add New Note",
         .startRecording: "Start Recording",
         .openAppOnly: "Open App Only",
-        .openURL: "Open URL"
     ]
-    
+
     var displayName: LocalizedStringResource {
         return Self.caseDisplayRepresentations[self]?.title ?? ""
     }
-    
+
     var shouldOpenDummyCamera: Bool {
         switch self {
-        case .launchCamera, .openURL:
+        case .openURL, .launchCamera:
             return false
         case .pasteFromClipboard, .addNewNote, .startRecording, .openAppOnly:
             return true
@@ -49,20 +49,23 @@ enum OpenAppOption: String, CaseIterable, Identifiable, Codable, AppEnum {
 }
 
 extension OpenAppOption {
+    static func urlToOption(_ urlString: String) -> OpenAppOption? {
+        if let url = URL(string: urlString) {
+            return urlToOption(url)
+        }
+        return nil
+    }
+
     static func urlToOption(_ url: URL) -> OpenAppOption? {
-        // Get App URL Schemes
-        let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
-        let urlSchemes = appURLSchemes?.compactMap { $0["CFBundleURLSchemes"] as? [String] }.flatMap { $0 } ?? []
-        
         // Check URL Scheme
         guard let scheme = url.scheme,
-              urlSchemes.contains(scheme)
+            AppURLSchemes.contains(scheme.lowercased())
         else { return nil }
-        
+
         // Parse URL
-        switch url.host {
+        switch url.host?.lowercased() {
         case "open":
-            switch url.pathComponents.dropFirst().first {
+            switch url.pathComponents.dropFirst().first?.lowercased() {
             case "camera":
                 return .launchCamera
             case "paste":
@@ -71,13 +74,33 @@ extension OpenAppOption {
                 return .addNewNote
             case "record":
                 return .startRecording
+            case "app":
+                return .openAppOnly
             default:
                 break
             }
         default:
             break
         }
-        
+
         return .openAppOnly
+    }
+
+    // Camera Control Action should be set to this URL using openURL
+    var autoSetURL: String? {
+        switch self {
+        case .launchCamera:
+            return nil
+        case .pasteFromClipboard:
+            return "cbnote://open/paste"
+        case .addNewNote:
+            return "cbnote://open/newnote"
+        case .startRecording:
+            return "cbnote://open/record"
+        case .openAppOnly:
+            return "cbnote://open/app"
+        case .openURL:
+            return nil
+        }
     }
 }

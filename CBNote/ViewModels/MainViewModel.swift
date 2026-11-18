@@ -19,37 +19,43 @@ extension Notification.Name {
 
 class MainViewModel: ObservableObject {
     @Published var showTmpCurtain: Bool = false
-    
+
     @Published var pinnedFiles: [URL] = []
     @Published var unpinnedFiles: [URL] = []
-    
+
     @Published var documentDir: DocumentDir = .onDevice
     @Published var sortKey: SortKey = .name
     @Published var sortDirection: SortDirection = .descending
-    
+
     @Published var searchQuery = ""
     @Published var newFileURLToScroll: URL?
-    
+
     @Published var showPasteError = false
     @Published var showCamera = false
     @Published var showRecorder = false
     @Published var showSettings = false
     @Published var showFileImportError = false
-    
+
+    @Published var folderPath: [URL] = [] {
+        didSet {
+            noteManager.creationDirectory = folderPath.last
+        }
+    }
+
     @Published var renamingURL: URL?
     @Published var newName = ""
     @Published var isRenaming = false
-    
+
     @Published var showTranslation = false
     @Published var translationText = ""
-    
+
     let noteManager = NoteService()
     private let dummyCameraManager = DummyCameraService.shared
     private let userSettings = UserSettings.shared
-    
+
     private var lastPasteboardChangeCount: Int = -1
     private var cancellables = Set<AnyCancellable>()
-    
+
     init() {
         Publishers.CombineLatest(noteManager.$pinnedFiles, $searchQuery)
             .receive(on: DispatchQueue.main)
@@ -57,14 +63,14 @@ class MainViewModel: ObservableObject {
                 self?.pinnedFiles = self?.filterFiles(files, query: query) ?? []
             }
             .store(in: &cancellables)
-        
+
         Publishers.CombineLatest(noteManager.$unpinnedFiles, $searchQuery)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] files, query in
                 self?.unpinnedFiles = self?.filterFiles(files, query: query) ?? []
             }
             .store(in: &cancellables)
-        
+
         noteManager.$documentDir
             .receive(on: DispatchQueue.main)
             .sink { [weak self] dir in
@@ -72,11 +78,11 @@ class MainViewModel: ObservableObject {
                 self?.userSettings.documentDir = dir
             }
             .store(in: &cancellables)
-        
+
         if !documentDir.isAvailable {
             noteManager.setDocumentDir(type: .defaultDir)
         }
-        
+
         noteManager.$sortKey
             .receive(on: DispatchQueue.main)
             .sink { [weak self] key in
@@ -84,7 +90,7 @@ class MainViewModel: ObservableObject {
                 self?.userSettings.sortKey = key
             }
             .store(in: &cancellables)
-        
+
         noteManager.$sortDirection
             .receive(on: DispatchQueue.main)
             .sink { [weak self] direction in
@@ -93,16 +99,16 @@ class MainViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
-    private func filterFiles(_ files: [URL], query: String) -> [URL] {
+
+    func filterFiles(_ files: [URL], query: String) -> [URL] {
         var filteredFiles = files
-        
+
         // Hidden file filter
         let showHiddenFiles = userSettings.showHiddenFiles
         if !showHiddenFiles {
             filteredFiles = filteredFiles.filter { !$0.lastPathComponent.hasPrefix(".") }
         }
-        
+
         // Query filter
         if !query.isEmpty {
             filteredFiles = filteredFiles.filter { url in
@@ -110,34 +116,35 @@ class MainViewModel: ObservableObject {
                 if url.lastPathComponent.localizedCaseInsensitiveContains(query) {
                     return true
                 }
-                
+
                 // File content search
-                if FileTypes.isEditableText(url) {
+                if !FileTypes.isDirectory(url), FileTypes.isEditableText(url) {
                     if let content = try? String(contentsOf: url, encoding: .utf8),
-                       content.localizedCaseInsensitiveContains(query) {
+                        content.localizedCaseInsensitiveContains(query)
+                    {
                         return true
                     }
                 }
-                
+
                 return false
             }
         }
-        
+
         return filteredFiles
     }
-    
+
     func onAppear() {
         noteManager.importLockedCameraCaptures()
         checkAutoPaste()
         loadFiles()
     }
-    
+
     func onChange(scenePhase: ScenePhase) {
         switch scenePhase {
         case .active:
             checkAutoPaste()
             refreshFiles()
-            
+
             if !showRecorder {
                 RecorderActivityManager.endAll()
             }
@@ -149,23 +156,26 @@ class MainViewModel: ObservableObject {
             break
         }
     }
-    
+
     // MARK: - NoteManager Actions
-    
+
     func loadFiles() {
         noteManager.loadFiles()
     }
-    
+
     func refreshFiles() {
         noteManager.importLockedCameraCaptures()
         loadFiles()
         NotificationCenter.default.post(name: .noteListRefreshAttempt, object: nil)
     }
-    
+
     func setDocumentDir(type: DocumentDir) {
+        if documentDir != type {
+            folderPath = []
+        }
         noteManager.setDocumentDir(type: type)
     }
-    
+
     func toggleSort(key: SortKey) {
         var newDirection = sortDirection
         if sortKey == key {
@@ -175,12 +185,13 @@ class MainViewModel: ObservableObject {
         }
         noteManager.setSort(key: key, direction: newDirection)
     }
-    
+
     // MARK: - Clipboard Management
-    
-    func addAndPaste(suppressError: Bool = false) {
+
+    func addAndPaste(suppressError: Bool = false, savesInRoot: Bool = false) {
         ClipboardSupport.newNoteFromClipboard(
             noteManager: noteManager,
+            inRoot: savesInRoot,
             completion: { [weak self] result in
                 switch result {
                 case .success(let url):
@@ -201,93 +212,114 @@ class MainViewModel: ObservableObject {
             }
         )
     }
-    
+
     func checkAutoPaste() {
         if userSettings.autoPasteWhenOpening && lastPasteboardChangeCount != UIPasteboard.general.changeCount {
-            addAndPaste(suppressError: true)
+            addAndPaste(suppressError: true, savesInRoot: true)
         }
     }
-    
+
     func copyFile(at url: URL) {
         ClipboardSupport.copyFile(at: url) { [weak self] in
             self?.lastPasteboardChangeCount = UIPasteboard.general.changeCount
         }
     }
-    
+
     // MARK: - Note Management
-    
+
     func createNewNote() {
         guard let newNoteURL = noteManager.createNewNote() else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
-        
+
         newFileURLToScroll = newNoteURL
-        
+
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
-    
+
+    func createNewFolder() {
+        guard let newFolderURL = noteManager.createNewFolder() else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+
+        newFileURLToScroll = newFolderURL
+
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
+    func files(in directory: URL) -> [URL] {
+        noteManager.files(in: directory)
+    }
+
+    func listedFile(matching url: URL, in files: [URL]) -> URL? {
+        let target = NoteService.normalizedDirectoryPath(url)
+        return files.first { NoteService.normalizedDirectoryPath($0) == target }
+    }
+
     func saveNewFile(from url: URL) {
         guard let destURL = noteManager.saveNewFile(from: url) else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
-        
+
         newFileURLToScroll = destURL
     }
-    
+
     func isFilePinned(_ url: URL) -> Bool {
         noteManager.isPinned(url)
     }
-    
+
     func pinUnpinFile(at url: URL) {
         noteManager.togglePin(for: url)
     }
-    
+
     func unpinAll() {
         noteManager.unpinAll()
     }
-    
+
     func isValidFileName(_ name: String) -> Bool {
         noteManager.isValidFileName(name)
     }
-    
+
     func startRenaming(at url: URL) {
         renamingURL = url
         newName = url.lastPathComponent
         isRenaming = true
     }
-    
+
     func renameFile() {
         guard let url = renamingURL else { return }
         noteManager.renameFile(at: url, newName: newName)
     }
-    
+
     func deleteFile(at url: URL) {
         noteManager.deleteFile(at: url)
     }
-    
+
     // MARK: - Special Note Actions
-    
+
     func translateFile(at url: URL) {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         translationText = content
         showTranslation = true
     }
-    
+
     func openInBrowser(at url: URL) {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
-        
+
         // If content is a valid URL and has allowed scheme, open it directly
         if let linkURL = URL(string: content.trimmingCharacters(in: .whitespacesAndNewlines)),
-           let scheme = linkURL.scheme?.lowercased() {
+            let scheme = linkURL.scheme?.lowercased()
+        {
             let allowedSchemes = ["http", "https", "x-web-search", "mailto", "tel", "sms"]
             if allowedSchemes.contains(scheme) {
                 UIApplication.shared.open(linkURL)
                 return
             }
         }
-        
+
         // Otherwise, search in Browser
         if let encodedQuery = content.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             // Create Search URL
@@ -298,33 +330,36 @@ class MainViewModel: ObservableObject {
             }
         }
     }
-    
+
     func saveImageToPhotos(at url: URL) {
         DispatchQueue.global(qos: .userInitiated).async {
             guard TrueDevice.isSaveToPhotosAllowed() else {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
             }
-            
+
             guard let data = try? Data(contentsOf: url),
-                  let image = UIImage(data: data) else {
+                let image = UIImage(data: data)
+            else {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
             }
-            
+
             // Save
-            PHPhotoLibrary.shared().performChanges({
-                PHAssetChangeRequest.creationRequestForAsset(from: image)
-            }, completionHandler: { success, _ in
-                if !success {
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
-                }
-            })
+            PHPhotoLibrary.shared().performChanges(
+                {
+                    PHAssetChangeRequest.creationRequestForAsset(from: image)
+                },
+                completionHandler: { success, _ in
+                    if !success {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    }
+                })
         }
     }
-    
+
     // MARK: - Handlers
-    
+
     // Handler for camera capture
     func saveCapturedImage(data: Data, suppress: Bool = false) {
         // Save as new note
@@ -334,27 +369,27 @@ class MainViewModel: ObservableObject {
             }
             return
         }
-        
+
         // Scroll
         if !suppress {
             DispatchQueue.main.async {
                 self.newFileURLToScroll = newImageURL
             }
         }
-        
+
         // Save to Photos if needed
         if userSettings.saveCapturedImageToPhotos {
             saveImageToPhotos(at: newImageURL)
         }
     }
-    
+
     // Handler for audio recorder
     func saveRecordedAudio(from sourceURL: URL) {
         guard let destURL = noteManager.createFileURL(fileExtension: "m4a") else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
-        
+
         do {
             try FileManager.default.moveItem(at: sourceURL, to: destURL)
             newFileURLToScroll = destURL
@@ -365,7 +400,7 @@ class MainViewModel: ObservableObject {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
-    
+
     // Handle file importer
     func handleFileImporter(_ result: Result<[URL], Error>) {
         switch result {
@@ -380,7 +415,7 @@ class MainViewModel: ObservableObject {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
-    
+
     // Hande PhotoPicker selection
     func handlePhotoPickerSelection(_ item: PhotosPickerItem) {
         item.loadTransferable(type: Data.self) { [weak self] result in
@@ -388,24 +423,24 @@ class MainViewModel: ObservableObject {
             case .success(let data):
                 let fileExtension = item.supportedContentTypes.first?.preferredFilenameExtension ?? ""
                 guard let imageData = data,
-                      let newImageURL = self?.noteManager.saveImage(data: imageData, fileExtension: fileExtension)
+                    let newImageURL = self?.noteManager.saveImage(data: imageData, fileExtension: fileExtension)
                 else {
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                     return
                 }
-                
+
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                 DispatchQueue.main.async {
                     self?.newFileURLToScroll = newImageURL
                 }
-                
+
             case .failure(let error):
                 print("PhotoPicker load error: ", error)
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }
-    
+
     // Handler for keyboard shortcuts
     func handleKeyboardShortcut(shortcut: CustomKeyboardShortcut) {
         switch shortcut {
@@ -419,85 +454,85 @@ class MainViewModel: ObservableObject {
             addAndPaste()
         }
     }
-    
+
     // Handler for URL scheme
     func handleOpenURL(url: URL) {
         if let option = OpenAppOption.urlToOption(url) {
             openApp(with: option)
         }
     }
-    
+
     // Handler for launch from camera control
     func handleCameraControlAction(shouldOpenDummyCamera: Bool = true) {
         guard TrueDevice.isCamControlAvailable else { return }
-        
+
         let action = userSettings.cameraControlAction
-        
+
         openApp(with: action, shouldOpenDummyCamera: shouldOpenDummyCamera)
     }
-    
+
     func openApp(
         with action: OpenAppOption,
         shouldOpenDummyCamera: Bool = false,
-        allowCBNoteURLScheme: Bool = true)
-    {
+        allowCBNoteURLScheme: Bool = true
+    ) {
         func openDummyCameraIfNeeded() {
             if shouldOpenDummyCamera && UIApplication.shared.applicationState != .active {
                 dummyCameraManager.open()
             }
         }
-        
+
         // Open Dummy Camera if action needs it
         if action.shouldOpenDummyCamera {
             openDummyCameraIfNeeded()
         }
-        
+
         showSettings = false
         showCamera = false
         showRecorder = false
-        
+
         switch action {
-        case .launchCamera:
-            showCamera = true
-            
-        case .pasteFromClipboard:
-            addAndPaste()
-            
-        case .addNewNote:
-            createNewNote()
-            
-        case .startRecording:
-            showRecorder = true
-            
-        case .openAppOnly:
-            break
-            
         case .openURL:
-            guard !userSettings.cameraControlActionOpenURL.isEmpty,
-                let url = URL(string: userSettings.cameraControlActionOpenURL) else {
+            guard let url = URL(string: userSettings.cameraControlActionOpenURL)
+            else {
+                // Open app only if URL is invalid
                 openDummyCameraIfNeeded()
                 return
             }
-            
+
             // If URL is CBNote's URL scheme
             if let option = OpenAppOption.urlToOption(url) {
-                guard allowCBNoteURLScheme else {
+                if allowCBNoteURLScheme {
+                    openApp(
+                        with: option,
+                        shouldOpenDummyCamera: shouldOpenDummyCamera,
+                        allowCBNoteURLScheme: false  // Prevent infinite loop
+                    )
+                } else {
+                    // Open app only
                     openDummyCameraIfNeeded()
-                    return
                 }
-                openApp(
-                    with: option,
-                    shouldOpenDummyCamera: shouldOpenDummyCamera,
-                    allowCBNoteURLScheme: false // Prevent infinite loop
-                )
-                
+                return
             } else {
                 // Else open URL normally
-                // Show temporary screen curtain
                 showTmpCurtain = true
-                // Open URL
                 UIApplication.shared.open(url)
             }
+
+        case .launchCamera:
+            showCamera = true
+
+        case .pasteFromClipboard:
+            addAndPaste()
+
+        case .addNewNote:
+            createNewNote()
+
+        case .startRecording:
+            showRecorder = true
+
+        case .openAppOnly:
+            break
         }
     }
 }

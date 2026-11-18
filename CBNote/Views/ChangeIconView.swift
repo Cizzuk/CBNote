@@ -12,15 +12,16 @@ struct ChangeIconView: View {
         List {
             Section {
                 iconItem(iconName: "CBNote", iconID: "AppIcon")
-                iconItem(iconName: "Invert", iconID: "Invert")
                 iconItem(iconName: "Pride", iconID: "Pride")
                 iconItem(iconName: "Unity", iconID: "Unity")
+                iconItem(iconName: "OG", iconID: "OG")
+                iconItem(iconName: "Invert", iconID: "Invert")
             }
         }
         .navigationTitle("Change App Icon")
         .navigationBarTitleDisplayMode(.inline)
     }
-    
+
     private func iconItem(iconName: String, iconID: String) -> some View {
         HStack {
             Image(iconID + "-pre")

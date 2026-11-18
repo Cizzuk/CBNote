@@ -23,7 +23,7 @@ struct CaptureExtension: LockedCameraCaptureExtension {
 struct ExtensionContentView: View {
     let session: LockedCameraCaptureSession
     @State private var launchAction: CaptureContext.LaunchAction?
-    
+
     var body: some View {
         ZStack {
             if let action = launchAction {
@@ -40,14 +40,6 @@ struct ExtensionContentView: View {
                     CameraView(isLockedMode: true) { data in
                         saveToSession(session, data: data)
                     }
-                case .openAppOnly:
-                    Color.black
-                        .ignoresSafeArea()
-                        .task {
-                            let activity = NSUserActivity(activityType: "net.cizzuk.cbnote.CaptureExtension.openAppOnly")
-                            try? await session.openApplication(for: activity)
-                            exit(0)
-                        }
                 }
             } else {
                 Color.black.ignoresSafeArea()
@@ -65,12 +57,12 @@ struct ExtensionContentView: View {
             }
         }
     }
-    
+
     private func saveToSession(_ session: LockedCameraCaptureSession, data: Data) {
         let timestamp = Int(Date().timeIntervalSince1970)
         let filename = "\(timestamp).jpeg"
         let url = session.sessionContentURL.appendingPathComponent(filename)
-        
+
         do {
             try data.write(to: url)
         } catch {

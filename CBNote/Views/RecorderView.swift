@@ -11,16 +11,16 @@ import SwiftUI
 struct RecorderView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var vm = RecorderViewModel()
-    
+
     let onRecordingFinished: (URL) -> Void
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text(vm.elapsedTimeText)
                     .font(.system(size: 24, weight: .semibold, design: .monospaced))
                     .padding(.top, 40)
-                
+
                 Group {
                     if vm.isRecording {
                         Button(role: .destructive) {

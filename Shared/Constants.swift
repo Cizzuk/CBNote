@@ -10,6 +10,11 @@ import Foundation
 
 let GroupUserDefaults = UserDefaults(suiteName: "group.net.cizzuk.cbnote")!
 
+let AppURLSchemes = {
+    let appURLSchemes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
+    return appURLSchemes?.compactMap { $0["CFBundleURLSchemes"] as? [String] }.flatMap { $0 } ?? []
+}()
+
 extension Notification.Name {
     static let assistantDidActivate = Notification.Name("assistantDidActivate")
     static let shouldFinishRecording = Notification.Name("shouldFinishRecording")
@@ -18,18 +23,18 @@ extension Notification.Name {
 extension AVCaptureDevice.FlashMode {
     var accessibilityValue: LocalizedStringResource {
         switch self {
-        case .off:  return "Flash Off"
-        case .on:   return "Flash On"
+        case .off: return "Flash Off"
+        case .on: return "Flash On"
         case .auto: return "Flash Auto"
         @unknown default:
             return "Unknown Flash Mode"
         }
     }
-    
+
     var systemImage: String {
         switch self {
-        case .off:  return "bolt.slash"
-        case .on:   return "bolt.fill"
+        case .off: return "bolt.slash"
+        case .on: return "bolt.fill"
         case .auto: return "bolt.badge.automatic.fill"
         @unknown default:
             return "bolt.trianglebadge.exclamationmark.fill"

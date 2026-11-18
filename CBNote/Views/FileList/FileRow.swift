@@ -10,14 +10,20 @@ import SwiftUI
 struct FileRow: View {
     let url: URL
     let onPreview: () -> Void
-    
+
     @ObservedObject private var userSettings = UserSettings.shared
     private var imagePreviewMode: ImagePreviewMode { userSettings.imagePreviewMode }
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             if !FileManager.default.fileExists(atPath: url.path) {
                 AnyFileNotFoundItem(url: url)
+            } else if FileTypes.isDirectory(url) {
+                NavigationLink(value: url) {
+                    AnyFileItem(url: url)
+                }
+                .tint(.accent)
+                .navigationLinkIndicatorVisibility(.hidden)
             } else if FileTypes.isEditableText(url) {
                 TextEditView(url: url)
             } else if imagePreviewMode != .off && FileTypes.isPreviewableImage(url) {
@@ -31,7 +37,7 @@ struct FileRow: View {
                     AnyFileItem(url: url)
                 }
             }
-            
+
             Spacer()
             HStack {
                 Text(url.lastPathComponent)
@@ -39,6 +45,7 @@ struct FileRow: View {
                     .truncationMode(.middle)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(FileTypes.isDirectory(url))
             }
         }
     }
@@ -46,12 +53,19 @@ struct FileRow: View {
 
 struct AnyFileItem: View {
     var url: URL
-    
+
     var body: some View {
         HStack {
             Image(systemName: FileTypes.systemImage(for: url))
-            Text(FileTypes.name(for: url))
+            if FileTypes.isDirectory(url) {
+                Text(url.lastPathComponent)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            } else {
+                Text(FileTypes.name(for: url))
+            }
         }
+        .foregroundStyle(.accent)
         .padding()
         .frame(maxWidth: .infinity, alignment: .center)
         .background(Color.gray.opacity(0.1))
@@ -61,7 +75,7 @@ struct AnyFileItem: View {
 
 struct AnyFileNotFoundItem: View {
     var url: URL
-    
+
     var body: some View {
         HStack {
             Image(systemName: FileTypes.systemImageQuestionmark(for: url))

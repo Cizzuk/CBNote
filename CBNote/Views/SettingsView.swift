@@ -13,7 +13,7 @@ struct SettingsView: View {
     @ObservedObject private var userSettings = UserSettings.shared
     @State private var cameraAccessStatus = AVCaptureDevice.authorizationStatus(for: .video)
     @State private var nameFormatSample: String = ""
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -35,13 +35,8 @@ struct SettingsView: View {
                                 .submitLabel(.done)
                         }
                     }
-                } footer: {
-                    if userSettings.cameraControlAction.shouldOpenDummyCamera && TrueDevice.isCamControlAvailable {
-                        let actionName = OpenAppOption.launchCamera.displayName
-                        Text("Even when setting something other than \(actionName), the camera will temporarily launch in the background.")
-                    }
                 }
-                
+
                 if TrueDevice.isCameraAvailable {
                     Section {
                         if cameraAccessStatus == .notDetermined {
@@ -51,10 +46,10 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                        
+
                         Toggle("Remain in Camera After Shooting", isOn: $userSettings.remainCameraAfterCapture)
                             .tint(.accent)
-                        
+
                         if TrueDevice.isSaveToPhotosAllowed() {
                             Toggle("Save Captured Image to Photos", isOn: $userSettings.saveCapturedImageToPhotos)
                                 .tint(.accent)
@@ -63,7 +58,7 @@ struct SettingsView: View {
                         Text("Camera")
                     }
                 }
-                
+
                 Section {
                     Picker("Image Preview", selection: $userSettings.imagePreviewMode) {
                         ForEach(ImagePreviewMode.allCases) { mode in
@@ -72,14 +67,10 @@ struct SettingsView: View {
                     }
                     Toggle("Show Hidden Files", isOn: $userSettings.showHiddenFiles)
                         .tint(.accent)
-                    Toggle("Enable Note List Animations", isOn: $userSettings.enableNoteListAnimations)
-                        .tint(.accent)
                 } header: {
                     Text("Note List")
-                } footer: {
-                    Text("To avoid display issues, some animations in note list are disabled by default.")
                 }
-                
+
                 Section {
                     TextField("yyyy-MM-dd-HH-mm-ss", text: $userSettings.nameFormat)
                         .disableAutocorrection(true)
@@ -99,7 +90,7 @@ struct SettingsView: View {
                 .onAppear {
                     updateNameFormatSample()
                 }
-                
+
                 Section {
                     TextField("URL", text: $userSettings.searchEngine, prompt: Text(verbatim: TrueDevice.defaultSearchEngine))
                         .disableAutocorrection(true)
@@ -115,7 +106,7 @@ struct SettingsView: View {
                         Text("Replace query with %s.")
                     }
                 }
-                
+
                 Section {
                     NavigationLink(destination: AboutView()) {
                         Label("About", systemImage: "info.circle")
@@ -134,29 +125,25 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(action: { dismiss() }) {
-                        Label("Close", systemImage: "xmark")
-                    }
-                    .keyboardShortcut(.cancelAction)
+                    Button(role: .close, action: { dismiss() })
+                        .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button {
+                    Button(role: .close) {
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    } label: {
-                        Label("Done", systemImage: "checkmark")
                     }
                 }
             }
         }
     }
-    
+
     private func updateNameFormatSample() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = userSettings.nameFormat
         nameFormatSample = dateFormatter.string(from: Date()) + ".txt"
     }
-    
+
     struct AboutView: View {
         var body: some View {
             List {
@@ -176,21 +163,28 @@ struct SettingsView: View {
                         Label("Developer", systemImage: "hammer")
                             .foregroundStyle(.primary)
                         Spacer()
-                        Link(destination:URL(string: "https://cizzuk.net/")!, label: {
-                            Text("Cizzuk")
-                        })
+                        Link(
+                            destination: URL(string: "https://cizzuk.net/")!,
+                            label: {
+                                Text("Cizzuk")
+                            })
                     }
-                    Link(destination:URL(string: "https://github.com/Cizzuk/CBNote")!, label: {
-                        Label("Source", systemImage: "ladybug")
-                    })
-                    Link(destination:URL(string: "https://i.cizzuk.net/privacy/")!, label: {
-                        Label("Privacy Policy", systemImage: "hand.raised")
-                    })
+                    Link(
+                        destination: URL(string: "https://github.com/Cizzuk/CBNote")!,
+                        label: {
+                            Label("Source", systemImage: "ladybug")
+                        })
+                    Link(
+                        destination: URL(string: "https://i.cizzuk.net/privacy/")!,
+                        label: {
+                            Label("Privacy Policy", systemImage: "hand.raised")
+                        })
                 } header: {
                     Text("CBNote")
                 }
-                
-                Section {} header: {
+
+                Section {
+                } header: {
                     Text("License")
                 } footer: {
                     Text("MIT License\n\nCopyright (c) 2025 Cizzuk\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n \nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. \n \nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.")

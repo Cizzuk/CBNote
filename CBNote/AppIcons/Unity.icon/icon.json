@@ -7,17 +7,22 @@
   },
   "groups" : [
     {
-      "blur-material" : null,
       "layers" : [
         {
-          "fill" : "none",
+          "image-name" : "green.png",
+          "name" : "green"
+        },
+        {
+          "image-name" : "red.png",
+          "name" : "red"
+        },
+        {
           "glass" : true,
           "hidden" : false,
-          "image-name" : "unity.png",
-          "name" : "unity"
+          "image-name" : "yellow.png",
+          "name" : "yellow"
         }
       ],
-      "name" : "Cam",
       "position" : {
         "scale" : 0.9,
         "translation-in-points" : [
@@ -29,10 +34,10 @@
         "kind" : "neutral",
         "opacity" : 0.5
       },
-      "specular" : "inside",
+      "specular" : "outside",
       "translucency" : {
         "enabled" : true,
-        "value" : 0.25
+        "value" : 0.3
       }
     }
   ],

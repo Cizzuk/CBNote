@@ -10,66 +10,72 @@ import UniformTypeIdentifiers
 struct FileTypes {
     static func isEditableText(_ url: URL) -> Bool {
         let editableText = [
-            "rtf", "xml", "html", "htm", "tex", "json", "jsonc", "yaml", "yml", "toml", "ahap"
+            "rtf", "xml", "html", "htm", "tex", "json", "jsonc", "yaml", "yml", "toml", "ahap",
         ]
-        
+
         if editableText.contains(url.pathExtension.lowercased()) {
             return true
         }
-        
+
         if let type = UTType(filenameExtension: url.pathExtension) {
             return type.conforms(to: .plainText)
         }
-        
+
         return false
     }
-    
+
     static func isPreviewableImage(_ url: URL) -> Bool {
         let previewableImage = ["png", "jpg", "jpeg", "heic", "heif", "tif", "tiff"]
         return previewableImage.contains(url.pathExtension.lowercased())
     }
-    
+
     static func shouldMonospaceFont(_ url: URL) -> Bool {
         guard let type = UTType(filenameExtension: url.pathExtension) else {
             return false
         }
-        
+
         // Check UTType
         let trueTypes: [UTType] = [.sourceCode, .script, .xml, .json, .css, .html, .swiftSource]
         if trueTypes.contains(where: { type.conforms(to: $0) }) {
             return true
         }
-        
+
         // Check Extensions
         let trueExts: [String] = ["md", "markdown", "csv", "log", "tex", "jsonc", "yml", "yaml", "toml"]
         if trueExts.contains(url.pathExtension.lowercased()) {
             return true
         }
-        
+
         return false
     }
-    
+
+    static func isDirectory(_ url: URL) -> Bool {
+        if url.hasDirectoryPath { return true }
+        return (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+    }
+
     static func name(for url: URL) -> String {
-        if url.hasDirectoryPath {
+        if isDirectory(url) {
             return "Folder"
         }
-        
+
         if let type = UTType(filenameExtension: url.pathExtension),
-           let description = type.localizedDescription {
+            let description = type.localizedDescription
+        {
             return description
         }
         return "Unknown File Type"
     }
-    
+
     static func systemImage(for url: URL) -> String {
-        if url.hasDirectoryPath {
-            return "folder"
+        if isDirectory(url) {
+            return "folder.fill"
         }
-        
+
         guard let type = UTType(filenameExtension: url.pathExtension) else {
             return "document"
         }
-        
+
         // Media
         if type.conforms(to: .image) {
             return "photo"
@@ -77,16 +83,16 @@ struct FileTypes {
             return "waveform"
         } else if type.conforms(to: .audiovisualContent) {
             return "film"
-            
-        // Source Code & Script
+
+            // Source Code & Script
         } else if type.conforms(to: .swiftSource) {
             return "swift"
         } else if type.conforms(to: .sourceCode) {
             return "curlybraces"
         } else if type.conforms(to: .script) {
             return "curlybraces"
-            
-        // Data Formats
+
+            // Data Formats
         } else if type.conforms(to: .xml) {
             return "chevron.left.forwardslash.chevron.right"
         } else if type.conforms(to: .html) {
@@ -95,8 +101,8 @@ struct FileTypes {
             return "curlybraces"
         } else if type.conforms(to: .json) {
             return "curlybraces"
-            
-        // Documents
+
+            // Documents
         } else if type.conforms(to: .spreadsheet) {
             return "tablecells"
         } else if type.conforms(to: .presentation) {
@@ -115,8 +121,8 @@ struct FileTypes {
             return "link"
         } else if type.conforms(to: .internetLocation) {
             return "link"
-            
-        // Text
+
+            // Text
         } else if type.conforms(to: .text) {
             return "text.document"
         } else if type.conforms(to: .plainText) {
@@ -125,8 +131,8 @@ struct FileTypes {
             return "richtext.page"
         } else if type.conforms(to: .font) {
             return "textformat"
-            
-        // Applications
+
+            // Applications
         } else if type.conforms(to: .exe) {
             return "uiwindow.split.2x1"
         } else if url.pathExtension.lowercased() == "ipa" {
@@ -141,14 +147,14 @@ struct FileTypes {
             return "app.grid"
         } else if type.conforms(to: .executable) {
             return "apple.terminal"
-            
-        // Archive
+
+            // Archive
         } else if type.conforms(to: .webArchive) {
             return "safari"
         } else if type.conforms(to: .archive) {
             return "zipper.page"
-            
-        // Others
+
+            // Others
         } else if type.conforms(to: .folder) {
             return "folder"
         } else if type.conforms(to: .aliasFile) {
@@ -156,19 +162,19 @@ struct FileTypes {
         } else if type.conforms(to: .symbolicLink) {
             return "arrowshape.turn.up.left"
         }
-        
+
         return "document"
     }
-    
+
     static func systemImageQuestionmark(for url: URL) -> String {
         if url.hasDirectoryPath {
             return "questionmark.folder"
         }
-        
+
         guard let type = UTType(filenameExtension: url.pathExtension) else {
             return "questionmark.square"
         }
-        
+
         if type.conforms(to: .text) {
             return "questionmark.text.page"
         } else if type.conforms(to: .plainText) {
@@ -176,7 +182,7 @@ struct FileTypes {
         } else if type.conforms(to: .rtf) {
             return "questionmark.text.page"
         }
-        
+
         return "questionmark.square"
     }
 }

@@ -5,7 +5,26 @@
 //  Created by Cizzuk on 2026/02/11.
 //
 
+import Combine
 import SwiftUI
+
+private func scrollToNewFile(in files: [URL], proxy: ScrollViewProxy, vm: MainViewModel) {
+    guard let target = vm.newFileURLToScroll,
+        let rowURL = vm.listedFile(matching: target, in: files)
+    else { return }
+
+    let rowID = rowURL.absoluteString
+    DispatchQueue.main.async {
+        withAnimation(.easeOut) {
+            proxy.scrollTo(rowID)
+        }
+        if let current = vm.newFileURLToScroll,
+            NoteService.normalizedDirectoryPath(current) == NoteService.normalizedDirectoryPath(rowURL)
+        {
+            vm.newFileURLToScroll = nil
+        }
+    }
+}
 
 extension MainView {
     @ViewBuilder
@@ -14,7 +33,8 @@ extension MainView {
             List {
                 // Empty State
                 if vm.pinnedFiles.isEmpty && vm.unpinnedFiles.isEmpty {
-                    Section {} footer: {
+                    Section {
+                    } footer: {
                         if vm.searchQuery.isEmpty {
                             Text("No notes yet.")
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -31,67 +51,42 @@ extension MainView {
                         }
                     }
                 }
-                
+
                 // Pinned Files
                 if !vm.pinnedFiles.isEmpty {
                     Section {
                         if isExpandPinnedSection {
                             ForEach(vm.pinnedFiles, id: \.self) { url in
                                 fileRow(url: url, onPreview: { previewURL = url })
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(action: { vm.pinUnpinFile(at: url) }) {
-                                            if vm.isFilePinned(url) {
-                                                Label("Unpin", systemImage: "pin.slash")
-                                            } else {
-                                                Label("Pin", systemImage: "pin")
-                                            }
-                                        }
-                                        .tint(.yellow)
-                                    }
                             }
                         }
                     } header: {
                         pinnedSectionHeader
                     }
                 }
-                
+
                 // Unpinned Files
                 Section {
                     ForEach(vm.unpinnedFiles, id: \.self) { url in
                         fileRow(url: url, onPreview: { previewURL = url })
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    vm.deleteFile(at: url)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                                Button(action: { vm.startRenaming(at: url) }) {
-                                    Label("Rename", systemImage: "pencil")
-                                }
-                            }
                     }
                 }
-            } // List
+            }  // List
             // MARK: - List Config
-            .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.pinnedFiles)
-            .animation(enableNoteListAnimations ? .easeOut : nil, value: vm.unpinnedFiles)
             .refreshable {
                 vm.refreshFiles()
                 // To reduce View jitter
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
             .onChange(of: vm.unpinnedFiles) {
-                guard let scrollPos = vm.newFileURLToScroll else { return }
-                DispatchQueue.main.async {
-                    withAnimation(.easeOut) {
-                        proxy.scrollTo("\(scrollPos.absoluteString)")
-                    }
-                    self.vm.newFileURLToScroll = nil
-                }
+                scrollToNewFile(in: vm.unpinnedFiles, proxy: proxy, vm: vm)
             }
-        } // ScrollViewReader
+            .onChange(of: vm.newFileURLToScroll) {
+                scrollToNewFile(in: vm.unpinnedFiles, proxy: proxy, vm: vm)
+            }
+        }  // ScrollViewReader
     }
-    
+
     // MARK: - Pinned Section Header
     @ViewBuilder
     private var pinnedSectionHeader: some View {
@@ -122,5 +117,81 @@ extension MainView {
         }
         .foregroundStyle(.secondary)
         .accessibilityValue(isExpandPinnedSection ? "Expanded" : "Collapsed")
+    }
+
+    func folderScreen(_ directory: URL) -> some View {
+        FolderFileList(directory: directory, vm: vm) { url in
+            fileRow(url: url, onPreview: { previewURL = url }, allowsPin: false)
+        }
+        .toolbar { toolbarContent(showsNavigationItem: false) }
+        .navigationTitle(directory.lastPathComponent)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct FolderFileList<RowContent: View>: View {
+    let directory: URL
+    @ObservedObject var vm: MainViewModel
+    let rowContent: (URL) -> RowContent
+
+    @State private var files: [URL] = []
+    @State private var searchQuery = ""
+
+    private var visibleFiles: [URL] {
+        vm.filterFiles(files, query: searchQuery)
+    }
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            List {
+                if visibleFiles.isEmpty {
+                    Section {
+                    } footer: {
+                        if searchQuery.isEmpty {
+                            Text("No notes yet.")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else {
+                            VStack {
+                                Label("No Results", systemImage: "magnifyingglass")
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .font(.headline)
+                                Spacer()
+                                Text("for \"\(searchQuery)\".")
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .font(.caption)
+                            }
+                        }
+                    }
+                }
+
+                if !visibleFiles.isEmpty {
+                    Section {
+                        ForEach(visibleFiles, id: \.self) { url in
+                            rowContent(url)
+                        }
+                    }
+                }
+            }
+            .refreshable {
+                vm.refreshFiles()
+                // To reduce View jitter
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+            }
+            .onChange(of: files) {
+                scrollToNewFile(in: visibleFiles, proxy: proxy, vm: vm)
+            }
+            .onChange(of: vm.newFileURLToScroll) {
+                scrollToNewFile(in: visibleFiles, proxy: proxy, vm: vm)
+            }
+        }
+        .searchable(text: $searchQuery, prompt: "Search Notes")
+        .onAppear { reload() }
+        .onReceive(vm.noteManager.objectWillChange.receive(on: DispatchQueue.main)) { _ in
+            reload()
+        }
+    }
+
+    private func reload() {
+        files = vm.files(in: directory)
     }
 }

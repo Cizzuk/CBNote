@@ -9,10 +9,10 @@ import Foundation
 
 enum ImagePreviewMode: String, CaseIterable, Identifiable {
     case off, small, large
-    
+
     static var `default`: ImagePreviewMode = .large
     var id: String { self.rawValue }
-    
+
     var displayName: LocalizedStringResource {
         switch self {
         case .off:

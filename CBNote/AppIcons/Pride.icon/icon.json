@@ -2,9 +2,7 @@
   "features" : [
     "specular-location"
   ],
-  "fill" : {
-    "solid" : "srgb:0.00000,0.00000,0.00000,1.00000"
-  },
+  "fill" : "automatic",
   "groups" : [
     {
       "blur-material" : null,
@@ -13,8 +11,20 @@
           "fill" : "none",
           "glass" : true,
           "hidden" : false,
-          "image-name" : "pride.png",
-          "name" : "pride"
+          "image-name-specializations" : [
+            {
+              "value" : "pride.png"
+            },
+            {
+              "appearance" : "dark",
+              "value" : "pride-dark.png"
+            },
+            {
+              "appearance" : "tinted",
+              "value" : "pride.png"
+            }
+          ],
+          "name" : "pride-dark"
         }
       ],
       "name" : "Cam",
@@ -30,10 +40,21 @@
         "opacity" : 0.5
       },
       "specular" : "inside",
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.25
-      }
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.2
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.4
+          }
+        }
+      ]
     }
   ],
   "supported-platforms" : {

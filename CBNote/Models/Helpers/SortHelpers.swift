@@ -8,9 +8,9 @@
 import Foundation
 
 enum SortKey: String, CaseIterable {
-    case name // Default
-    case date // Modification Date
-    
+    case name  // Default
+    case date  // Modification Date
+
     var localizedName: LocalizedStringResource {
         switch self {
         case .name:
@@ -22,9 +22,9 @@ enum SortKey: String, CaseIterable {
 }
 
 enum SortDirection: String {
-    case descending // Default
+    case descending  // Default
     case ascending
-    
+
     var localizedName: LocalizedStringResource {
         switch self {
         case .descending:

@@ -5,13 +5,13 @@
 //  Created by Cizzuk on 2025/12/05.
 //
 
-import WidgetKit
 import AppIntents
 import SwiftUI
+import WidgetKit
 
 struct OpenAppLaunchCameraIntent: AppIntent {
     static let title: LocalizedStringResource = "Launch CBNote Camera"
-    
+
     static var openAppWhenRun = true
     static var isDiscoverable = true
 

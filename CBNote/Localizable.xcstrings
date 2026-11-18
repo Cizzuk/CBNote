@@ -46,6 +46,16 @@
         }
       }
     },
+    "Add New Folder" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規フォルダを追加"
+          }
+        }
+      }
+    },
     "Add New Note" : {
       "localizations" : {
         "ja" : {
@@ -178,16 +188,6 @@
         }
       }
     },
-    "Close" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閉じる"
-          }
-        }
-      }
-    },
     "Close Curtain" : {
       "comment" : "TemporaryScreenCurtain",
       "extractionState" : "manual",
@@ -216,6 +216,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー"
+          }
+        }
+      }
+    },
+    "Could not load image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を読み込めませんでした"
+          }
+        }
+      }
+    },
+    "Could not process image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を処理できませんでした"
           }
         }
       }
@@ -270,42 +290,12 @@
         }
       }
     },
-    "Done" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了"
-          }
-        }
-      }
-    },
-    "Enable Note List Animations" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ノートリストのアニメーションを有効にする"
-          }
-        }
-      }
-    },
     "Error" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "エラー"
-          }
-        }
-      }
-    },
-    "Even when setting something other than %@, the camera will temporarily launch in the background." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「%@」以外を設定した場合でも、カメラが一時的にバックグラウンドで起動します。"
           }
         }
       }
@@ -449,6 +439,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“写真”からインポート"
+          }
+        }
+      }
+    },
+    "Invalid directory" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なディレクトリ"
+          }
+        }
+      }
+    },
+    "Invalid path" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なパス"
           }
         }
       }
@@ -1118,16 +1128,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "撮影"
-          }
-        }
-      }
-    },
-    "To avoid display issues, some animations in note list are disabled by default." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "表示上の問題を避けるために、ノートリストのアニメーションの一部はデフォルトで無効になっています。"
           }
         }
       }

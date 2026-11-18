@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         default:
             action = nil
         }
-        
+
         if let action {
             NotificationCenter.default.post(name: .openAppIntentPerformed, object: action)
             completionHandler(true)
@@ -47,25 +47,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 @main
 struct CBNote: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     init() {
+        // Migrate camera control action
+        if let autoSetURL = UserSettings.shared.cameraControlAction.autoSetURL {
+            UserSettings.shared.cameraControlActionOpenURL = autoSetURL
+            UserSettings.shared.cameraControlAction = .openURL
+        }
         // Initialize Watch Connectivity Manager
         _ = WatchConnectivityManager.shared
         // Update Capture Context
         CaptureContext.syncContextSettings()
     }
-    
+
     var body: some Scene {
         // MARK: - Window Group
         WindowGroup {
             MainView()
                 .scrollDismissesKeyboard(.interactively)
                 #if targetEnvironment(macCatalyst)
-                .onAppear {
-                    (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
-                        .titlebar?
-                        .titleVisibility = .hidden
-                }
+                    .onAppear {
+                        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
+                            .titlebar?
+                            .titleVisibility = .hidden
+                    }
                 #endif
         }
         .commands {
@@ -81,7 +86,7 @@ struct CBNote: App {
                 }
                 .keyboardShortcut(",", modifiers: [.command])
             }
-            
+
             CommandGroup(before: .undoRedo) {
                 Button {
                     NotificationCenter.default.post(
@@ -92,9 +97,9 @@ struct CBNote: App {
                     Label("Reload", systemImage: "arrow.clockwise")
                 }
                 .keyboardShortcut("R", modifiers: [.command])
-                
+
             }
-            
+
             CommandGroup(replacing: .newItem) {
                 Button {
                     NotificationCenter.default.post(

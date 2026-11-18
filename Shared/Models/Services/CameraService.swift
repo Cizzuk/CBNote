@@ -15,11 +15,11 @@ class CameraService: NSObject, ObservableObject {
     @Published var cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
     @Published var shouldFlashScreen = false
     @Published var flashMode: AVCaptureDevice.FlashMode = .off
-    
+
     private let output = AVCapturePhotoOutput()
     private var input: AVCaptureDeviceInput?
     private var controlsDelegate = CaptureControlsDelegate()
-    
+
     private let backCameraDiscoverySession = AVCaptureDevice.DiscoverySession(
         deviceTypes: [.builtInDualCamera, .builtInWideAngleCamera],
         mediaType: .video,
@@ -35,14 +35,14 @@ class CameraService: NSObject, ObservableObject {
         mediaType: .video,
         position: .unspecified
     )
-    
+
     var onPhotoCaptured: ((Data) -> Void)?
-    
+
     override init() {
         super.init()
         checkPermissions()
     }
-    
+
     private func checkPermissions() {
         cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
         switch cameraPermission {
@@ -61,57 +61,57 @@ class CameraService: NSObject, ObservableObject {
             break
         }
     }
-    
+
     private func setupSession() {
         session.beginConfiguration()
         defer { session.commitConfiguration() }
-        
+
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
             session.sessionPreset = .high
         default:
             session.sessionPreset = .photo
         }
-        
+
         if session.canAddOutput(output) {
             session.addOutput(output)
         }
-        
+
         if let defaultDevice = AVCaptureDevice.default(for: .video) {
             self.setupInput(for: defaultDevice)
         }
     }
-    
+
     // Setup new camera or lens input
     private func setupInput(for device: AVCaptureDevice) {
         do {
             let newInput = try AVCaptureDeviceInput(device: device)
-            
+
             if let currentInput = input {
                 session.removeInput(currentInput)
             }
-            
+
             // Remove old controls
             for control in session.controls {
                 session.removeControl(control)
             }
-            
+
             // Add new controls for Camera Control
             let controls = [
                 AVCaptureSystemZoomSlider(device: device),
                 AVCaptureSystemExposureBiasSlider(device: device),
             ]
-            
+
             for control in controls {
                 if session.canAddControl(control) {
                     session.addControl(control)
                 }
             }
-            
+
             // Set controls delegate
             let sessionQueue = DispatchSerialQueue(label: "cameraControlSessionQueue")
             session.setControlsDelegate(controlsDelegate, queue: sessionQueue)
-            
+
             DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let self = self else { return }
                 if session.canAddInput(newInput) {
@@ -123,7 +123,7 @@ class CameraService: NSObject, ObservableObject {
             print("Error setting up input: \(error)")
         }
     }
-    
+
     // Returns all available cameras on device
     private var availableCameras: [AVCaptureDevice] {
         var cameras: [AVCaptureDevice] = []
@@ -141,29 +141,29 @@ class CameraService: NSObject, ObservableObject {
 
     func switchCamera() {
         guard session.isRunning else { return }
-        
+
         session.beginConfiguration()
         defer { session.commitConfiguration() }
-        
+
         // Get current camera(device)
         guard let currentInput = input else { return }
         let currentDevice = currentInput.device
-        
+
         // Get all available cameras
         let cameras = availableCameras
         guard !cameras.isEmpty else { return }
-        
+
         let currentCategoryIndex: Int?
-        
+
         // Find the index of current camera in available cameras
         if currentDevice.position == .back {
-             currentCategoryIndex = cameras.firstIndex { $0.position == .back }
+            currentCategoryIndex = cameras.firstIndex { $0.position == .back }
         } else if currentDevice.position == .front {
-             currentCategoryIndex = cameras.firstIndex { $0.position == .front }
+            currentCategoryIndex = cameras.firstIndex { $0.position == .front }
         } else {
-             currentCategoryIndex = cameras.firstIndex { $0.position == .unspecified }
+            currentCategoryIndex = cameras.firstIndex { $0.position == .unspecified }
         }
-        
+
         // Determine next camera
         var nextCamera: AVCaptureDevice?
         if let index = currentCategoryIndex {
@@ -173,32 +173,32 @@ class CameraService: NSObject, ObservableObject {
             // If current camera not found, switch to first available camera
             nextCamera = cameras.first
         }
-        
+
         if let nextCamera = nextCamera {
             setupInput(for: nextCamera)
         }
     }
-    
+
     func switchLens() {
         guard session.isRunning else { return }
-        
+
         session.beginConfiguration()
         defer { session.commitConfiguration() }
-        
+
         // Get current camera(device)
         guard let currentInput = input else { return }
         let currentDevice = currentInput.device
         let currentPosition = currentDevice.position
-        
+
         // Get lenses for current camera(position)
         let deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInUltraWideCamera, .builtInWideAngleCamera, .builtInTelephotoCamera]
         let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: .video, position: currentPosition)
         let lenses = discoverySession.devices
-        
+
         guard !lenses.isEmpty else { return }
-        
+
         var nextDevice: AVCaptureDevice?
-        
+
         // Determine next lens
         if let currentIndex = lenses.firstIndex(of: currentDevice) {
             let nextIndex = (currentIndex + 1) % lenses.count
@@ -206,15 +206,15 @@ class CameraService: NSObject, ObservableObject {
         } else {
             nextDevice = lenses.first
         }
-        
+
         if let nextDevice = nextDevice {
             setupInput(for: nextDevice)
         }
     }
-    
+
     func toggleFlash() {
         let supportedModes = output.supportedFlashModes
-        
+
         if supportedModes.contains(.auto) && flashMode == .off {
             flashMode = .auto
         } else if supportedModes.contains(.on) && flashMode != .on {
@@ -223,42 +223,41 @@ class CameraService: NSObject, ObservableObject {
             flashMode = .off
         }
     }
-    
+
     func focus(at point: CGPoint) {
         guard let device = input?.device
         else { return }
-        
-        do { try device.lockForConfiguration() }
-        catch { return }
-        
+
+        do { try device.lockForConfiguration() } catch { return }
+
         if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
             device.focusPointOfInterest = point
             device.focusMode = .autoFocus
         }
-        
+
         if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.autoExpose) {
             device.exposurePointOfInterest = point
             device.exposureMode = .autoExpose
         }
-        
+
         device.isSubjectAreaChangeMonitoringEnabled = true
         device.unlockForConfiguration()
     }
-    
+
     // Update rotation angle based on device orientation
     func updateRotationAngle() {
         guard session.isRunning,
-              let device = input?.device
+            let device = input?.device
         else { return }
-        
+
         let rotationCoordinator = AVCaptureDevice.RotationCoordinator(device: device, previewLayer: nil)
         let angle = rotationCoordinator.videoRotationAngleForHorizonLevelCapture
         session.connections.forEach { $0.videoRotationAngle = angle }
     }
-    
+
     func takePhoto() {
         guard output.connection(with: .video)?.isActive != nil else { return }
-        
+
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
 
         updateRotationAngle()
@@ -268,7 +267,7 @@ class CameraService: NSObject, ObservableObject {
         }
         output.capturePhoto(with: settings, delegate: self)
     }
-    
+
     func startSession() {
         DispatchQueue.global(qos: .userInteractive).async {
             if !self.session.isRunning {
@@ -290,8 +289,8 @@ class CameraService: NSObject, ObservableObject {
 
 extension CameraService: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        AudioServicesDisposeSystemSoundID(1108) // 1108: shutter sound
-        
+        AudioServicesDisposeSystemSoundID(1108)  // 1108: shutter sound
+
         Task { @MainActor in
             self.shouldFlashScreen = true
             withAnimation(.linear(duration: 0.1)) {
@@ -299,15 +298,15 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
             }
         }
     }
-    
+
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let error = error {
             print("Error capturing photo: \(error)")
             return
         }
-        
+
         guard let data = photo.fileDataRepresentation() else { return }
-        
+
         DispatchQueue.global(qos: .userInteractive).async {
             self.onPhotoCaptured?(data)
         }
@@ -315,14 +314,14 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
 }
 
 class CaptureControlsDelegate: NSObject, AVCaptureSessionControlsDelegate {
-    
+
     @Published private(set) var isShowingFullscreenControls = false
 
-    func sessionControlsDidBecomeActive(_ session: AVCaptureSession) { }
+    func sessionControlsDidBecomeActive(_ session: AVCaptureSession) {}
 
-    func sessionControlsWillEnterFullscreenAppearance(_ session: AVCaptureSession) { }
-    
-    func sessionControlsWillExitFullscreenAppearance(_ session: AVCaptureSession) { }
-    
-    func sessionControlsDidBecomeInactive(_ session: AVCaptureSession) { }
+    func sessionControlsWillEnterFullscreenAppearance(_ session: AVCaptureSession) {}
+
+    func sessionControlsWillExitFullscreenAppearance(_ session: AVCaptureSession) {}
+
+    func sessionControlsDidBecomeInactive(_ session: AVCaptureSession) {}
 }

@@ -21,16 +21,6 @@
         }
       }
     },
-    "Cancel" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "キャンセル"
-          }
-        }
-      }
-    },
     "Cannot access the camera." : {
       "localizations" : {
         "ja" : {
